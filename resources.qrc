@@ -1,0 +1,7 @@
+<RCC>
+  <qresource prefix="/plugins/MapsPrinter">
+    <file>icons/action_refresh.png</file>
+    <file>icons/about.png</file>
+    <file>icons/icon.png</file>
+  </qresource>
+</RCC>
