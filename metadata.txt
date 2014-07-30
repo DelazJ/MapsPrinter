@@ -24,9 +24,9 @@ email=delazj@gmail.com
 # Tags are comma separated with spaces allowed
 tags=print composer, export, map, composer, multiple print, image, PDF
 
-homepage=
-tracker=
-repository=
+homepage=https://github.com/DelazJ/MapsPrinter
+tracker=https://github.com/DelazJ/MapsPrinter/issues
+repository=https://github.com/DelazJ/MapsPrinter
 icon=icons/icon.png
 # experimental flag
 experimental=False
