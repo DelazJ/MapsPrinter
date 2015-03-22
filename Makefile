@@ -31,7 +31,8 @@ SOURCES = \
 	__init__.py \
 	maps_printer.py \
 	maps_printer_dialog.py \
-	mpaboutWindow.py
+	mpaboutWindow.py \
+	README.html
 
 PLUGINNAME = MapsPrinter
 

@@ -28,4 +28,4 @@ Maps Printer plugin help
 
 	Thanks for trying this plugin !
 	Author : Harrissou Sant-Anna / Conseil d'Architecture, d'Urbanisme et de l'Environnement du Maine-et-Loire
-	Inspired by the work of Lionel Roubeyrie, Chris Crook (Contour plugin), Olivier Dalang (Live Statistics plugin) and Enrico Ferregutti (MultiPrint plugin)
+	Inspired by the work of Lionel Roubeyrie, Chris Crook (Contour plugin), Olivier Dalang (Live Statistics plugin) and Enrico Ferreguti (MultiPrint plugin)

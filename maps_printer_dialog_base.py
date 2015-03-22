@@ -2,8 +2,8 @@
 
 # Form implementation generated from reading ui file 'maps_printer_dialog_base.ui'
 #
-# Created: Wed Jul 30 02:06:46 2014
-#      by: PyQt4 UI code generator 4.8.3
+# Created: Sat Feb 07 21:25:34 2015
+#      by: PyQt4 UI code generator 4.11.3
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -12,12 +12,21 @@ from PyQt4 import QtCore, QtGui
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
 except AttributeError:
-    _fromUtf8 = lambda s: s
+    def _fromUtf8(s):
+        return s
+
+try:
+    _encoding = QtGui.QApplication.UnicodeUTF8
+    def _translate(context, text, disambig):
+        return QtGui.QApplication.translate(context, text, disambig, _encoding)
+except AttributeError:
+    def _translate(context, text, disambig):
+        return QtGui.QApplication.translate(context, text, disambig)
 
 class Ui_mapsPrinter(object):
     def setupUi(self, mapsPrinter):
         mapsPrinter.setObjectName(_fromUtf8("mapsPrinter"))
-        mapsPrinter.resize(270, 340)
+        mapsPrinter.resize(308, 340)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Minimum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -25,6 +34,7 @@ class Ui_mapsPrinter(object):
         mapsPrinter.setSizePolicy(sizePolicy)
         mapsPrinter.setMinimumSize(QtCore.QSize(270, 340))
         mapsPrinter.setSizeIncrement(QtCore.QSize(0, 0))
+        mapsPrinter.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/plugins/MapsPrinter/icons/icon.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         mapsPrinter.setWindowIcon(icon)
@@ -54,18 +64,6 @@ class Ui_mapsPrinter(object):
         self.browse.setObjectName(_fromUtf8("browse"))
         self.horizontalLayout_3.addWidget(self.browse)
         self.gridLayout.addLayout(self.horizontalLayout_3, 2, 0, 1, 2)
-        self.updater = QtGui.QPushButton(mapsPrinter)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.updater.sizePolicy().hasHeightForWidth())
-        self.updater.setSizePolicy(sizePolicy)
-        self.updater.setMinimumSize(QtCore.QSize(120, 0))
-        icon1 = QtGui.QIcon()
-        icon1.addPixmap(QtGui.QPixmap(_fromUtf8(":/plugins/MapsPrinter/icons/action_refresh.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.updater.setIcon(icon1)
-        self.updater.setObjectName(_fromUtf8("updater"))
-        self.gridLayout.addWidget(self.updater, 0, 1, 1, 1)
         self.horizontalLayout_2 = QtGui.QHBoxLayout()
         self.horizontalLayout_2.setObjectName(_fromUtf8("horizontalLayout_2"))
         self.label = QtGui.QLabel(mapsPrinter)
@@ -89,6 +87,12 @@ class Ui_mapsPrinter(object):
         self.formatBox.setObjectName(_fromUtf8("formatBox"))
         self.horizontalLayout_2.addWidget(self.formatBox)
         self.gridLayout.addLayout(self.horizontalLayout_2, 3, 0, 1, 2)
+        self.checkBox = QtGui.QCheckBox(mapsPrinter)
+        self.checkBox.setEnabled(True)
+        self.checkBox.setWhatsThis(_fromUtf8(""))
+        self.checkBox.setChecked(False)
+        self.checkBox.setObjectName(_fromUtf8("checkBox"))
+        self.gridLayout.addWidget(self.checkBox, 0, 0, 1, 1)
         self.horizontalLayout = QtGui.QHBoxLayout()
         self.horizontalLayout.setObjectName(_fromUtf8("horizontalLayout"))
         self.exportButton = QtGui.QPushButton(mapsPrinter)
@@ -100,12 +104,18 @@ class Ui_mapsPrinter(object):
         self.buttonBox.setObjectName(_fromUtf8("buttonBox"))
         self.horizontalLayout.addWidget(self.buttonBox)
         self.gridLayout.addLayout(self.horizontalLayout, 4, 0, 1, 2)
-        self.checkBox = QtGui.QCheckBox(mapsPrinter)
-        self.checkBox.setEnabled(True)
-        self.checkBox.setWhatsThis(_fromUtf8(""))
-        self.checkBox.setChecked(False)
-        self.checkBox.setObjectName(_fromUtf8("checkBox"))
-        self.gridLayout.addWidget(self.checkBox, 0, 0, 1, 1)
+        self.updater = QtGui.QPushButton(mapsPrinter)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.updater.sizePolicy().hasHeightForWidth())
+        self.updater.setSizePolicy(sizePolicy)
+        self.updater.setMinimumSize(QtCore.QSize(120, 0))
+        icon1 = QtGui.QIcon()
+        icon1.addPixmap(QtGui.QPixmap(_fromUtf8(":/plugins/MapsPrinter/icons/action_refresh.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.updater.setIcon(icon1)
+        self.updater.setObjectName(_fromUtf8("updater"))
+        self.gridLayout.addWidget(self.updater, 0, 1, 1, 1)
         self.composerList = QtGui.QListWidget(mapsPrinter)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Minimum)
         sizePolicy.setHorizontalStretch(0)
@@ -113,29 +123,58 @@ class Ui_mapsPrinter(object):
         sizePolicy.setHeightForWidth(self.composerList.sizePolicy().hasHeightForWidth())
         self.composerList.setSizePolicy(sizePolicy)
         self.composerList.setSizeIncrement(QtCore.QSize(0, 0))
-        self.composerList.setProperty(_fromUtf8("cursor"), QtCore.Qt.ArrowCursor)
+        self.composerList.viewport().setProperty("cursor", QtGui.QCursor(QtCore.Qt.ArrowCursor))
         self.composerList.setMouseTracking(False)
+        self.composerList.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        self.composerList.setAcceptDrops(True)
         self.composerList.setWhatsThis(_fromUtf8(""))
         self.composerList.setAlternatingRowColors(True)
+        self.composerList.setSelectionMode(QtGui.QAbstractItemView.SingleSelection)
         self.composerList.setResizeMode(QtGui.QListView.Fixed)
         self.composerList.setObjectName(_fromUtf8("composerList"))
-        self.gridLayout.addWidget(self.composerList, 1, 0, 1, 2)
+        self.gridLayout.addWidget(self.composerList, 1, 0, 1, 1)
+        self.progressBar = QtGui.QProgressBar(mapsPrinter)
+        self.progressBar.setEnabled(False)
+        self.progressBar.setProperty("value", 0)
+        self.progressBar.setObjectName(_fromUtf8("progressBar"))
+        self.gridLayout.addWidget(self.progressBar, 5, 0, 1, 2)
+        self.actionShowComposer = QtGui.QAction(mapsPrinter)
+        self.actionShowComposer.setShortcutContext(QtCore.Qt.WidgetShortcut)
+        self.actionShowComposer.setObjectName(_fromUtf8("actionShowComposer"))
+        self.actionCheckComposer = QtGui.QAction(mapsPrinter)
+        self.actionCheckComposer.setObjectName(_fromUtf8("actionCheckComposer"))
+        self.actionUncheckComposer = QtGui.QAction(mapsPrinter)
+        self.actionUncheckComposer.setCheckable(False)
+        self.actionUncheckComposer.setShortcutContext(QtCore.Qt.WidgetWithChildrenShortcut)
+        self.actionUncheckComposer.setObjectName(_fromUtf8("actionUncheckComposer"))
 
         self.retranslateUi(mapsPrinter)
         QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(_fromUtf8("clicked(QAbstractButton*)")), mapsPrinter.close)
         QtCore.QMetaObject.connectSlotsByName(mapsPrinter)
 
     def retranslateUi(self, mapsPrinter):
-        mapsPrinter.setWindowTitle(QtGui.QApplication.translate("mapsPrinter", "Maps Printer", None, QtGui.QApplication.UnicodeUTF8))
-        self.browse.setToolTip(QtGui.QApplication.translate("mapsPrinter", "Choose the output folder", None, QtGui.QApplication.UnicodeUTF8))
-        self.browse.setText(QtGui.QApplication.translate("mapsPrinter", "Br&owse...", None, QtGui.QApplication.UnicodeUTF8))
-        self.updater.setToolTip(QtGui.QApplication.translate("mapsPrinter", "Update the list below", None, QtGui.QApplication.UnicodeUTF8))
-        self.updater.setText(QtGui.QApplication.translate("mapsPrinter", "Update", None, QtGui.QApplication.UnicodeUTF8))
-        self.label.setText(QtGui.QApplication.translate("mapsPrinter", "Output File Format :", None, QtGui.QApplication.UnicodeUTF8))
-        self.formatBox.setToolTip(QtGui.QApplication.translate("mapsPrinter", "Choose the output file format", None, QtGui.QApplication.UnicodeUTF8))
-        self.exportButton.setText(QtGui.QApplication.translate("mapsPrinter", "Export", None, QtGui.QApplication.UnicodeUTF8))
-        self.checkBox.setToolTip(QtGui.QApplication.translate("mapsPrinter", "Select/unselect all the composers listed below", None, QtGui.QApplication.UnicodeUTF8))
-        self.checkBox.setText(QtGui.QApplication.translate("mapsPrinter", "Select All", None, QtGui.QApplication.UnicodeUTF8))
-        self.composerList.setToolTip(QtGui.QApplication.translate("mapsPrinter", "Check the composer(s) you want to export", None, QtGui.QApplication.UnicodeUTF8))
+        mapsPrinter.setWindowTitle(_translate("mapsPrinter", "Maps Printer", None))
+        self.browse.setToolTip(_translate("mapsPrinter", "Choose the output folder", None))
+        self.browse.setText(_translate("mapsPrinter", "Br&owse...", None))
+        self.label.setText(_translate("mapsPrinter", "Output File Format :", None))
+        self.formatBox.setToolTip(_translate("mapsPrinter", "Choose the output file format", None))
+        self.checkBox.setToolTip(_translate("mapsPrinter", "Select/unselect all the composers listed below", None))
+        self.checkBox.setText(_translate("mapsPrinter", "Select All", None))
+        self.exportButton.setText(_translate("mapsPrinter", "Export", None))
+        self.updater.setToolTip(_translate("mapsPrinter", "Update the list below", None))
+        self.updater.setText(_translate("mapsPrinter", "Update", None))
+        self.composerList.setToolTip(_translate("mapsPrinter", "Check the composer(s) you want to export", None))
+        self.actionShowComposer.setText(_translate("mapsPrinter", "ShowComposer", None))
+        self.actionCheckComposer.setText(_translate("mapsPrinter", "Check composer(s)", None))
+        self.actionUncheckComposer.setText(_translate("mapsPrinter", "Uncheck composer(s)", None))
 
-import resources_rc
+
+if __name__ == "__main__":
+    import sys
+    app = QtGui.QApplication(sys.argv)
+    mapsPrinter = QtGui.QDialog()
+    ui = Ui_mapsPrinter()
+    ui.setupUi(mapsPrinter)
+    mapsPrinter.show()
+    sys.exit(app.exec_())
+

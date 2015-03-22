@@ -28,6 +28,9 @@
     <height>0</height>
    </size>
   </property>
+  <property name="contextMenuPolicy">
+   <enum>Qt::ActionsContextMenu</enum>
+  </property>
   <property name="windowTitle">
    <string>Maps Printer</string>
   </property>
@@ -87,32 +90,6 @@
      </item>
     </layout>
    </item>
-   <item row="0" column="1">
-    <widget class="QPushButton" name="updater">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="minimumSize">
-      <size>
-       <width>120</width>
-       <height>0</height>
-      </size>
-     </property>
-     <property name="toolTip">
-      <string>Update the list below</string>
-     </property>
-     <property name="text">
-      <string>Update</string>
-     </property>
-     <property name="icon">
-      <iconset>
-       <normaloff>:/plugins/MapsPrinter/icons/action_refresh.png</normaloff>:/plugins/MapsPrinter/icons/action_refresh.png</iconset>
-     </property>
-    </widget>
-   </item>
    <item row="3" column="0" colspan="2">
     <layout class="QHBoxLayout" name="horizontalLayout_2">
      <item>
@@ -164,27 +141,6 @@
      </item>
     </layout>
    </item>
-   <item row="4" column="0" colspan="2">
-    <layout class="QHBoxLayout" name="horizontalLayout">
-     <item>
-      <widget class="QPushButton" name="exportButton">
-       <property name="text">
-        <string>Export</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QDialogButtonBox" name="buttonBox">
-       <property name="contextMenuPolicy">
-        <enum>Qt::DefaultContextMenu</enum>
-       </property>
-       <property name="standardButtons">
-        <set>QDialogButtonBox::Cancel</set>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
    <item row="0" column="0">
     <widget class="QCheckBox" name="checkBox">
      <property name="enabled">
@@ -201,6 +157,72 @@
      </property>
      <property name="checked">
       <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0" colspan="2">
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QPushButton" name="exportButton">
+       <property name="text">
+        <string>Export</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QDialogButtonBox" name="buttonBox">
+       <property name="contextMenuPolicy">
+        <enum>Qt::DefaultContextMenu</enum>
+       </property>
+       <property name="standardButtons">
+        <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help</set>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="0" column="1">
+    <widget class="QPushButton" name="updater">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>120</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="toolTip">
+      <string>Update the list below</string>
+     </property>
+     <property name="text">
+      <string>Update</string>
+     </property>
+     <property name="icon">
+      <iconset>
+       <normaloff>:/plugins/MapsPrinter/icons/action_refresh.png</normaloff>:/plugins/MapsPrinter/icons/action_refresh.png</iconset>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="0" colspan="2">
+    <widget class="QProgressBar" name="progressBar">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="value">
+      <number>0</number>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+     <property name="textVisible">
+      <bool>true</bool>
+     </property>
+     <property name="textDirection">
+      <enum>QProgressBar::TopToBottom</enum>
      </property>
     </widget>
    </item>
@@ -224,6 +246,12 @@
      <property name="mouseTracking">
       <bool>false</bool>
      </property>
+     <property name="contextMenuPolicy">
+      <enum>Qt::CustomContextMenu</enum>
+     </property>
+     <property name="acceptDrops">
+      <bool>true</bool>
+     </property>
      <property name="toolTip">
       <string>Check the composer(s) you want to export</string>
      </property>
@@ -233,12 +261,39 @@
      <property name="alternatingRowColors">
       <bool>true</bool>
      </property>
+     <property name="selectionMode">
+      <enum>QAbstractItemView::ExtendedSelection</enum>
+     </property>
      <property name="resizeMode">
       <enum>QListView::Fixed</enum>
      </property>
     </widget>
    </item>
   </layout>
+  <action name="actionShowComposer">
+   <property name="text">
+    <string>ShowComposer</string>
+   </property>
+   <property name="shortcutContext">
+    <enum>Qt::WidgetShortcut</enum>
+   </property>
+  </action>
+  <action name="actionCheckComposer">
+   <property name="text">
+    <string>Check composer(s)</string>
+   </property>
+  </action>
+  <action name="actionUncheckComposer">
+   <property name="checkable">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Uncheck composer(s)</string>
+   </property>
+   <property name="shortcutContext">
+    <enum>Qt::WidgetWithChildrenShortcut</enum>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections>
@@ -249,11 +304,11 @@
    <slot>close()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>157</x>
-     <y>316</y>
+     <x>175</x>
+     <y>317</y>
     </hint>
     <hint type="destinationlabel">
-     <x>124</x>
+     <x>134</x>
      <y>169</y>
     </hint>
    </hints>
