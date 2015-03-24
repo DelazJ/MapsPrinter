@@ -25,7 +25,6 @@ import os.path
 from PyQt4.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, Qt, QFileInfo, QDir, QUrl
 from PyQt4.QtGui import QAction, QIcon, QListWidgetItem, QFileDialog, QMessageBox,\
     QPainter, QPrinter, QMenu, QProgressBar, QProgressDialog, QCursor, QDesktopServices 
-    #QWidget #QFrame #QListView #QAbstractItemView #QListWidget
 
 from qgis.core import *
 from qgis.gui import QgsMessageBar
@@ -161,10 +160,6 @@ class MapsPrinter:
             item.setCheckState(Qt.Unchecked)
 
     def actionShowComposer(self):
-        # for item in wdgt.selectedItems():
-            # for cView in self.iface.activeComposers():
-                # if cView.composerWindow().windowTitle() == item.text():
-                    # cView.composerWindow().show()
         selected = {item.text() for item in wdgt.selectedItems()}
         for cView in self.iface.activeComposers():
             if cView.composerWindow().windowTitle() in selected:
