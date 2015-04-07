@@ -3,7 +3,7 @@
 /***************************************************************************
  MapsPrinterDialog
                                  A QGIS plugin
- Exports simultaneously several print composers to pdf or image file format
+ Show, hide and export several print composers to pdf or image file format in one click
                              -------------------
         begin                : 2014-07-24
         git sha              : $Format:%H$
