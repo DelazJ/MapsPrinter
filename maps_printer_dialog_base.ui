@@ -67,7 +67,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="browse">
+      <widget class="QPushButton" name="browser">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
          <horstretch>0</horstretch>
@@ -270,42 +270,34 @@
     </widget>
    </item>
   </layout>
-  <action name="actionShowComposer">
-   <property name="text">
-    <string>ShowComposer</string>
-   </property>
-   <property name="shortcutContext">
-    <enum>Qt::WidgetShortcut</enum>
-   </property>
-  </action>
-  <action name="actionCheckComposer">
-   <property name="text">
-    <string>Check composer(s)</string>
-   </property>
-  </action>
-  <action name="actionUncheckComposer">
-   <property name="checkable">
-    <bool>false</bool>
-   </property>
-   <property name="text">
-    <string>Uncheck composer(s)</string>
-   </property>
-   <property name="shortcutContext">
-    <enum>Qt::WidgetWithChildrenShortcut</enum>
-   </property>
-  </action>
  </widget>
  <resources/>
  <connections>
   <connection>
    <sender>buttonBox</sender>
-   <signal>clicked(QAbstractButton*)</signal>
+   <signal>accepted()</signal>
    <receiver>mapsPrinter</receiver>
-   <slot>close()</slot>
+   <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>175</x>
      <y>317</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>134</x>
+     <y>169</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>mapsPrinter</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>175</x>
+     <y>291</y>
     </hint>
     <hint type="destinationlabel">
      <x>134</x>
