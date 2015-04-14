@@ -3,7 +3,7 @@
 /***************************************************************************
  MapsPrinter
                                  A QGIS plugin
- Exports simultaneously several print composers to pdf or image file format
+ Show, hide and export several print composers to pdf or image file format in one click
                               -------------------
         begin                : 2014-07-24
         git sha              : $Format:%H$
@@ -24,13 +24,15 @@ import os.path
 
 from PyQt4.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, Qt, QFileInfo, QDir, QUrl
 from PyQt4.QtGui import QAction, QIcon, QListWidgetItem, QFileDialog, QMessageBox,\
-    QPainter, QPrinter, QMenu, QProgressBar, QProgressDialog, QCursor, QDesktopServices 
+    QPainter, QPrinter, QMenu, QProgressDialog, QCursor, QDesktopServices, QApplication, QCursor
+    #QWidget #QFrame #QListView #QAbstractItemView #QListWidget
 
 from qgis.core import *
 from qgis.gui import QgsMessageBar
 # Initialize Qt resources from file resources.py
 import resources_rc
 import errno
+import time
 # Import the code for the dialog
 from maps_printer_dialog import MapsPrinterDialog
 from mpaboutWindow import mpAboutWindow
@@ -67,9 +69,6 @@ class MapsPrinter:
 
         # Create the dialog (after translation) and keep reference
         self.dlg = MapsPrinterDialog()
-
-        # global wdgt
-        # wdgt = self.dlg.composerList
         
     # noinspection PyMethodMayBeStatic
     
@@ -87,7 +86,6 @@ class MapsPrinter:
         # noinspection PyTypeChecker,PyArgumentList,PyCallByClass
         return QCoreApplication.translate('MapsPrinter', message)
         
-
     def initGui(self):
         """Create the menu entries and toolbar icons inside the QGIS GUI."""
 
@@ -100,83 +98,81 @@ class MapsPrinter:
                                   self.tr('Help'), self.iface.mainWindow()
                                   )
 
-        global wdgt
-        wdgt = self.dlg.composerList
         
         # Connect actions to context menu
-        wdgt.customContextMenuRequested.connect(self.context_menu)
+        self.dlg.composerList.customContextMenuRequested.connect(self.context_menu)
 
         # Connect the action to the run method
         self.action.triggered.connect(self.run)
-        self.helpAction.triggered.connect(self.showHelp)
+        # self.helpAction.triggered.connect(self.showHelp)
+        self.helpAction.triggered.connect(self.help2)
         self.dlg.buttonBox.helpRequested.connect(self.help2)
         # self.dlg.buttonBox.helpRequested.connect(self.showPluginHelp)
-        
+
         # Connect the signal to set the "select all" checkbox behaviour 
         self.dlg.checkBox.clicked.connect(self.on_selectAllcbox_changed)
-        wdgt.itemChanged.connect(self.on_composercbox_changed)
-        
+        self.dlg.composerList.itemChanged.connect(self.on_composercbox_changed)
+
         # Connect to the export button to do the real work
         self.dlg.exportButton.clicked.connect(self.saveFile)
-        
-        # Connect to the browse button so you can select directory
-        self.dlg.browse.clicked.connect(self.browseDir)
+
+        # Connect to the browser button so you can select directory
+        self.dlg.browser.clicked.connect(self.browseDir)
 
         # Connect the action to the updater button so you can update the list of composers
-        self.dlg.updater.clicked.connect(self.refreshList)
-        
+        # will be useless if i can synchronise with the composer manager widgetlist
+        self.dlg.updater.clicked.connect(self.refreshList) 
+        # refresh the composer list when a composer is created or deleted (miss renaming case)
+        # self.iface.composerAdded.connect(self.refreshList)
+        # self.iface.composerWillBeRemoved.connect(self.refreshList, Qt.QueuedConnection)
+        # self.iface.composerRemoved.connect(self.refreshList)
+
         # Connect some actions to manage dialog status while another project is opened
         self.iface.newProjectCreated.connect(self.dlg.close)
-        self.iface.projectRead.connect(self.resetDialog)
-        
-        
+        self.iface.projectRead.connect(self.refreshList)        
+
         # Add toolbar button and menu item0
         self.iface.addToolBarIcon(self.action)
         self.iface.addPluginToMenu(u"&Maps Printer", self.action)
         self.iface.addPluginToMenu(u"&Maps Printer", self.helpAction)
-
-    def resetDialog(self):
-        if len(self.iface.activeComposers()) == 0 :
-            self.dlg.close()
-        else:
-            self.refreshList()
             
     def context_menu(self):
         """ Add context menu fonctions """
-        menu = QMenu(wdgt)
-        menu.addAction("Check selection", self.actionCheckComposer)
-        menu.addAction("Uncheck selection", self.actionUncheckComposer)
+        menu = QMenu(self.dlg.composerList)
+        menu.addAction(self.tr("Check selection"), self.actionCheckComposer)
+        menu.addAction(self.tr("Uncheck selection"), self.actionUncheckComposer)
         menu.addSeparator()
-        menu.addAction("Show composer(s)...",self.actionShowComposer)
-        menu.addAction("Hide composer(s)...",self.actionHideComposer)
+        menu.addAction(self.tr("Show composer(s)..."),self.actionShowComposer)
+        menu.addAction(self.tr("Close composer(s)..."),self.actionHideComposer)
         menu.exec_(QCursor.pos()) 
-        
+
     def actionCheckComposer(self):
         for item in self.dlg.composerList.selectedItems():
             item.setCheckState(Qt.Checked)
-        
+
     def actionUncheckComposer(self):
         for item in self.dlg.composerList.selectedItems():
             item.setCheckState(Qt.Unchecked)
 
     def actionShowComposer(self):
-        selected = {item.text() for item in wdgt.selectedItems()}
+        selected = {item.text() for item in self.dlg.composerList.selectedItems()}
         for cView in self.iface.activeComposers():
-            if cView.composerWindow().windowTitle() in selected:
+            if cView.composerWindow().windowTitle() in selected :
                 cView.composerWindow().show()
-        
+                cView.composerWindow().activate()
+
     def actionHideComposer(self):
-        selected = {item.text() for item in wdgt.selectedItems()}
-        for cView in self.iface.activeComposers():
-            if cView.composerWindow().windowTitle() in selected:
+        selected = {item.text() for item in self.dlg.composerList.selectedItems()}
+        for cView in self.iface.activeComposers() :
+            if cView.composerWindow().windowTitle() in selected :
                 cView.composerWindow().hide()
-    
+
     def unload(self):
         """Removes the plugin menu item and icon from QGIS GUI."""
         self.iface.removePluginMenu(u"&Maps Printer", self.action)
         self.iface.removePluginMenu(u"&Maps Printer", self.helpAction)
         self.iface.removeToolBarIcon(self.action)           
-    
+
     def getNewCompo(self, w, cView):
         """Function that finds new composer to be added to the list """
         nameCompo = cView.composerWindow().windowTitle()
@@ -186,7 +182,7 @@ class MapsPrinter:
             item.setCheckState(Qt.Unchecked)
             item.setText(nameCompo)
             w.addItem(item)
-            
+
     def populateComposerList(self, w):
         """ Called to populate the composer list when opening a new dialog"""
         # Get  all the composers in a previously emptied list
@@ -195,79 +191,83 @@ class MapsPrinter:
         self.listFormat(self.dlg.formatBox)
         # Ensure the "select all" box is unchecked
         self.dlg.checkBox.setChecked(False)
-        
+
         for cView in self.iface.activeComposers():
             self.getNewCompo(w, cView)
         w.sortItems()
         self.dlg.show()
-        
+
+    def addNewCompo(self):
+        pass
+    
+    def removeOldCompo(self):
+        pass
+
     def refreshList(self):
         """ When updating the list of composers, the state of composers already listed is kept if they are still in the project
         so just add new composers and erase those deleted/renamed
         """
         currentComposers = []
         i,j = 0,0
-        
-        # if len(self.iface.activeComposers()) == 0:
-            # self.iface.messageBar().pushMessage(
-                # self.tr('Maps Printer : '),
-                # self.tr('The dialog has been closed due to a lack of print composer in the project. Please create at least one before running this plugin.'), 
-                # level = QgsMessageBar.INFO, duration = 10
-                # )
-            # self.dlg.close()
-        # else :
-        # Get the current list of composers
-        while i < len(self.iface.activeComposers()):
-        # for i in range(len(self.iface.activeComposers())):
-            currentComposers.append(
-                self.iface.activeComposers()[i].composerWindow().windowTitle() 
+
+        if len(self.iface.activeComposers()) == 0:
+            self.iface.messageBar().pushMessage(
+                'Maps Printer : ',
+                self.tr('dialog shut because no more print composer in the project.'),
+                level = QgsMessageBar.INFO, duration = 5
                 )
-            i += 1
+            self.dlg.close()
+        else :
+            # Get the current list of composers
+            while i < len(self.iface.activeComposers()):
+            # for i in range(len(self.iface.activeComposers())):
+                currentComposers.append(
+                    self.iface.activeComposers()[i].composerWindow().windowTitle() 
+                    )
+                i += 1
+
+            # Erase deleted (or renamed) composers
+            while j < self.dlg.composerList.count():
+                if self.dlg.composerList.item(j).text() not in currentComposers:
+                    self.dlg.composerList.takeItem(j)
+                else:
+                    j += 1
+
+            # Add new composers to the list
+            for cView in self.iface.activeComposers():
+                self.getNewCompo(self.dlg.composerList, cView)
+            self.dlg.composerList.sortItems()
             
-        # Erase deleted (or renamed) composers
-        while j < self.dlg.composerList.count():
-            if self.dlg.composerList.item(j).text() not in currentComposers:
-                self.dlg.composerList.takeItem(j)
-            else:
-                j += 1
-        
-        # Add new composers to the list
-        for cView in self.iface.activeComposers ():
-            self.getNewCompo(self.dlg.composerList, cView)
-        self.dlg.composerList.sortItems()
-        
-        # And check if all the remained rows are checked 
-        # (called to display coherent check boxes). Better way?
-        self.on_composercbox_changed()
-        
+            # And check if all the remained rows are checked 
+            # (called to display coherent check boxes). Better way?
+            self.on_composercbox_changed()
+
     def on_selectAllcbox_changed(self):
         """ When changing the state of the "select all" checkbox, 
         do the same to the composers listed below 
         """
         etat = self.dlg.checkBox.checkState()
-        for rowList in range(0, wdgt.count()):
-            wdgt.item(rowList).setCheckState(etat)
-        
+        for rowList in range(0, self.dlg.composerList.count()):
+            self.dlg.composerList.item(rowList).setCheckState(etat)
+
     def listCheckedComposer(self): 
         """ Get all the boxes and textes checked in the list."""
         global rowsChecked
 
-        # rowsChecked = [rowList for rowList in range(0, wdgt.count()) \
-            # if wdgt.item(rowList).checkState() == Qt.Checked
+        # rowsChecked = [rowList for rowList in range(0, self.dlg.composerList.count()) \
+            # if self.dlg.composerList.item(rowList).checkState() == Qt.Checked
             # ]
-        # rowsChecked = {(rowList, wdgt.item(rowList).text()) \
-            # for rowList in range(0, wdgt.count()) \
-            # if wdgt.item(rowList).checkState() == Qt.Checked
+        # rowsChecked = {(rowList, self.dlg.composerList.item(rowList).text()) \
+            # for rowList in range(0, self.dlg.composerList.count()) \
+            # if self.dlg.composerList.item(rowList).checkState() == Qt.Checked
             # }
-        # rowsChecked = {rowList:wdgt.item(rowList).text() for rowList in range(0, wdgt.count()) \
-            # if wdgt.item(rowList).checkState() == Qt.Checked
+        # rowsChecked = {rowList:self.dlg.composerList.item(rowList).text() for rowList in range(0, self.dlg.composerList.count()) \
+            # if self.dlg.composerList.item(rowList).checkState() == Qt.Checked
             # }
-        rowsChecked = {wdgt.item(rowList).text():rowList for rowList in range(0, wdgt.count()) \
-            if wdgt.item(rowList).checkState() == Qt.Checked
+        rowsChecked = {self.dlg.composerList.item(rowList).text():rowList for rowList in range(0, self.dlg.composerList.count()) \
+            if self.dlg.composerList.item(rowList).checkState() == Qt.Checked
             }
-        # QMessageBox.warning( None, self.tr( "Unable to write into the directory" ),
-            # "{}".format(rowsChecked), 
-            # QMessageBox.Ok, QMessageBox.Ok  )
+
         return rowsChecked
 
     def on_composercbox_changed(self):
@@ -275,11 +275,11 @@ class MapsPrinter:
         then the "select All" checkbox should be unchecked too 
         """
         self.listCheckedComposer()
-        if len(rowsChecked) == wdgt.count():
+        if len(rowsChecked) == self.dlg.composerList.count():
             self.dlg.checkBox.setChecked(True)
         else:
             self.dlg.checkBox.setChecked(False)
-    
+
     def listFormat(self, box):
         """ List all the file formats used in export mode"""
         box.clear()
@@ -297,7 +297,7 @@ class MapsPrinter:
             self.tr('XBM format (*.xbm *XBM)'),
             self.tr('XPM format (*.xpm *XPM)')
             ]
-        # box.addItems([x[0] for x in list1]) 
+
         box.addItems(list1) 
         box.insertSeparator(2)
 
@@ -308,7 +308,7 @@ class MapsPrinter:
         except:
             f = ''
         return f
-       
+
     def checkFilled(self, d):
         """Check if all the mandatory informations are filled"""
         missed = []
@@ -323,7 +323,7 @@ class MapsPrinter:
         #[missed.append(x[1]) for x in d if not x[1]]
         # and if there are missing values, show error message and stop execution
         if missed: 
-            self.iface.messageBar().pushMessage('Maps Printer', 
+            self.iface.messageBar().pushMessage('Maps Printer : ', 
                 self.tr('Please consider filling the mandatory field(s) outlined in red.'), 
                 level = QgsMessageBar.CRITICAL, 
                 duration = 5)
@@ -331,68 +331,91 @@ class MapsPrinter:
         # otherwise let's proceed the export
         else:
             return True
-        
+
     def saveFile(self):
         """Check if the conditions are filled to export file(s) and 
         export the checked composers to the specified file format 
         """
-        # update the selected composers list
+        # Ensure list of print composers is up to date (user can launch export without having previously refreshed the list)
+        # will not be needed if the list can automatically be refreshed
+        self.refreshList()
+        # retrieve the selected composers list
         self.listCheckedComposer()
         # get the output file format and directory
         ext = self.setFormat(self.dlg.formatBox.currentText())
         folder = self.dlg.path.text()
-        # Is there at least one composer checked, an output folder indicated or an output file format chosen?       
+        # Is there at least one composer checked, an output folder indicated and an output file format chosen?       
         d = {
             (self.dlg.composerList, len(rowsChecked)), # the composer list and the number of checked composers
             (self.dlg.path, folder), # the folder box and its text
             (self.dlg.formatBox, ext) # the format list and its choice
             }
+
         # check if all the mandatory informations are filled and if ok, export
-        if self.checkFilled(d):
-            if self.checkFolder(folder):
-                self.dlg.progressBar.setEnabled(True)
-                self.dlg.progressBar.setValue(0)
-                # printer = QPrinter()
-                # painter = QPainter()
-                l = len(rowsChecked)
-                
-                for cView in self.iface.activeComposers ():
-                    title = cView.composerWindow().windowTitle()
-                    if title in rowsChecked :
-                        self.exportCompo(cView, ext, folder)
-                        self.dlg.progressBar.setValue(self.dlg.progressBar.value()+ 100/l)
-                        # QMessageBox.warning( None, self.tr( "Unable to write into the directory" ),
-                            # self.tr('compositions {} , n° {} has been exported!'.format(title, rowsChecked[str(title)])), 
-                            # QMessageBox.Ok, QMessageBox.Ok  )
-                        wdgt.item(rowsChecked[title]).setCheckState(Qt.Unchecked)
-                    # self.dlg.progressBar.setEnabled(False)
-                    # self.dlg.progressBar.setValue(0)
-        
-                # show a successful message bar
+        if self.checkFilled(d) and self.checkFolder(folder):
+            x = len(rowsChecked)
+            i = 0
+            progress = QProgressDialog( self.tr( "Exporting maps..." ), self.tr( "Abort" ), 0, x, self.dlg )
+            progress.setWindowModality(Qt.WindowModal)
+            progress.show()
+            QApplication.setOverrideCursor( Qt.BusyCursor )
+
+            for cView in self.iface.activeComposers ():
+                title = cView.composerWindow().windowTitle()
+
+                if title in rowsChecked :
+                    progress.setValue( i )
+                    progress.setLabelText(self.tr( "Exporting maps from {}...".format(title) ))
+                    # process input events in order to allow aborting
+                    QApplication.processEvents()
+                    if progress.wasCanceled():
+                        break
+                    self.exportCompo(cView, ext, folder)
+                    i = i + 1
+                    # progress.setValue( i )
+                    self.dlg.composerList.item(rowsChecked[title]).setCheckState(Qt.Unchecked)
+            progress.setValue(x)
+            QApplication.restoreOverrideCursor()
+            # self.dlg.close()
+
+            # show a successful message bar
+            if i == x :
                 self.iface.messageBar().pushMessage(
-                    self.tr('Operation succeeded : '),
-                    self.tr('{} compositions have been exported!'.format(l)), 
+                    self.tr('Operation finished : '),
+                    self.tr('{} compositions have been exported!'.format(x)), 
                     level = QgsMessageBar.INFO, duration = 5
                     )
-       
-           
+            # or not
+            else :
+                self.iface.messageBar().pushMessage(
+                    self.tr('Operation interrupted : '),
+                    self.tr('{} compositions on {} have been exported!'.format(i, x)), 
+                    level = QgsMessageBar.INFO, duration = 5
+                    )
+
     def exportCompo(self, cView, extension, location):
         """ function that sets how to export files """
         printer = QPrinter()
         painter = QPainter()
         title = cView.composerWindow().windowTitle()
-        
+
         if extension == ".pdf" :
             cView.composition().setUseAdvancedEffects( False )
         else:
             cView.composition().setUseAdvancedEffects( True )
-        
+
         myAtlas = cView.composition().atlasComposition()
         # if the composition has an atlas
         if myAtlas.enabled():
             myAtlas.beginRender()
             previous_mode = cView.composition().atlasMode()
             cView.composition().setAtlasMode(QgsComposition.ExportAtlas)
+            if len(myAtlas.filenamePattern()) == 0:
+                QMessageBox.warning( None, self.tr( "Empty filename pattern" ),
+                    self.tr("The print composer '{}' has an empty filename pattern. A default one will be used.".format(title)), 
+                    QMessageBox.Ok, QMessageBox.Ok  )
+                myAtlas.setFilenamePattern( "'{}_'||$feature".format(title) )
+
             for i in range(0, myAtlas.numFeatures()):
                 myAtlas.prepareForFeature( i )
                 current_fileName = myAtlas.currentFilename()
@@ -421,7 +444,7 @@ class MapsPrinter:
                 cView.composition().exportAsPDF(os.path.join(location, title + ".pdf" ))                        
             else:
                 self.printToRaster(cView, location, title, extension)
-            
+
         """
         if extension == ".pdf":
             printer = QPrinter()
@@ -448,7 +471,6 @@ class MapsPrinter:
                 self.printToRaster(cView, location, current_fileName, extension)
         """    
 
-    
     def printToRaster(self, cView, folder, title, ext):
         """Export to image raster"""
         for numpage in range(0, cView.composition().numPages()):
@@ -458,7 +480,7 @@ class MapsPrinter:
                 imgOut.save(os.path.join(folder, title + ext))
             else:
                 imgOut.save(os.path.join(folder, title + "_"+ str(numpage + 1) + ext))
-    
+
     def browseDir(self):
         """ Open the browser so the user selects the output directory """
         fileDialog = QFileDialog.getExistingDirectory(
@@ -469,57 +491,61 @@ class MapsPrinter:
             # QFileDialog.DontResolveSymlinks
             ) 
 
-        # if fileDialog == '':
-            # self.dlg.path.setText(self.dlg.path.text())
-        # else:
-        self.dlg.path.setText(fileDialog)
+        if fileDialog == '':
+            self.dlg.path.setText(self.dlg.path.text())
+        else:
+            self.dlg.path.setText(fileDialog)
 
     def checkFolder(self, outputDir):
         """ test directory (if it exists and is writable)"""
         try:
             os.makedirs( outputDir )
+            return True
         except OSError as e :    
-            # if the directory already exists then pass
+            # if the directory already exists then ok
             if e.errno == errno.EEXIST :
                 return True
                 # QMessageBox.warning( None, self.tr( "Unable to create the directory" ),
                     # self.tr( "directory already exists{}".format(e) ), 
                     # QMessageBox.Ok, QMessageBox.Ok  )
-            # if the directory is not writable
+            # if the directory is not writable, choose another one
             if e.errno == errno.EACCES :
                 QMessageBox.warning( None, self.tr( "Unable to access the directory" ),
                     self.tr( "You don't have rights to write in this folder. Please, select another folder!" ), 
                     QMessageBox.Ok, QMessageBox.Ok  )
                 self.browseDir()
-        
+
     def showHelp(self):
         """ Function that shows the help dialog """
         self.aboutWindow = mpAboutWindow()
-              
+
     def help2(self):
-        helpfile = os.path.join(os.path.dirname(__file__), "help/build/html", "index.html")
-        QDesktopServices.openUrl(QUrl.fromLocalFile(helpfile))
+        # help_file = os.path.join(os.path.dirname(__file__), "help/build/html", "index.html")
+        # QDesktopServices.openUrl(QUrl.fromLocalFile(helpfile))
+        help_file = "file:///"+ self.plugin_dir + "/help/build/html/index.html"
+        QDesktopServices.openUrl(QUrl(help_file))
 
     def run(self):
         """ Run method that performs all the real work """
         # when no composer is in the project, display a message about the lack of composers and exit
         if len(self.iface.activeComposers()) == 0:
             self.iface.messageBar().pushMessage(
-                self.tr('Maps Printer : '),
-                self.tr('There is no print composer in the project. Please create at least one before running this plugin.'), 
-                level = QgsMessageBar.CRITICAL, duration = 5
+                'Maps Printer : ',
+                self.tr('There is currently no print composer in the project. Please create at least one before running this plugin.'), 
+                level = QgsMessageBar.INFO, duration = 5
                 )
+            self.dlg.close()
         else:
             # Name the dialog with the project's title or filename
             if QgsProject.instance().title() <> '' :
-                self.dlg.setWindowTitle("MapsPrinter - {}".format( QgsProject.instance().title()))
+                self.dlg.setWindowTitle("Maps Printer - {}".format( QgsProject.instance().title()))
             else :    
-                self.dlg.setWindowTitle("MapsPrinter - {}".format(
+                self.dlg.setWindowTitle("Maps Printer - {}".format(
                     os.path.splitext(os.path.split(QgsProject.instance().fileName())[1])[0]))
 
             # show the dialog and fill the widget the first time
             if not self.dlg.isVisible():
-                self.populateComposerList(wdgt)
+                self.populateComposerList(self.dlg.composerList)
             else: 
                 # if the dialog is already opened but not at top of the screen
                 # Put it at the top of all other widgets,
@@ -527,16 +553,22 @@ class MapsPrinter:
                 self.dlg.activateWindow()
                 self.refreshList()
 
+            # for elem in self.dlg.children():
+                # try:
+                    # # if elem.type() == QWidget():
+                        # elem.setStyleSheet("border-color: palette()")
+                # except:
+                    # pass
+
+
 """
 OTHER SITUATIONS TO DEAL WITH:
 - Known issues: 
-        - shouldExportPage
-        - What about composers that have same name? they appear just once in the list and, due to the naming, only one export is kept (overwriting without notification?)
+    - shouldExportPage ? 
 - Improvements : 
     - when refreshing, keep in the list the renamed composer(s) and its checkbox state. Currently, they are erased from the list and appended with their new name.
-    - Check the read/write ability of the user on the specified output folder
     - check if file already exist and ask how to deal with
-    - Add project name in the dialog title
-    - Rely the dialog to the project, so many dialogs can be opened simultaneously (different projects)
+    - it would be great to find a way to automatically refreshList whenever the dialog is set to foreground
     - Implement svg format export
+    - 
 """
