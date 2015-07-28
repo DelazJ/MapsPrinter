@@ -1,161 +1,181 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="2.0">
+<!DOCTYPE TS><TS version="2.0" language="fr_FR" sourcelanguage="en">
 <context>
     <name>MapsPrinter</name>
     <message>
-        <location filename="maps_printer.py" line="93"/>
+        <location filename="maps_printer.py" line="116"/>
+        <source>Export</source>
+        <translation>Exporter</translation>
+    </message>
+    <message>
+        <location filename="maps_printer.py" line="100"/>
         <source>Export multiple print composers</source>
-        <translation type="unfinished">Export groupé de composeurs</translation>
+        <translation>Export groupé de composeurs</translation>
     </message>
     <message>
-        <location filename="maps_printer.py" line="97"/>
+        <location filename="maps_printer.py" line="104"/>
         <source>Help</source>
-        <translation type="unfinished">Aide</translation>
+        <translation>Aide</translation>
     </message>
     <message>
-        <location filename="maps_printer.py" line="142"/>
-        <source>Check selection</source>
-        <translation type="unfinished">Cocher la sélection</translation>
+        <location filename="maps_printer.py" line="151"/>
+        <source>Check...</source>
+        <translation>Cocher...</translation>
     </message>
     <message>
-        <location filename="maps_printer.py" line="143"/>
-        <source>Uncheck selection</source>
-        <translation type="unfinished">Décocher la sélection</translation>
+        <location filename="maps_printer.py" line="152"/>
+        <source>Uncheck...</source>
+        <translation>Décocher...</translation>
     </message>
     <message>
-        <location filename="maps_printer.py" line="146"/>
-        <source>Close composer(s)...</source>
-        <translation type="unfinished">Fermer le(s) composeur(s)</translation>
+        <location filename="maps_printer.py" line="154"/>
+        <source>Show...</source>
+        <translation>Afficher...</translation>
     </message>
     <message>
-        <location filename="maps_printer.py" line="214"/>
+        <location filename="maps_printer.py" line="155"/>
+        <source>Close...</source>
+        <translation>Fermer...</translation>
+    </message>
+    <message>
+        <location filename="maps_printer.py" line="233"/>
         <source>dialog shut because no more print composer in the project.</source>
-        <translation type="unfinished">fenêtre fermée car il n&apos;y a plus de composeur dans le projet.</translation>
+        <translation>Fenêtre fermée car il n&apos;y a plus de composeur dans le projet.</translation>
     </message>
     <message>
-        <location filename="maps_printer.py" line="288"/>
-        <source>PDF format (*.pdf *PDF)</source>
-        <translation type="unfinished">format PDF (*.pdf *PDF)</translation>
-    </message>
-    <message>
-        <location filename="maps_printer.py" line="289"/>
-        <source>JPG format (*.jpg *JPG)</source>
-        <translation type="unfinished">format JPG (*.jpg *JPG)</translation>
-    </message>
-    <message>
-        <location filename="maps_printer.py" line="290"/>
-        <source>JPEG format (*.jpeg *JPEG)</source>
-        <translation type="unfinished">format JPEG (*.jpeg *JPEG)</translation>
-    </message>
-    <message>
-        <location filename="maps_printer.py" line="291"/>
-        <source>TIF format (*.tif *TIF)</source>
-        <translation type="unfinished">format TIF (*.tif *TIF)</translation>
-    </message>
-    <message>
-        <location filename="maps_printer.py" line="292"/>
-        <source>TIFF format (*.tiff *TIFF)</source>
-        <translation type="unfinished">format TIFF (*.tiff *TIFF)</translation>
-    </message>
-    <message>
-        <location filename="maps_printer.py" line="293"/>
-        <source>PNG format (*.png *PNG)</source>
-        <translation type="unfinished">format PNG (*.png *PNG)</translation>
-    </message>
-    <message>
-        <location filename="maps_printer.py" line="294"/>
-        <source>BMP format (*.bmp *BMP)</source>
-        <translation type="unfinished">format BMP (*.bmp *BMP)</translation>
-    </message>
-    <message>
-        <location filename="maps_printer.py" line="295"/>
-        <source>ICO format (*.ico *ICO)</source>
-        <translation type="unfinished">format ICO (*.ico *ICO)</translation>
-    </message>
-    <message>
-        <location filename="maps_printer.py" line="296"/>
-        <source>PPM format (*.ppm *PPM)</source>
-        <translation type="unfinished">format PPM (*.ppm *PPM)</translation>
-    </message>
-    <message>
-        <location filename="maps_printer.py" line="297"/>
-        <source>XBM format (*.xbm *XBM)</source>
-        <translation type="unfinished">format XBM (*.xbm *XBM)</translation>
-    </message>
-    <message>
-        <location filename="maps_printer.py" line="298"/>
-        <source>XPM format (*.xpm *XPM)</source>
-        <translation type="unfinished">format XPM (*.xpm *XPM)</translation>
-    </message>
-    <message>
-        <location filename="maps_printer.py" line="327"/>
+        <location filename="maps_printer.py" line="415"/>
         <source>Please consider filling the mandatory field(s) outlined in red.</source>
-        <translation type="unfinished">Veuillez svp remplir le(s) champ(s) en surbrillance rouge</translation>
+        <translation>Veuillez svp remplir le(s) champ(s) en surbrillance rouge.</translation>
     </message>
     <message>
-        <location filename="maps_printer.py" line="384"/>
-        <source>Operation finished : </source>
-        <translation type="unfinished">Opération terminée : </translation>
+        <location filename="maps_printer.py" line="432"/>
+        <source>Cancel</source>
+        <translation>Annuler</translation>
     </message>
     <message>
-        <location filename="maps_printer.py" line="384"/>
-        <source>{} compositions have been exported!</source>
-        <translation type="unfinished">{} compositions ont été exportées!</translation>
+        <location filename="maps_printer.py" line="455"/>
+        <source>Close</source>
+        <translation>Fermer</translation>
     </message>
     <message>
-        <location filename="maps_printer.py" line="391"/>
-        <source>Operation interrupted : </source>
-        <translation type="unfinished">Opération interrompue :</translation>
+        <location filename="maps_printer.py" line="376"/>
+        <source>Unable to write in folder</source>
+        <translation>Impossible de modifier ce dossier</translation>
     </message>
     <message>
-        <location filename="maps_printer.py" line="391"/>
-        <source>{} compositions on {} have been exported!</source>
-        <translation type="unfinished">{} compositions sur {} ont été exportées!</translation>
+        <location filename="maps_printer.py" line="376"/>
+        <source>You don&apos;t have rights to write in this folder. Please, select another one!</source>
+        <translation>Vous ne disposez pas de droit d&apos;écriture sur ce dossier. Veuillez svp en sélectionner un autre!</translation>
     </message>
     <message>
-        <location filename="maps_printer.py" line="415"/>
+        <location filename="maps_printer.py" line="387"/>
+        <source>Unable to use the directory</source>
+        <translation>Impossible d&apos;utiliser ce dossier</translation>
+    </message>
+    <message>
+        <location filename="maps_printer.py" line="387"/>
+        <source>You don&apos;t have rights to create or use such a folder. Please, select another one!</source>
+        <translation>Vous ne disposez pas de droit d&apos;écriture ou de lecture sur ce dossier. Veuillez svp en sélectionner un autre!</translation>
+    </message>
+    <message>
+        <location filename="maps_printer.py" line="394"/>
+        <source>An error occurred : </source>
+        <translation>Une erreur est survenue :</translation>
+    </message>
+    <message>
+        <location filename="maps_printer.py" line="575"/>
         <source>Empty filename pattern</source>
-        <translation type="unfinished">Nom de fichier vide</translation>
+        <translation>Modèle de nom de fichier vide</translation>
     </message>
     <message>
-        <location filename="maps_printer.py" line="415"/>
-        <source>The print composer &apos;{}&apos; has an empty filename pattern. A default one will be used.</source>
-        <translation type="unfinished">Le modèle de nommage de fichier est vide pour le composeur {}, celui par défaut sera utilisé.</translation>
+        <location filename="maps_printer.py" line="575"/>
+        <source>The print composer &quot;{}&quot; has an empty filename pattern. {}_$feature is used as default.</source>
+        <translation>Le modèle de nom de fichier pour l&apos;atlas du composeur &quot;{}&quot; n&apos;est pas renseigné. L&apos;expression {}_$feature est utilisée par défaut.</translation>
     </message>
     <message>
-        <location filename="maps_printer.py" line="514"/>
-        <source>Unable to access the directory</source>
-        <translation type="unfinished">Impossible d&apos;accéder au dossier</translation>
+        <location filename="maps_printer.py" line="511"/>
+        <source>Exporting {}...</source>
+        <translation>Export de {}...</translation>
     </message>
     <message>
-        <location filename="maps_printer.py" line="514"/>
-        <source>You don&apos;t have rights to write in this folder. Please, select another folder!</source>
-        <translation type="unfinished">Vous n&apos;avez pas les droits d&apos;écriture sur ce dossier. Veuillez svp en sélectionner un autre !</translation>
+        <location filename="maps_printer.py" line="530"/>
+        <source>Operation interrupted : </source>
+        <translation>Opération interrompue :</translation>
     </message>
     <message>
-        <location filename="maps_printer.py" line="533"/>
+        <location filename="maps_printer.py" line="540"/>
+        <source>Operation finished : </source>
+        <translation>Opération terminée :</translation>
+    </message>
+    <message>
+        <location filename="maps_printer.py" line="671"/>
         <source>There is currently no print composer in the project. Please create at least one before running this plugin.</source>
-        <translation type="unfinished">Il faut au moins un composeur dans le projet afin d&apos;utiliser cette extension.</translation>
+        <translation>Il faut au moins un composeur dans le projet pour utiliser cette extension.</translation>
     </message>
     <message>
-        <location filename="maps_printer.py" line="145"/>
-        <source>Show composer(s)...</source>
-        <translation type="unfinished">Afficher le(s) composeur(s)</translation>
+        <location filename="maps_printer.py" line="312"/>
+        <source>PDF format (*.pdf *.PDF)</source>
+        <translation>Format PDF (*.pdf *.PDF)</translation>
     </message>
     <message>
-        <location filename="maps_printer.py" line="359"/>
-        <source>Exporting maps...</source>
-        <translation type="unfinished">Export en cours...</translation>
+        <location filename="maps_printer.py" line="313"/>
+        <source>JPG format (*.jpg *.JPG)</source>
+        <translation>Format JPG (*.jpg *.JPG)</translation>
     </message>
     <message>
-        <location filename="maps_printer.py" line="359"/>
-        <source>Abort</source>
-        <translation type="unfinished">Abandonner</translation>
+        <location filename="maps_printer.py" line="314"/>
+        <source>JPEG format (*.jpeg *.JPEG)</source>
+        <translation>Format JPEG (*.jpeg *.JPEG)</translation>
     </message>
     <message>
-        <location filename="maps_printer.py" line="369"/>
-        <source>Exporting maps from {}...</source>
-        <translation type="unfinished">Export des cartes {}...</translation>
+        <location filename="maps_printer.py" line="315"/>
+        <source>TIF format (*.tif *.TIF)</source>
+        <translation>Format TIF (*.tif *.TIF)</translation>
+    </message>
+    <message>
+        <location filename="maps_printer.py" line="316"/>
+        <source>TIFF format (*.tiff *.TIFF)</source>
+        <translation>Format TIFF (*.tiff *.TIFF)</translation>
+    </message>
+    <message>
+        <location filename="maps_printer.py" line="317"/>
+        <source>PNG format (*.png *.PNG)</source>
+        <translation>Format PNG (*.png *.PNG)</translation>
+    </message>
+    <message>
+        <location filename="maps_printer.py" line="318"/>
+        <source>BMP format (*.bmp *.BMP)</source>
+        <translation>Format BMP (*.bmp *.BMP)</translation>
+    </message>
+    <message>
+        <location filename="maps_printer.py" line="319"/>
+        <source>ICO format (*.ico *.ICO)</source>
+        <translation>Format ICO (*.ico *.ICO)</translation>
+    </message>
+    <message>
+        <location filename="maps_printer.py" line="320"/>
+        <source>PPM format (*.ppm *.PPM)</source>
+        <translation>Format PPM (*.ppm *.PPM)</translation>
+    </message>
+    <message>
+        <location filename="maps_printer.py" line="321"/>
+        <source>XBM format (*.xbm *.XBM)</source>
+        <translation>Format XBM (*.xbm *.XBM)</translation>
+    </message>
+    <message>
+        <location filename="maps_printer.py" line="322"/>
+        <source>XPM format (*.xpm *.XPM)</source>
+        <translation>Format XPM (*.xpm *.XPM)</translation>
+    </message>
+    <message>
+        <location filename="maps_printer.py" line="530"/>
+        <source>Maps from {} composition(s) on {} have been exported to &quot;{}&quot; before cancelling. Some files may be incomplete.</source>
+        <translation>Des cartes de {} composeur(s) sur {} ont été exportées dans &quot;{}&quot; avant l&apos;annulation. Certains fichiers pourraient être incomplets.</translation>
+    </message>
+    <message>
+        <location filename="maps_printer.py" line="540"/>
+        <source>The maps from {} compositions have been exported to &quot;{}&quot;.</source>
+        <translation>Les cartes de {} composeur(s) ont été exportées dans &quot;{}&quot;.</translation>
     </message>
 </context>
 <context>
@@ -163,70 +183,47 @@
     <message>
         <location filename="maps_printer_dialog_base.ui" line="35"/>
         <source>Maps Printer</source>
-        <translation type="unfinished">Maps Printer</translation>
+        <translation>Maps Printer</translation>
     </message>
     <message>
-        <location filename="maps_printer_dialog_base.ui" line="154"/>
-        <source>Choose the output folder</source>
-        <translation type="unfinished">Choisir le dossier de destination</translation>
+        <location filename="maps_printer_dialog_base.ui" line="64"/>
+        <source>Check all the composers</source>
+        <translation>Cocher tous les composeurs</translation>
     </message>
     <message>
-        <location filename="maps_printer_dialog_base.ui" line="157"/>
-        <source>Br&amp;owse...</source>
-        <translation type="unfinished">Parcourir</translation>
+        <location filename="maps_printer_dialog_base.ui" line="70"/>
+        <source>Check All</source>
+        <translation>Tout cocher</translation>
     </message>
     <message>
-        <location filename="maps_printer_dialog_base.ui" line="178"/>
-        <source>Update the list below</source>
-        <translation type="unfinished">Actualiser la liste ci-dessous</translation>
+        <location filename="maps_printer_dialog_base.ui" line="92"/>
+        <source>Update composer list</source>
+        <translation>Mettre à jour la liste</translation>
     </message>
     <message>
-        <location filename="maps_printer_dialog_base.ui" line="181"/>
+        <location filename="maps_printer_dialog_base.ui" line="95"/>
         <source>Update</source>
-        <translation type="unfinished">Mettre à jour</translation>
+        <translation>Mettre à jour</translation>
     </message>
     <message>
-        <location filename="maps_printer_dialog_base.ui" line="56"/>
-        <source>Output File Format :</source>
-        <translation type="unfinished">Format d&apos;export</translation>
+        <location filename="maps_printer_dialog_base.ui" line="166"/>
+        <source>Choose the output folder</source>
+        <translation>Choisir le dossier de destination</translation>
     </message>
     <message>
-        <location filename="maps_printer_dialog_base.ui" line="87"/>
+        <location filename="maps_printer_dialog_base.ui" line="169"/>
+        <source>Br&amp;owse...</source>
+        <translation>&amp;Parcourir...</translation>
+    </message>
+    <message>
+        <location filename="maps_printer_dialog_base.ui" line="247"/>
+        <source>Output File Format</source>
+        <translation>Format d&apos;export</translation>
+    </message>
+    <message>
+        <location filename="maps_printer_dialog_base.ui" line="278"/>
         <source>Choose the output file format</source>
-        <translation type="unfinished">Choisir le format d&apos;export de(s) fichier(s)</translation>
-    </message>
-    <message>
-        <location filename="maps_printer_dialog_base.ui" line="194"/>
-        <source>Export</source>
-        <translation type="unfinished">Exporter</translation>
-    </message>
-    <message>
-        <location filename="maps_printer_dialog_base.ui" line="102"/>
-        <source>Select/unselect all the composers listed below</source>
-        <translation type="unfinished">Sélection/désélection de tous les composeurs ci-dessous</translation>
-    </message>
-    <message>
-        <location filename="maps_printer_dialog_base.ui" line="108"/>
-        <source>Select All</source>
-        <translation type="unfinished">Tout sélectionner</translation>
-    </message>
-    <message>
-        <location filename="maps_printer_dialog_base.ui" line="237"/>
-        <source>Check the composer(s) you want to export</source>
-        <translation type="unfinished">Cocher le(s) composeur(s) à exporter</translation>
-    </message>
-</context>
-<context>
-    <name>mpAboutWindow</name>
-    <message>
-        <location filename="mpaboutWindow.py" line="38"/>
-        <source>Maps Printer - Help</source>
-        <translation type="unfinished">Maps Printer - Aide</translation>
-    </message>
-    <message>
-        <location filename="mpaboutWindow.py" line="48"/>
-        <source>Close</source>
-        <translation type="unfinished">Fermer</translation>
+        <translation>Choisir le format d&apos;export des fichiers</translation>
     </message>
 </context>
 </TS>

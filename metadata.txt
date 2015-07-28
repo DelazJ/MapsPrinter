@@ -9,8 +9,11 @@
 [general]
 name=Maps Printer
 qgisMinimumVersion=2.0
-description=Show, hide and export several print composers to pdf or image file format in one click
+description=Show, hide and export several print composers to pdf or image file (jpg, tif, png...) format in one click.
+description[fr]=Permet en un clic d'afficher, de fermer et d'exporter en format pdf ou image (jpg, tif, png...) plusieurs composeurs d'impression.
 version=0.2
+about=Exporting a print composer requires to open it, launch the export wait till it finishes. This procedure can be boring, repulsive and long when you have to export many print composers. Maps Printer offers a quick way to export print composers, without opening each one before. Just check the print composers in a list and export them to the file format you wish (pdf, jpg, tif, png...). Maps Printer also offers ability to open or close in one-clic many print composers through right clicking.
+about[fr]= Lorsqu'on a plusieurs composeurs d'impression à exporter, la tâche peut très vite devenir répétitive, lassante et longue. Il faut en effet ouvrir chacun d'eux, lancer l'export, attendre qu'il finisse et passer au suivant. Avec Maps Printer, vous n'avez plus besoin de suivre ces étapes avant d'exporter dans le format de votre choix.  A partir d'une fenêtre semblable au gestionnaire de composeurs, il vous suffit de sélectionner dans une liste les composeurs de votre choix pour en générer l'export. De même, à l'aide d'un clic droit, vous pouvez ouvrir ou fermer simultanément plusieurs composeurs.
 author=Harrissou Sant-anna (Conseil d'Architecture, d'Urbanisme et de l'Environnement du Maine-et-Loire)
 email=delazj@gmail.com
 
@@ -19,15 +22,25 @@ email=delazj@gmail.com
 # Optional items:
 
 # Uncomment the following line and add your changelog:
-changelog= Version 0.2 (2015-04-30)
-	- Add support of atlas enabled print composer
-    - Add multiple selection
-	- Add show/hide options
-
+changelog= v.0.2 (2015-07-30)
+	- Support of atlas enabled print composer
+    - Multiple selection possible
+	- Add contextual options (show/hide, check/uncheck)
+	- Add progress bar to follow or abort operations
+	v.0.1 (2014-07-30)
+	- Initial release
+changelog[fr]= v.0.2 (2015-07-30)
+	- Export des composeurs avec atlas
+	- Ajout de menus contextuels (afficher/cacher, cocher/décocher)
+    - Sélection multiple possible
+	- Barre de progression
+	v.0.1 (2014-07-30)
+	- première version
 # Tags are comma separated with spaces allowed
-tags = print, export, map, composer, multiple print, image, PDF
+tags = print, export, map, composer
+tags[fr] = imprimer, exporter, carte, composeur
 
-homepage=https://github.com/DelazJ/MapsPrinter
+homepage=https://github.com/DelazJ/MapsPrinter/wiki
 tracker=https://github.com/DelazJ/MapsPrinter/issues
 repository=https://github.com/DelazJ/MapsPrinter
 icon=icons/icon.png
