@@ -11,6 +11,7 @@ Documentation de Maps Printer !
 
 
 Même si la génération de cartes par atlas et le multipage permettent aujourd'hui dans QGIS de générer plusieurs cartes avec peu de composeurs d'impression dans un seul projet, il n'en reste pas moins que ces options ne sont pas forcément adaptées à tous les projets et qu'on peut souvent se retrouver avec plusieurs composeurs d'impression dans un même projet. Exporter ces mises en page le moment venu peut s'avérer quelque peu pénible, long et répétitif car il faut ouvrir chacun des composeurs pour effectuer l'opération.
+
 Si donc vous êtes de ceux qui gèrent plusieurs mises en page dans leurs projets et cherchent un moyen simple pour interagir avec celles-ci, l'extension Maps Printer pourrait être une solution.
 
 Installation
@@ -43,7 +44,7 @@ Depuis le dépôt de Maps Printer
 
 Le code source de Maps Printer est disponible sur `Github <https://github.com/DelazJ/MapsPrinter/>`_.
 
-Sélectionnez la branche correspondant à la version que vous souhaitez télécharger et cliquez sur **Download ZIP**.
+Cliquez sur Releases, choisissez la version que vous souhaitez et cliquez sur l'archive correspondante pour la télécharger.
 
 Décompressez le fichier, renommez le sous-dossier en MapsPrinter et copiez/collez-le dans le dossier plugins de votre compte utilisateur (\\.qgis2\\python\\plugins\\).
 
@@ -53,10 +54,10 @@ Utilisation de l'extension Maps Printer
 L'installation de l'extension Maps Printer ajoute dans le menu Extension un sous-menu qui contient un bouton pour lancer l'export des composeurs et un bouton pour accéder à la présente aide. Une icône est également créée sur la barre d'outils Extensions.  
 Une fois que vous avez créé et paramétré vos composeurs d'impression et que vous souhaitez en imprimer certains, cliquez sur l'icône Maps Printer pour lancer l'extension. Une fenêtre s'ouvre.
 
-.. image:: ../image/interface_fr.png
+.. image:: ../_images/interface_fr.png
    :align: center
 
-   
+Fenêtre Maps Printer
 
 Exporter les composeurs
 ...........................

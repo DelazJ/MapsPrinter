@@ -43,7 +43,7 @@ From Maps Printer's repository
 
 Maps Printer's code source is available on `Github <https://github.com/DelazJ/MapsPrinter/>`_.
 
-Among the existing branches, select the release version you wish to install according to your QGIS version and click on **Download ZIP**.
+Among the existing Releases, select the version you wish to install according to your QGIS version and download the corresponding archive.
 
 Unzip the file, rename the subfolder to **MapsPrinter** and copy/paste it into your user plugin folder (\\.qgis2\\python\\plugins\\).
 
@@ -51,7 +51,7 @@ Using Maps Printer plugin
 ---------------------------
 
 Installing Maps Printer plugin provides a sub-menu in Extension menu that contains an entry to launch the plugin and another one to reach this documentation. An icon is also added to the plugin's toolbar.  
-Once you have created and set at your convenience your print composers and wish t export some of them, just click on Maps Printer icon. The following dialog is opened.
+Once you have created and set at your convenience your print composers and wish to export some of them, just click on Maps Printer icon. The following dialog is opened.
 
 .. image:: /help/_images/interface.png
    :align: center
