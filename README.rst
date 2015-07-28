@@ -11,6 +11,7 @@ Maps Printer's help
 
 
 Even though multiple pages and atlas options have improved print composers usability and help enough to create many maps with few print composers in a project, you can still have many print composers in your project. And when comes the time to print or export them, it is not as fun as it could be. You indeed need to open each print composer, wait till it renders, fill the export options, wait till the export finishes to open the next composer. And so on...
+
 If you find this process long and somehow boring (and even if you do not), then Maps Printer plugin is designed for you. It offers an easy, simple and quicker way to export print composers to pdf or image (jpg, tif, png, bmp...) file format.
 
 Installing
@@ -52,9 +53,10 @@ Using Maps Printer plugin
 Installing Maps Printer plugin provides a sub-menu in Extension menu that contains an entry to launch the plugin and another one to reach this documentation. An icon is also added to the plugin's toolbar.  
 Once you have created and set at your convenience your print composers and wish t export some of them, just click on Maps Printer icon. The following dialog is opened.
 
-.. image:: /help/image/interface.png
+.. image:: /help/_images/interface.png
    :align: center
-
+   
+Maps Printer's dialog
    
 
 Exporting print composers
