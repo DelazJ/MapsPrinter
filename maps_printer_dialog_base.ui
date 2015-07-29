@@ -110,12 +110,19 @@
       </widget>
      </item>
      <item>
+      <widget class="QPushButton" name="exportButton">
+       <property name="text">
+        <string>Export</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QDialogButtonBox" name="buttonBox">
        <property name="contextMenuPolicy">
         <enum>Qt::DefaultContextMenu</enum>
        </property>
        <property name="standardButtons">
-        <set>QDialogButtonBox::Close|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
+        <set>QDialogButtonBox::Cancel|QDialogButtonBox::Close|QDialogButtonBox::Help</set>
        </property>
        <property name="centerButtons">
         <bool>false</bool>
@@ -286,6 +293,16 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>checkBox</tabstop>
+  <tabstop>updater</tabstop>
+  <tabstop>composerList</tabstop>
+  <tabstop>path</tabstop>
+  <tabstop>browser</tabstop>
+  <tabstop>formatBox</tabstop>
+  <tabstop>exportButton</tabstop>
+  <tabstop>buttonBox</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>

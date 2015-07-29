@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'maps_printer_dialog_base.ui'
 #
-# Created: Mon Jul 27 22:28:57 2015
+# Created: Thu Jul 30 01:03:16 2015
 #      by: PyQt4 UI code generator 4.11.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -67,9 +67,12 @@ class Ui_mapsPrinter(object):
         self.printBar.setProperty("value", 0)
         self.printBar.setObjectName(_fromUtf8("printBar"))
         self.horizontalLayout.addWidget(self.printBar)
+        self.exportButton = QtGui.QPushButton(mapsPrinter)
+        self.exportButton.setObjectName(_fromUtf8("exportButton"))
+        self.horizontalLayout.addWidget(self.exportButton)
         self.buttonBox = QtGui.QDialogButtonBox(mapsPrinter)
         self.buttonBox.setContextMenuPolicy(QtCore.Qt.DefaultContextMenu)
-        self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Close|QtGui.QDialogButtonBox.Help|QtGui.QDialogButtonBox.Ok)
+        self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Close|QtGui.QDialogButtonBox.Help)
         self.buttonBox.setCenterButtons(False)
         self.buttonBox.setObjectName(_fromUtf8("buttonBox"))
         self.horizontalLayout.addWidget(self.buttonBox)
@@ -153,6 +156,13 @@ class Ui_mapsPrinter(object):
         self.retranslateUi(mapsPrinter)
         QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(_fromUtf8("rejected()")), mapsPrinter.reject)
         QtCore.QMetaObject.connectSlotsByName(mapsPrinter)
+        mapsPrinter.setTabOrder(self.checkBox, self.updater)
+        mapsPrinter.setTabOrder(self.updater, self.composerList)
+        mapsPrinter.setTabOrder(self.composerList, self.path)
+        mapsPrinter.setTabOrder(self.path, self.browser)
+        mapsPrinter.setTabOrder(self.browser, self.formatBox)
+        mapsPrinter.setTabOrder(self.formatBox, self.exportButton)
+        mapsPrinter.setTabOrder(self.exportButton, self.buttonBox)
 
     def retranslateUi(self, mapsPrinter):
         mapsPrinter.setWindowTitle(_translate("mapsPrinter", "Maps Printer", None))
@@ -160,6 +170,7 @@ class Ui_mapsPrinter(object):
         self.checkBox.setText(_translate("mapsPrinter", "Check All", None))
         self.updater.setToolTip(_translate("mapsPrinter", "Update composer list", None))
         self.updater.setText(_translate("mapsPrinter", "Update", None))
+        self.exportButton.setText(_translate("mapsPrinter", "Export", None))
         self.browser.setToolTip(_translate("mapsPrinter", "Choose the output folder", None))
         self.browser.setText(_translate("mapsPrinter", "Br&owse...", None))
         self.label.setText(_translate("mapsPrinter", "Output File Format", None))
