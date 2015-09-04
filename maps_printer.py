@@ -137,11 +137,11 @@ class MapsPrinter:
         self.iface.addPluginToMenu(u'&Maps Printer', self.action)
         self.iface.addPluginToMenu(u'&Maps Printer', self.helpAction)
 
-        # Hide the Cancel button at the opening
+        # Hide the Cancel button and progress text at the opening
+        self.dlg.printinglabel.hide()
         self.dlg.btnCancel = self.dlg.buttonBox.button(QDialogButtonBox.Cancel)
         self.dlg.btnCancel.hide()
         self.dlg.btnClose = self.dlg.buttonBox.button(QDialogButtonBox.Close)
-
 
     def context_menu(self):
         """Add context menu fonctions."""
@@ -355,7 +355,7 @@ class MapsPrinter:
             self.dlg.path.setText(self.dlg.path.text())
         else:
             self.dlg.path.setText(folderDialog)
-
+            
     def checkFolder(self, outputDir):
         """Ensure export's folder exists and is writeable."""
 
@@ -448,6 +448,7 @@ class MapsPrinter:
 
         QTimer.singleShot(1000, lambda: self.dlg.pageBar.setValue(0))
         self.dlg.printinglabel.setText('')
+        self.dlg.printinglabel.hide()
         
         # Reset standardbuttons and their functions and labels
         # self.dlg.btnCancel.clicked.disconnect(self.stopProcessing)
@@ -508,6 +509,7 @@ class MapsPrinter:
             for cView in self.iface.activeComposers():
                 title = cView.composerWindow().windowTitle()
                 if title in rowsChecked:
+                    self.dlg.printinglabel.show()
                     self.dlg.printinglabel.setText(
                         self.tr(u'Exporting {}...').format(title)
                         )
@@ -558,19 +560,26 @@ class MapsPrinter:
 
         printer = QPrinter()
         painter = QPainter()
+        self.msgWMSWarning(cView)
+        
+        # Disable advanced effects if not printing as raster
+        # due to problem with QPrinter
         if extension == '.pdf':
-            cView.composition().setUseAdvancedEffects(False)
-        else:
-            cView.composition().setUseAdvancedEffects(True)
+            if cView.composition().printAsRaster():
+                cView.composition().setUseAdvancedEffects(True)
+            else:
+                cView.composition().setUseAdvancedEffects(False)
 
         myAtlas = cView.composition().atlasComposition()
 
         # Prepare the composition if it has an atlas
         if myAtlas.enabled():
             myAtlas.beginRender()
-            previous_mode = cView.composition().atlasMode()
-            cView.composition().setAtlasMode(QgsComposition.ExportAtlas)
-            # If there's no pattern for filename, inform that a default one will be used and set it
+            if hasattr(cView.composition(), "atlasMode"): # for QGIS<2.2
+                previous_mode = cView.composition().atlasMode()
+                cView.composition().setAtlasMode(QgsComposition.ExportAtlas)
+            # If there's no pattern for filename,
+            # inform that a default one will be used and set it.
             if len(myAtlas.filenamePattern()) == 0:
                 self.iface.messageBar().pushMessage(
                     self.tr(u'Empty filename pattern'),
@@ -621,8 +630,12 @@ class MapsPrinter:
                     self.printToRaster(cView, folder, current_fileName, extension)
             myAtlas.endRender()
             painter.end()
-            # Reset atlas mode to its original value
-            cView.composition().setAtlasMode(previous_mode)
+            
+            # Reset atlas mode to its original value and, if needed, atlas map
+            if hasattr(cView.composition(), "atlasMode"): #for QGIS<2.2
+                cView.composition().setAtlasMode(previous_mode)
+                if cView.composition().atlasMode()== QgsComposition.PreviewAtlas :
+                    myAtlas.firstFeature() 
 
         # if the composition has no atlas
         else:
@@ -631,6 +644,10 @@ class MapsPrinter:
             else:
                 self.printToRaster(cView, folder, title, extension)
             self.pageProcessed()
+        
+        # Reactivate the use of advanced effects if it has been disabled before export
+        if not cView.composition().useAdvancedEffects():
+                cView.composition().setUseAdvancedEffects(True)
 
     def printToRaster(self, cView, folder, name, ext):
         """Export to image raster."""
@@ -649,13 +666,41 @@ class MapsPrinter:
                 imgOut.save(os.path.join(folder, name + '_'+ str(numpage + 1) + ext))
             self.pageProcessed()
 
+        # Generating a worldfile if asked to
+        if hasattr(cView.composition(), "generateWorldFile"):# not in qgis < 2.2
+            generatewf = cView.composition().generateWorldFile()  
+            if generatewf:
+                wf = cView.composition().computeWorldFileParameters()
+                worldFileSuffix = ext[0:2] + ext[-1] + "w"
+                worldFileName = os.path.join(folder, name + worldFileSuffix)
+                with open (worldFileName , "w") as f:
+                    f.write ("%s\n\n" % wf[0])
+                    f.write ("%s\n\n" % wf[1])
+                    f.write ("%s\n\n" % wf[3])
+                    f.write ("%s\n\n" % wf[4])
+                    f.write ("%s\n\n" % wf[2])
+                    f.write ("%s\n" % wf[5])
+                    
+    def msgWMSWarning(self, cView):
+        """Show message about use of WMS layers in map"""
+        
+        for elt in cView.composition().items():
+            if isinstance(elt, QgsComposerMap) and elt.containsWMSLayer():
+                self.iface.messageBar().pushMessage(
+                    'Maps Printer : ',
+                    self.tr(u'Project contains WMS Layers. '\
+                    'Some WMS servers have a limit for the width and height parameter. '\
+                    'Printing layers from such servers may exceed this limit. '\
+                    'If this is the case, the WMS layer will not be printed.'),
+                    level = QgsMessageBar.WARNING
+                )
+                # once we found a map layer concerned, we get out to show just once the message
+                break
+
     def renameDialog(self):
         """Name the dialog with the project's title or filename."""
         
         prj = QgsProject.instance()
-        # if QgsProject.instance == None:
-            # self.dlg.reject()
-            # return
 
         if prj.title() <> '':
             self.dlg.setWindowTitle(u'Maps Printer - {}'.format(prj.title()))
@@ -687,4 +732,3 @@ class MapsPrinter:
                 self.dlg.activateWindow()
                 # update the list of composers and keep the previously selected options in the dialog
                 self.refreshList()
-
