@@ -25,18 +25,20 @@ import sys
 import errno
 import tempfile
 
-from PyQt4.QtCore import QSettings, QTranslator, qVersion, SIGNAL,\
+from PyQt5.QtCore import QSettings, QTranslator, qVersion, pyqtSignal,\
     QCoreApplication, QFileInfo, QDir, QUrl, QTimer, Qt, QObject 
-from PyQt4.QtGui import QAction, QIcon, QListWidgetItem, QFileDialog, QDialogButtonBox, \
-    QPainter, QPrinter, QMenu, QCursor, QDesktopServices, QMessageBox, QApplication
+from PyQt5.QtWidgets import QAction, QListWidgetItem, QFileDialog, QDialogButtonBox, \
+    QMenu, QMessageBox, QApplication
+from PyQt5.QtGui import QIcon, QPainter, QCursor, QDesktopServices
+from PyQt5.QtPrintSupport import QPrinter
 
 from qgis.core import *
 from qgis.gui import QgsMessageBar
 
 # Initialize Qt resources from file resources.py
-import resources_rc
+from .resources_rc import *
 # Import the code for the dialog
-from maps_printer_dialog import MapsPrinterDialog
+from .maps_printer_dialog import MapsPrinterDialog
 
 
 class MapsPrinter:
@@ -164,15 +166,15 @@ class MapsPrinter:
 
     def actionShowComposer(self):
         selected = {item.text() for item in self.dlg.composerList.selectedItems()}
-        for cView in self.iface.activeComposers():
-            if cView.composerWindow().windowTitle() in selected:
+        for cView in QgsProject.instance().layoutManager().layouts():
+            if cView.name() in selected:
                 cView.composerWindow().show()
                 cView.composerWindow().activate()
 
     def actionHideComposer(self):
         selected = {item.text() for item in self.dlg.composerList.selectedItems()}
-        for cView in self.iface.activeComposers():
-            if cView.composerWindow().windowTitle() in selected:
+        for cView in QgsProject.instance().layoutManager().layouts():
+            if cView.name() in selected:
                 cView.composerWindow().hide()
 
     def unload(self):
@@ -198,7 +200,7 @@ class MapsPrinter:
     def getNewCompo(self, w, cView):
         """Function that finds new composer to be added to the list."""
 
-        nameCompo = cView.composerWindow().windowTitle()
+        nameCompo = cView.name()
         if not w.findItems(nameCompo, Qt.MatchExactly):
             item = QListWidgetItem()
             item.setFlags(item.flags() | Qt.ItemIsUserCheckable)
@@ -216,7 +218,7 @@ class MapsPrinter:
         # Ensure the "select all" box is unchecked
         self.dlg.checkBox.setChecked(False)
 
-        for cView in self.iface.activeComposers():
+        for cView in QgsProject.instance().layoutManager().layouts():
             self.getNewCompo(w, cView)
         w.sortItems()
 
@@ -228,18 +230,18 @@ class MapsPrinter:
         currentComposers = []
         i,j = 0,0
 
-        if len(self.iface.activeComposers()) == 0 and self.dlg.isVisible():
+        if len(QgsProject.instance().layoutManager().layouts()) == 0 and self.dlg.isVisible():
             self.iface.messageBar().pushMessage( 'Maps Printer : ',
                 self.tr(u'dialog shut because no more print composer in the project.'),
-                level = QgsMessageBar.INFO, duration = 5
+                level = Qgis.Info, duration = 5
                 )
             self.dlg.close()
         else:
             # Get the current list of composers
-            while i < len(self.iface.activeComposers()):
-            # for i in range(len(self.iface.activeComposers())):
+            while i < len(QgsProject.instance().layoutManager().layouts()):
+            # for i in range(len(QgsProject.instance().layoutManager().layouts())):
                 currentComposers.append(
-                    self.iface.activeComposers()[i].composerWindow().windowTitle()
+                    QgsProject.instance().layoutManager().layouts()[i].name()
                     )
                 i += 1
 
@@ -251,7 +253,7 @@ class MapsPrinter:
                     j += 1
 
             # Add new composers to the list
-            for cView in self.iface.activeComposers():
+            for cView in QgsProject.instance().layoutManager().layouts():
                 self.getNewCompo(self.dlg.composerList, cView)
             self.dlg.composerList.sortItems()
 
@@ -427,7 +429,8 @@ class MapsPrinter:
         self.dlg.exportButton.setEnabled(False)
 
         # Activate the Cancel button to stop export process, and hide the Close button
-        QObject.disconnect(self.dlg.buttonBox, SIGNAL("rejected()"), self.dlg.reject)
+        self.dlg.buttonBox.disconnect()
+        ### QObject.disconnect(self.dlg.buttonBox, pyqtSignal("rejected()"), self.dlg.reject)
         self.dlg.btnClose.hide()
         self.dlg.btnCancel.show()
         self.dlg.buttonBox.rejected.connect(self.stopProcessing)
@@ -452,7 +455,8 @@ class MapsPrinter:
         # Reset standardbuttons and their functions and labels
         # self.dlg.btnCancel.clicked.disconnect(self.stopProcessing)
         self.dlg.buttonBox.rejected.disconnect(self.stopProcessing)
-        QObject.connect(self.dlg.buttonBox, SIGNAL("rejected()"), self.dlg.reject)
+        ## QObject.connect(self.dlg.buttonBox, pyqtSignal("rejected()"), self.dlg.reject)
+        self.dlg.buttonBox.rejected.connect(self.dlg.reject)
         self.dlg.btnCancel.hide()
         self.dlg.btnClose.show()
         QApplication.restoreOverrideCursor()
@@ -505,8 +509,8 @@ class MapsPrinter:
 
             QApplication.setOverrideCursor(Qt.BusyCursor)
 
-            for cView in self.iface.activeComposers():
-                title = cView.composerWindow().windowTitle()
+            for cView in QgsProject.instance().layoutManager().layouts():
+                title = cView.name()
                 if title in rowsChecked:
                     self.dlg.printinglabel.setText(
                         self.tr(u'Exporting {}...').format(title)
@@ -533,7 +537,7 @@ class MapsPrinter:
                         'exported to "{}" before cancelling. '\
                         'Some files may be incomplete.'
                         ).format(i, x, folder),
-                    level = QgsMessageBar.INFO, duration = 10
+                    level = Qgis.Info, duration = 10
                     )
             # or when export ended completely
             else:
@@ -542,7 +546,7 @@ class MapsPrinter:
                     self.tr(u'The maps from {} compositions have been '\
                         'exported to "{}".'
                         ).format(x, folder),
-                    level = QgsMessageBar.INFO, duration = 5
+                    level = Qgis.Info, duration = 5
                     )
                 # keep in memory the output folder
                 if extension == '.pdf': 
@@ -558,12 +562,12 @@ class MapsPrinter:
 
         printer = QPrinter()
         painter = QPainter()
-        if extension == '.pdf':
-            cView.composition().setUseAdvancedEffects(False)
-        else:
-            cView.composition().setUseAdvancedEffects(True)
+        ## if extension == '.pdf':
+        ##    cView.composition().setUseAdvancedEffects(False)
+        ## else:
+        ##    cView.composition().setUseAdvancedEffects(True)
 
-        myAtlas = cView.composition().atlasComposition()
+        myAtlas = cView.atlas()
 
         # Prepare the composition if it has an atlas
         if myAtlas.enabled():
@@ -589,12 +593,13 @@ class MapsPrinter:
         else:
             if extension == '.pdf': maxpages = 1
             else: 
-                maxpages = cView.composition().numPages()
+                maxpages = cView.pageCollection().pageCount()
         self.dlg.pageBar.setValue(0)
         self.dlg.pageBar.setMaximum(maxpages)
         
         # Do the export process
         if myAtlas.enabled():
+            QMessageBox.information(None, "Atlas", "Atlas not yet implemented!!!", QMessageBox.Ok)
             for i in range(0, myAtlas.numFeatures()):
                 if self.arret: break
                 # process input events
@@ -626,27 +631,37 @@ class MapsPrinter:
 
         # if the composition has no atlas
         else:
+            exporter = QgsLayoutExporter(cView)
+            success = False
+            ## QMessageBox.information(None, "param", "extension : " + extension + "\n Folder : " + folder + "\n Title:" + title, QMessageBox.Ok)
             if extension == '.pdf':
-                cView.composition().exportAsPDF(os.path.join(folder, title + '.pdf'))
+                success = exporter.exportToPdf(os.path.join(folder, title + '.pdf'), QgsLayoutExporter.PdfExportSettings())
+                ## cView.composition().exportAsPDF(os.path.join(folder, title + '.pdf'))
             else:
-                self.printToRaster(cView, folder, title, extension)
+                
+                success = exporter.exportToImage(os.path.join(folder, title) + extension, QgsLayoutExporter.ImageExportSettings())
+                ## self.printToRaster(cView, folder, title, extension)
+            ## QMessageBox.information(None, "Resultat", "Ret : " + str(success), QMessageBox.Ok)
             self.pageProcessed()
 
     def printToRaster(self, cView, folder, name, ext):
         """Export to image raster."""
 
-        for numpage in range(0, cView.composition().numPages()):
+        exporter = QgsLayoutExporter(cView)
+        for numpage in range(0, cView.pageCollection().pageCount()):
             if self.arret:
                 break
             # process input events
             QCoreApplication.processEvents()
 
             # managing multiple pages in the composition
-            imgOut = cView.composition().printPageAsRaster(numpage)
+            ### imgOut = cView.composition().printPageAsRaster(numpage)
             if numpage == 0:
-                imgOut.save(os.path.join(folder, name + ext))
+                ### imgOut.save(os.path.join(folder, name + ext))
+                exporter.exportToImage(os.path.join(folder, name) + '.' + ext, QgsLayoutExporter.ImageExportSettings())
             else:
-                imgOut.save(os.path.join(folder, name + '_'+ str(numpage + 1) + ext))
+                ### imgOut.save(os.path.join(folder, name + '_'+ str(numpage + 1) + ext))
+                exporter.exportToImage(os.path.join(folder, name) + '_' + str(numpage + 1) + '.' + ext, QgsLayoutExporter.ImageExportSettings())
             self.pageProcessed()
 
     def renameDialog(self):
@@ -657,7 +672,7 @@ class MapsPrinter:
             # self.dlg.reject()
             # return
 
-        if prj.title() <> '':
+        if prj.title() != '':
             self.dlg.setWindowTitle(u'Maps Printer - {}'.format(prj.title()))
         else:
             self.dlg.setWindowTitle(u'Maps Printer - {}'.format(
@@ -667,12 +682,12 @@ class MapsPrinter:
         """Run method that performs all the real work."""
 
         # when no composer is in the project, display a message about the lack of composers and exit
-        if len(self.iface.activeComposers()) == 0:
+        if len(QgsProject.instance().layoutManager().layouts()) == 0:
             self.iface.messageBar().pushMessage(
                 'Maps Printer : ',
                 self.tr(u'There is currently no print composer in the project. '\
                 'Please create at least one before running this plugin.'),
-                level = QgsMessageBar.INFO, duration = 5
+                level = Qgis.Info, duration = 5
                 )
             self.dlg.close()
         else:
