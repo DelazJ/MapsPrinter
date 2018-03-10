@@ -1,5 +1,5 @@
 # This file contains metadata for your plugin. Since 
-# version 2.0 of QGIS this is the proper way to supply 
+# version 3.0 of QGIS this is the proper way to supply 
 # information about a plugin. The old method of 
 # embedding metadata in __init__.py will 
 # is no longer supported since version 2.0.
@@ -8,11 +8,11 @@
 
 [general]
 name=Maps Printer
-qgisMinimumVersion=2.0
+qgisMinimumVersion=3.0
 description=Show, hide and export several print composers to pdf or image file (jpg, tif, png...) format in one click.
 description[fr]=Permet en un clic d'afficher, de fermer et d'exporter en format pdf ou image (jpg, tif, png...) plusieurs composeurs d'impression.
-version=0.2
-about=Exporting a print composer requires to open it, launch the export, wait till it finishes. This procedure can be boring, repulsive and long when you have to export many print composers. Maps Printer offers a quick way to export print composers, without opening each one before. Just check the print composers in a list and export them to the file format you wish (pdf, jpg, tif, png...). Maps Printer also offers ability to open or close in one-clic many print composers through right clicking.
+version=0.4
+about=Exporting a print composer requires to open it, launch the export, wait till it finishes. This procedure can become boring, repulsive and long when you have to export a lot of print composers. Maps Printer offers a quick way to export print composers, without opening each one before : just check them in a list and launch their export to the file format you wish (pdf, jpg, tif, png...). Maps Printer also offers ability to open or close in one-click many print composers through right clicking.
 about[fr]= Lorsqu'on a plusieurs composeurs d'impression à exporter, la tâche peut très vite devenir répétitive, lassante et longue. Il faut en effet ouvrir chacun d'eux, lancer l'export, attendre qu'il finisse et passer au suivant. Avec Maps Printer, vous n'avez plus besoin de suivre ces étapes avant d'exporter dans le format de votre choix.  A partir d'une fenêtre semblable au gestionnaire de composeurs, il vous suffit de sélectionner dans une liste les composeurs de votre choix pour en générer l'export. Par ailleurs, à l'aide d'un clic droit, vous pouvez ouvrir ou fermer simultanément plusieurs composeurs.
 author=Harrissou Sant-anna (Conseil d'Architecture, d'Urbanisme et de l'Environnement du Maine-et-Loire)
 email=delazj@gmail.com
@@ -22,6 +22,9 @@ email=delazj@gmail.com
 # Optional items:
 
 # Uncomment the following line and add your changelog:
+changelog= v.0.4 (2018-03-10)
+    - convert to QGis 3
+	- Atlas support not yet implemented
 changelog= v.0.2 (2015-07-30)
 	- Support of atlas enabled print composer
     - Multiple selection possible
@@ -29,6 +32,9 @@ changelog= v.0.2 (2015-07-30)
 	- Add progress bar to follow or abort operations
 	v.0.1 (2014-07-30)
 	- Initial release
+changelog[fr]= v.0.4 (2018-03-10)
+    - convertion pour QGis 3
+	- Atlas Atlas pas encore traité	
 changelog[fr]= v.0.2 (2015-07-30)
 	- Export des composeurs avec atlas
 	- Ajout de menus contextuels (afficher/cacher, cocher/décocher)
