@@ -20,26 +20,30 @@
  *                                                                         *
  ***************************************************************************/
 """
+from __future__ import absolute_import
+from builtins import str
+from builtins import range
+from builtins import object
 import os.path
 import sys
 import errno
 import tempfile
 
-from PyQt4.QtCore import QSettings, QTranslator, qVersion, SIGNAL,\
-    QCoreApplication, QFileInfo, QDir, QUrl, QTimer, Qt, QObject 
-from PyQt4.QtGui import QAction, QIcon, QListWidgetItem, QFileDialog, QDialogButtonBox, \
-    QPainter, QPrinter, QMenu, QCursor, QDesktopServices, QMessageBox, QApplication
+from qgis.PyQt.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, QFileInfo, QDir, QUrl, QTimer, Qt, QObject 
+from qgis.PyQt.QtWidgets import QAction, QListWidgetItem, QFileDialog, QDialogButtonBox, QMenu, QMessageBox, QApplication
+from qgis.PyQt.QtGui import QIcon, QPainter, QCursor, QDesktopServices
+from qgis.PyQt.QtPrintSupport import QPrinter
 
 from qgis.core import *
 from qgis.gui import QgsMessageBar
 
 # Initialize Qt resources from file resources.py
-import resources_rc
+from . import resources_rc
 # Import the code for the dialog
-from maps_printer_dialog import MapsPrinterDialog
+from .maps_printer_dialog import MapsPrinterDialog
 
 
-class MapsPrinter:
+class MapsPrinter(object):
     """QGIS Plugin Implementation."""
 
     def __init__(self, iface):
@@ -427,7 +431,7 @@ class MapsPrinter:
         self.dlg.exportButton.setEnabled(False)
 
         # Activate the Cancel button to stop export process, and hide the Close button
-        QObject.disconnect(self.dlg.buttonBox, SIGNAL("rejected()"), self.dlg.reject)
+        self.dlg.buttonBox.rejected.disconnect(self.dlg.reject)
         self.dlg.btnClose.hide()
         self.dlg.btnCancel.show()
         self.dlg.buttonBox.rejected.connect(self.stopProcessing)
@@ -453,7 +457,7 @@ class MapsPrinter:
         # Reset standardbuttons and their functions and labels
         # self.dlg.btnCancel.clicked.disconnect(self.stopProcessing)
         self.dlg.buttonBox.rejected.disconnect(self.stopProcessing)
-        QObject.connect(self.dlg.buttonBox, SIGNAL("rejected()"), self.dlg.reject)
+        self.dlg.buttonBox.rejected.connect(self.dlg.reject)
         self.dlg.btnCancel.hide()
         self.dlg.btnClose.show()
         QApplication.restoreOverrideCursor()
@@ -684,7 +688,7 @@ class MapsPrinter:
     def msgWMSWarning(self, cView):
         """Show message about use of WMS layers in map"""
         
-        for elt in cView.composition().items():
+        for elt in list(cView.composition().items()):
             if isinstance(elt, QgsComposerMap) and elt.containsWMSLayer():
                 self.iface.messageBar().pushMessage(
                     'Maps Printer : ',
@@ -702,7 +706,7 @@ class MapsPrinter:
         
         prj = QgsProject.instance()
 
-        if prj.title() <> '':
+        if prj.title() != '':
             self.dlg.setWindowTitle(u'Maps Printer - {}'.format(prj.title()))
         else:
             self.dlg.setWindowTitle(u'Maps Printer - {}'.format(
