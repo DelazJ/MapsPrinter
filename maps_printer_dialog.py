@@ -29,7 +29,7 @@ FORM_CLASS, _ = uic.loadUiType(os.path.join(
     os.path.dirname(__file__), 'maps_printer_dialog_base.ui'))
 
 
-class MapsPrinterDialog(QtGui.QDialog, FORM_CLASS):
+class MapsPrinterDialog(QtWidgets.QDialog, FORM_CLASS):
     def __init__(self, parent=None):
         """Constructor."""
         super(MapsPrinterDialog, self).__init__(parent)
