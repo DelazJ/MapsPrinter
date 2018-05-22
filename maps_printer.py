@@ -29,10 +29,9 @@ import sys
 import errno
 import tempfile
 
-from qgis.PyQt.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, QFileInfo, QDir, QUrl, QTimer, Qt, QObject 
+from qgis.PyQt.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, QFileInfo, QDir, QUrl, QTimer, Qt, QObject
 from qgis.PyQt.QtWidgets import QAction, QListWidgetItem, QFileDialog, QDialogButtonBox, QMenu, QMessageBox, QApplication
-from qgis.PyQt.QtGui import QIcon, QPainter, QCursor, QDesktopServices
-from qgis.PyQt.QtPrintSupport import QPrinter
+from qgis.PyQt.QtGui import QIcon, QCursor, QDesktopServices, QImageWriter
 
 from qgis.core import *
 from qgis.gui import QgsMessageBar
@@ -74,7 +73,7 @@ class MapsPrinter(object):
 
         # Create the dialog (after translation) and keep reference
         self.dlg = MapsPrinterDialog()
-        
+
         self.arret = False
 
     # noinspection PyMethodMayBeStatic
@@ -168,16 +167,19 @@ class MapsPrinter(object):
 
     def actionShowComposer(self):
         selected = {item.text() for item in self.dlg.composerList.selectedItems()}
-        for cView in QgsProject.instance().layoutManager().layouts():
+        for cView in QgsProject.instance().layoutManager().printLayouts():
             if cView.name() in selected:
-                cView.composerWindow().show()
-                cView.composerWindow().activate()
+                #print (cView.name(), cView.layoutType())
+                self.iface.openLayoutDesigner(cView)
 
     def actionHideComposer(self):
         selected = {item.text() for item in self.dlg.composerList.selectedItems()}
-        for cView in QgsProject.instance().layoutManager().layouts():
-            if cView.name() in selected:
-                cView.composerWindow().hide()
+        #print(selected)
+        designers = [d for d in self.iface.openLayoutDesigners() if d.masterLayout().name() in selected]
+        #print(designers)
+        for d in designers:
+            #print(d, type(d))
+            d.close()
 
     def unload(self):
         """Removes the plugin menu item and icon from QGIS GUI."""
@@ -191,7 +193,7 @@ class MapsPrinter(object):
 
         locale = QSettings().value('locale/userLocale')[0:2]
         help_file = self.plugin_dir + '/help/help_{}.html'.format(locale)
-        
+
         if os.path.exists(help_file):
             QDesktopServices.openUrl(QUrl('file:///'+ help_file))
         else:
@@ -220,7 +222,7 @@ class MapsPrinter(object):
         # Ensure the "select all" box is unchecked
         self.dlg.checkBox.setChecked(False)
 
-        for cView in QgsProject.instance().layoutManager().layouts():
+        for cView in QgsProject.instance().layoutManager().printLayouts():
             self.getNewCompo(w, cView)
         w.sortItems()
 
@@ -232,18 +234,18 @@ class MapsPrinter(object):
         currentComposers = []
         i,j = 0,0
 
-        if len(QgsProject.instance().layoutManager().layouts()) == 0 and self.dlg.isVisible():
-            self.iface.messageBar().pushMessage( 'Maps Printer : ',
+        if len(QgsProject.instance().layoutManager().printLayouts()) == 0 and self.dlg.isVisible():
+            self.iface.messageBar().pushMessage('Maps Printer : ',
                 self.tr(u'dialog shut because no more print composer in the project.'),
                 level = Qgis.Info, duration = 5
                 )
             self.dlg.close()
         else:
             # Get the current list of composers
-            while i < len(QgsProject.instance().layoutManager().layouts()):
-            # for i in range(len(QgsProject.instance().layoutManager().layouts())):
+            while i < len(QgsProject.instance().layoutManager().printLayouts()):
+            # for i in range(len(QgsProject.instance().layoutManager().printLayouts()):
                 currentComposers.append(
-                    QgsProject.instance().layoutManager().layouts()[i].name()
+                    QgsProject.instance().layoutManager().printLayouts()[i].name()
                     )
                 i += 1
 
@@ -255,7 +257,7 @@ class MapsPrinter(object):
                     j += 1
 
             # Add new composers to the list
-            for cView in QgsProject.instance().layoutManager().layouts():
+            for cView in QgsProject.instance().layoutManager().printLayouts():
                 self.getNewCompo(self.dlg.composerList, cView)
             self.dlg.composerList.sortItems()
 
@@ -264,7 +266,7 @@ class MapsPrinter(object):
             self.on_composercbox_changed()
 
     def on_selectAllcbox_changed(self):
-        """When changing the state of the "select all" checkbox,
+        """When changing the state of the "Check all" checkbox,
         do the same to the composers listed below.
         """
 
@@ -297,7 +299,7 @@ class MapsPrinter(object):
 
     def on_composercbox_changed(self):
         """When at least one of the composers listed is unchecked,
-        then the "select All" checkbox should be unchecked too.
+        then the "Check All" checkbox should be unchecked too.
         """
 
         self.listCheckedComposer()
@@ -313,17 +315,21 @@ class MapsPrinter(object):
         list1 = [
             '',
             self.tr(u'PDF format (*.pdf *.PDF)'),
-            self.tr(u'JPG format (*.jpg *.JPG)'),
-            self.tr(u'JPEG format (*.jpeg *.JPEG)'),
-            self.tr(u'TIF format (*.tif *.TIF)'),
-            self.tr(u'TIFF format (*.tiff *.TIFF)'),
-            self.tr(u'PNG format (*.png *.PNG)'),
-            self.tr(u'BMP format (*.bmp *.BMP)'),
-            self.tr(u'ICO format (*.ico *.ICO)'),
-            self.tr(u'PPM format (*.ppm *.PPM)'),
-            self.tr(u'XBM format (*.xbm *.XBM)'),
-            self.tr(u'XPM format (*.xpm *.XPM)')
             ]
+        #Automatically add supported image formats instead of manually
+        imageformats = QImageWriter.supportedImageFormats()
+        for f in imageformats:
+            fs = f.data().decode('utf-8')
+            list1.append(self.tr(u'{} format (*.{} *.{})').format(fs.upper(), fs, fs.upper()))
+            
+        #Todo: add an entry for the custom property atlasRasterFormat
+        #which will export each print layout to its custom format if selected
+
+            # >>>lst=QgsProject.instance().layoutManager().layouts()
+            # >>>lst[0].customProperties()
+            # ['atlasRasterFormat']
+            # >>>lst[0].customProperty('atlasRasterFormat')
+            # 'png'
 
         box.addItems(list1)
         box.insertSeparator(2)
@@ -345,8 +351,8 @@ class MapsPrinter(object):
         if self.dlg.formatBox.currentIndex() == 1 : # if extension is pdf
             dir = settings.value('/UI/lastSaveAsPdfFile')
         else:
-            dir = settings.value('/UI/lastSaveAsImageDir')        
-        
+            dir = settings.value('/UI/lastSaveAsImageDir')
+
         folderDialog = QFileDialog.getExistingDirectory(
             None,
             '',
@@ -355,11 +361,12 @@ class MapsPrinter(object):
             # QFileDialog.DontResolveSymlinks
             )
 
+        #Do not alter potential folder path if the dialog was canceled
         if folderDialog == '':
             self.dlg.path.setText(self.dlg.path.text())
         else:
             self.dlg.path.setText(folderDialog)
-            
+
     def checkFolder(self, outputDir):
         """Ensure export's folder exists and is writeable."""
 
@@ -402,24 +409,24 @@ class MapsPrinter(object):
     def checkFilled(self, d):
         """Check if all the mandatory informations are filled."""
 
-        missed = []
+        missing = []
         for (x, y) in d:
             if not y: # if the second value is null, 0 or empty
                 # outline the first item in red
                 x.setStyleSheet('border-style: outset; border-width: 1px; border-color: red')
                 # retrieve the missing value
-                missed.append(y)
+                missing.append(y)
             else:
                 x.setStyleSheet('border-color: palette()')
-        #[missed.append(x[1]) for x in d if not x[1]]
+        #[missing.append(x[1]) for x in d if not x[1]]
         # and if there are missing values, show error message and stop execution
-        if missed:
+        if missing:
             self.iface.messageBar().pushMessage('Maps Printer : ',
                 self.tr(u'Please consider filling the mandatory field(s) outlined in red.'),
-                level = QgsMessageBar.CRITICAL,
+                level = Qgis.Critical,
                 duration = 5)
             return False
-        # otherwise let's proceed the export
+        # otherwise let's execute the export
         else:
             return True
 
@@ -431,9 +438,7 @@ class MapsPrinter(object):
         self.dlg.exportButton.setEnabled(False)
 
         # Activate the Cancel button to stop export process, and hide the Close button
-        # self.dlg.buttonBox.rejected.disconnect(self.dlg.reject)
         self.dlg.buttonBox.disconnect()
-        ### QObject.disconnect(self.dlg.buttonBox, pyqtSignal("rejected()"), self.dlg.reject)
         self.dlg.btnClose.hide()
         self.dlg.btnCancel.show()
         self.dlg.buttonBox.rejected.connect(self.stopProcessing)
@@ -455,7 +460,7 @@ class MapsPrinter(object):
         QTimer.singleShot(1000, lambda: self.dlg.pageBar.setValue(0))
         self.dlg.printinglabel.setText('')
         self.dlg.printinglabel.hide()
-        
+
         # Reset standardbuttons and their functions and labels
         # self.dlg.btnCancel.clicked.disconnect(self.stopProcessing)
         self.dlg.buttonBox.rejected.disconnect(self.stopProcessing)
@@ -477,7 +482,7 @@ class MapsPrinter(object):
                 self.tr(u'The print composer "{}" has an empty filename '\
                     'pattern. {}_$feature is used as default.'
                     ).format(self.title, self.title),
-            level = QgsMessageBar.WARNING
+            level = Qgis.Warning
             )
 
     def saveFile(self):
@@ -513,27 +518,27 @@ class MapsPrinter(object):
 
             QApplication.setOverrideCursor(Qt.BusyCursor)
 
-            for cView in QgsProject.instance().layoutManager().layouts():
-                title = cView.name()
-                if title in rowsChecked:
-                    self.dlg.printinglabel.show()
-                    self.dlg.printinglabel.setText(
-                        self.tr(u'Exporting {}...').format(title)
-                        )
+            for title in rowsChecked:
+                cView = QgsProject.instance().layoutManager().layoutByName(title)
+                #print(title, cView, cView.name())
+                self.dlg.printinglabel.show()
+                self.dlg.printinglabel.setText(
+                    self.tr(u'Exporting {}...').format(title)
+                    )
 
-                    # process input events in order to allow canceling
-                    QCoreApplication.processEvents()
-                    if self.arret:
-                        break
-                    self.exportCompo(cView, folder, title, extension)
-                    i = i + 1
-                    self.dlg.printBar.setValue(i)
-                    self.dlg.composerList.item(
-                        rowsChecked[title]).setCheckState(Qt.Unchecked)
+                # process input events in order to allow canceling
+                QCoreApplication.processEvents()
+                if self.arret:
+                    break
+                self.exportCompo(cView, folder, title, extension)
+                i = i + 1
+                self.dlg.printBar.setValue(i)
+                self.dlg.composerList.item(
+                    rowsChecked[title]).setCheckState(Qt.Unchecked)
 
             QApplication.restoreOverrideCursor()
 
-            # show an ending message 
+            # show an ending message
             # in case of abortion
             if self.arret:
                 self.iface.messageBar().pushMessage(
@@ -554,7 +559,7 @@ class MapsPrinter(object):
                     level = Qgis.Info, duration = 5
                     )
                 # keep in memory the output folder
-                if extension == '.pdf': 
+                if extension == '.pdf':
                     QSettings().setValue('/UI/lastSaveAsPdfFile', folder)
                 else:
                     QSettings().setValue('/UI/lastSaveAsImageDir', folder)
@@ -565,143 +570,90 @@ class MapsPrinter(object):
     def exportCompo(self, cView, folder, title, extension):
         """Function that sets how to export files."""
 
-        printer = QPrinter()
-        painter = QPainter()
-        self.msgWMSWarning(cView)
-        
-        # Disable advanced effects if not printing as raster
-        # due to problem with QPrinter
-        if extension == '.pdf':
-            if cView.composition().printAsRaster():
-                cView.composition().setUseAdvancedEffects(True)
-            else:
-                cView.composition().setUseAdvancedEffects(False)
+        #self.msgWMSWarning(cView)
 
         myAtlas = cView.atlas()
 
-        # Prepare the composition if it has an atlas
+        # Prepare the layout if it has an atlas
         if myAtlas.enabled():
             myAtlas.beginRender()
-            if hasattr(cView.composition(), "atlasMode"): # for QGIS<2.2
-                previous_mode = cView.composition().atlasMode()
-                cView.composition().setAtlasMode(QgsComposition.ExportAtlas)
-            # If there's no pattern for filename,
-            # inform that a default one will be used and set it.
-            if len(myAtlas.filenamePattern()) == 0:
-                self.iface.messageBar().pushMessage(
-                    self.tr(u'Empty filename pattern'),
-                    self.tr(u'The print composer "{}" has an empty filename pattern. {}_$feature is used as default.').format(title, title),
-                    level = QgsMessageBar.WARNING
-                    )
-                myAtlas.setFilenamePattern(u"'{}_'||$feature".format(title))
 
         # Set page progressbar maximum value
-        # possible for atlases once the rendering has begun
+        # only possible for atlases once the rendering has begun, reason why it's placed here
         if myAtlas.enabled():
             if extension == '.pdf':
-                maxpages = myAtlas.numFeatures()
+                maxIteration = myAtlas.count()
             else:
-                maxpages = myAtlas.numFeatures() * cView.composition().numPages()
+                maxIteration = myAtlas.count() * cView.pageCollection().pageCount()
         else:
-            if extension == '.pdf': maxpages = 1
-            else: 
-                maxpages = cView.pageCollection().pageCount()
+            if extension == '.pdf': maxIteration = 1
+            else:
+                maxIteration = cView.pageCollection().pageCount()
+        print(maxIteration)
         self.dlg.pageBar.setValue(0)
-        self.dlg.pageBar.setMaximum(maxpages)
-        
+        self.dlg.pageBar.setMaximum(maxIteration)
+
         # Do the export process
-        if myAtlas.enabled():
-            QMessageBox.information(None, "Atlas", "Atlas not yet implemented!!!", QMessageBox.Ok)
-            for i in range(0, myAtlas.numFeatures()):
-                if self.arret: break
-                # process input events
-                QCoreApplication.processEvents()
-
-                myAtlas.prepareForFeature(i)
-                current_fileName = myAtlas.currentFilename()
-                # export atlas to pdf format
-                if extension == '.pdf':
-                    if myAtlas.singleFile():
-                        cView.composition().beginPrintAsPDF(printer, os.path.join(folder, title + '.pdf'))
-                        cView.composition().beginPrint(printer)
-                        printReady = painter.begin(printer)
-                        if i > 0:
-                            printer.newPage()
-                        cView.composition().doPrint(printer, painter)
-                    else:
-                        cView.composition().exportAsPDF(os.path.join(folder, current_fileName + '.pdf'))
-                    #increase progressbar
-                    self.pageProcessed()
-
-                # export atlas to image format
-                else:
-                    self.printToRaster(cView, folder, current_fileName, extension)
-            myAtlas.endRender()
-            painter.end()
-            
-            # Reset atlas mode to its original value and, if needed, atlas map
-            if hasattr(cView.composition(), "atlasMode"): #for QGIS<2.2
-                cView.composition().setAtlasMode(previous_mode)
-                if cView.composition().atlasMode()== QgsComposition.PreviewAtlas :
-                    myAtlas.firstFeature() 
-
-        # if the composition has no atlas
-        else:
-            exporter = QgsLayoutExporter(cView)
-            success = False
-            ## QMessageBox.information(None, "param", "extension : " + extension + "\n Folder : " + folder + "\n Title:" + title, QMessageBox.Ok)
-            if extension == '.pdf':
-                success = exporter.exportToPdf(os.path.join(folder, title + '.pdf'), QgsLayoutExporter.PdfExportSettings())
-                ## cView.composition().exportAsPDF(os.path.join(folder, title + '.pdf'))
-            else:
-                
-                success = exporter.exportToImage(os.path.join(folder, title) + extension, QgsLayoutExporter.ImageExportSettings())
-                ## self.printToRaster(cView, folder, title, extension)
-            ## QMessageBox.information(None, "Resultat", "Ret : " + str(success), QMessageBox.Ok)
-            self.pageProcessed()
-        
-        # Reactivate the use of advanced effects if it has been disabled before export
-        if not cView.composition().useAdvancedEffects():
-                cView.composition().setUseAdvancedEffects(True)
-
-    def printToRaster(self, cView, folder, name, ext):
-        """Export to image raster."""
-
         exporter = QgsLayoutExporter(cView)
-        for numpage in range(0, cView.pageCollection().pageCount()):
-            if self.arret:
-                break
+        if myAtlas.enabled():
+            #for i in range(0, myAtlas.count()):
+                #if self.arret: break
             # process input events
             QCoreApplication.processEvents()
 
-            # managing multiple pages in the composition
-            ### imgOut = cView.composition().printPageAsRaster(numpage)
-            if numpage == 0:
-                ### imgOut.save(os.path.join(folder, name + ext))
-                exporter.exportToImage(os.path.join(folder, name) + '.' + ext, QgsLayoutExporter.ImageExportSettings())
-            else:
-                ### imgOut.save(os.path.join(folder, name + '_'+ str(numpage + 1) + ext))
-                exporter.exportToImage(os.path.join(folder, name) + '_' + str(numpage + 1) + '.' + ext, QgsLayoutExporter.ImageExportSettings())
+            # if single file export is required (only compatible with pdf, yet)
+            if extension == '.pdf' and myAtlas.layout().customProperty('singleFile'):
+                success = exporter.exportToPdf(myAtlas, os.path.join(folder, title + '.pdf'), QgsLayoutExporter.PdfExportSettings())
+
+            else: #If instead multiple files will be output
+            
+                # Check if there's a valid expression for filenames,
+                # and otherwise inform that a default one will be used and set it using the layout name.
+                # replacement is failing at the moment
+                if len(myAtlas.filenameExpression()) == 0:
+                    self.iface.messageBar().pushMessage(
+                        self.tr(u'Empty filename expression'),
+                        self.tr(u'The print layout "{}" has an empty output filename expression. {}_$feature is used as default.').format(title, title),
+                        level = Qgis.Warning
+                        )
+                    myAtlas.setFilenameExpression(u"'{}_'||@atlas_pagename".format(title))
+
+                current_fileName = myAtlas.filenameExpression()
+                #print ('current_fileName:', current_fileName)
+
+               #export atlas to multiple pdfs
+                if extension =='.pdf':
+                    success = exporter.exportToPdfs(myAtlas, os.path.join(folder, current_fileName), QgsLayoutExporter.PdfExportSettings())
+
+                # export atlas to image format
+                else:
+                    exporter.exportToImage(myAtlas, os.path.join(folder, current_fileName), extension, QgsLayoutExporter.ImageExportSettings())
+            #increase progressbar
             self.pageProcessed()
 
-        # Generating a worldfile if asked to
-        if hasattr(cView.composition(), "generateWorldFile"):# not in qgis < 2.2
-            generatewf = cView.composition().generateWorldFile()  
-            if generatewf:
-                wf = cView.composition().computeWorldFileParameters()
-                worldFileSuffix = ext[0:2] + ext[-1] + "w"
-                worldFileName = os.path.join(folder, name + worldFileSuffix)
-                with open (worldFileName , "w") as f:
-                    f.write ("%s\n\n" % wf[0])
-                    f.write ("%s\n\n" % wf[1])
-                    f.write ("%s\n\n" % wf[3])
-                    f.write ("%s\n\n" % wf[4])
-                    f.write ("%s\n\n" % wf[2])
-                    f.write ("%s\n" % wf[5])
-                    
+            myAtlas.endRender()
+
+            # Reset atlas mode to its original value and, if needed, atlas map
+#            if hasattr(cView.composition(), "atlasMode"): #for QGIS<2.2
+#                cView.composition().setAtlasMode(previous_mode)
+#                if cView.composition().atlasMode()== QgsComposition.PreviewAtlas :
+#                    myAtlas.firstFeature()
+#
+        # if the composition has no atlas
+        else:
+            success = False
+            if extension == '.pdf':
+                success = exporter.exportToPdf(os.path.join(folder, title + '.pdf'), QgsLayoutExporter.PdfExportSettings())
+
+            else:
+                success = exporter.exportToImage(os.path.join(folder, title + extension), QgsLayoutExporter.ImageExportSettings())
+            ## QMessageBox.information(None, "Resultat", "Ret : " + str(success), QMessageBox.Ok)
+            self.pageProcessed()
+
+
     def msgWMSWarning(self, cView):
         """Show message about use of WMS layers in map"""
-        
+
         for elt in list(cView.composition().items()):
             if isinstance(elt, QgsComposerMap) and elt.containsWMSLayer():
                 self.iface.messageBar().pushMessage(
@@ -710,14 +662,14 @@ class MapsPrinter(object):
                     'Some WMS servers have a limit for the width and height parameter. '\
                     'Printing layers from such servers may exceed this limit. '\
                     'If this is the case, the WMS layer will not be printed.'),
-                    level = QgsMessageBar.WARNING
+                    level = Qgis.Warning
                 )
                 # once we found a map layer concerned, we get out to show just once the message
                 break
 
     def renameDialog(self):
         """Name the dialog with the project's title or filename."""
-        
+
         prj = QgsProject.instance()
 
         if prj.title() != '':
@@ -730,7 +682,7 @@ class MapsPrinter(object):
         """Run method that performs all the real work."""
 
         # when no composer is in the project, display a message about the lack of composers and exit
-        if len(QgsProject.instance().layoutManager().layouts()) == 0:
+        if len(QgsProject.instance().layoutManager().printLayouts()) == 0:
             self.iface.messageBar().pushMessage(
                 'Maps Printer : ',
                 self.tr(u'There is currently no print composer in the project. '\
