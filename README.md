@@ -2,5 +2,5 @@
 
 
 # MapsPrinter
-A QGIS plugin to export simultaneously multiple print composers.
-Export can be processed to PDF or any other image file formats supported by QGIS
+A QGIS plugin to export simultaneously multiple print layouts.
+Export can be processed to PDF, SVG or any other image file formats supported by QGIS

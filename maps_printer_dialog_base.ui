@@ -61,7 +61,7 @@
       <bool>true</bool>
      </property>
      <property name="toolTip">
-      <string>Check all the composers</string>
+      <string>Check all the layouts</string>
      </property>
      <property name="whatsThis">
       <string/>
@@ -89,7 +89,7 @@
       </size>
      </property>
      <property name="toolTip">
-      <string>Update composer list</string>
+      <string>Update layout list</string>
      </property>
      <property name="text">
       <string>Update</string>
@@ -132,7 +132,7 @@
     </layout>
    </item>
    <item row="2" column="0" colspan="3">
-    <widget class="QListWidget" name="composerList">
+    <widget class="QListWidget" name="layoutList">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
        <horstretch>0</horstretch>
@@ -299,7 +299,7 @@
  <tabstops>
   <tabstop>checkBox</tabstop>
   <tabstop>updater</tabstop>
-  <tabstop>composerList</tabstop>
+  <tabstop>layoutList</tabstop>
   <tabstop>path</tabstop>
   <tabstop>browser</tabstop>
   <tabstop>formatBox</tabstop>

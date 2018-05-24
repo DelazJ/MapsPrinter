@@ -9,11 +9,11 @@
 [general]
 name=Maps Printer
 qgisMinimumVersion=3.0
-description=Show, hide and export several print layouts to pdf or image file (jpg, tif, png...) format in one click.
+description=Show, hide and export several print layouts to pdf, svg or image file (jpg, tif, png...) format in one click.
 description[fr]=Permet en un clic d'afficher, de fermer et d'exporter en format pdf ou image (jpg, tif, png...) plusieurs mises en page d'impression.
 version=0.4
-about=Exporting a print layout requires to open it, launch the export, wait till it finishes. This procedure can become boring, repulsive and time consuming when you have to export a lot of print layouts. Maps Printer offers a quick way to export print layouts, without opening each one before: just check them in a list and launch their export to the file format you wish (pdf, jpg, tif, png...). Maps Printer also offers ability to open or close in one-click many print composers through right clicking.
-about[fr]= Lorsqu'on a plusieurs mises en page d'impression à exporter, la tâche peut très vite devenir rébarbative et longue. Il faut en effet ouvrir chacun d'eux, lancer l'export, attendre qu'il finisse et passer au suivant. Avec Maps Printer, vous n'avez plus besoin de suivre ces étapes afin d'exporter dans le format de votre choix (pdf, jpg, tif, png...) : à partir d'une fenêtre semblable au gestionnaire de mises en page, il vous suffit d'effectuer votre sélection pour en générer l'export. Par ailleurs, à l'aide d'un clic droit, vous pouvez ouvrir ou fermer simultanément plusieurs composeurs.
+about=Exporting a print layout requires to open it, launch the export, wait till it finishes. This procedure can become boring, repulsive and time consuming when you have to export a lot of print layouts. Maps Printer offers a quick way to export print layouts, without opening each one before: just check them in a list and launch their export to the file format you wish (pdf, svg, jpg, tif, png...). Maps Printer also offers ability to open or close in one-click many print composers through right clicking.
+about[fr]= Lorsqu'on a plusieurs mises en page d'impression à exporter, la tâche peut très vite devenir rébarbative et longue. Il faut en effet ouvrir chacun d'eux, lancer l'export, attendre qu'il finisse et passer au suivant. Avec Maps Printer, vous n'avez plus besoin de suivre ces étapes afin d'exporter dans le format de votre choix (pdf, svg, jpg, tif, png...) : à partir d'une fenêtre semblable au gestionnaire de mises en page, il vous suffit d'effectuer votre sélection pour en générer l'export. Par ailleurs, à l'aide d'un clic droit, vous pouvez ouvrir ou fermer simultanément plusieurs composeurs.
 author=Harrissou Sant-anna (Conseil d'Architecture, d'Urbanisme et de l'Environnement du Maine-et-Loire)
 email=delazj@gmail.com
 
@@ -24,7 +24,8 @@ email=delazj@gmail.com
 # Uncomment the following line and add your changelog:
 changelog= v.0.4 (2018-03-10)
     - convert to QGIS 3
-	- Atlas support not yet implemented
+	- Add export to SVG capability
+	- Print report not supported (yet)
     v.0.3 (2015-08-30)
 	- Generate world file + UI minor fixes
 	v.0.2 (2015-07-30)
@@ -36,7 +37,8 @@ changelog= v.0.4 (2018-03-10)
 	- Initial release
 changelog[fr]= v.0.4 (2018-03-10)
     - conversion pour QGIS 3
-	- Atlas pas encore traité
+	- Possibilité d'exporter en svg
+	- Reporting pas encore traité
     v.0.3 (2015-08-30)
 	- Generation de world file + corrections mineures de l'interface
 	v.0.2 (2015-07-30)

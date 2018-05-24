@@ -3,7 +3,7 @@
 /***************************************************************************
  MapsPrinter
                                  A QGIS plugin
- Show, hide and export several print composers to pdf or image file format in one click
+ Show, hide and export several print composers to pdf, svg or image file format in one-click
                               -------------------
         begin                : 2014-07-24
         git sha              : $Format:%H$
@@ -97,7 +97,7 @@ class MapsPrinter(object):
 
         # Create action that will start plugin configuration
         self.action = QAction(QIcon(':/plugins/MapsPrinter/icons/icon.png'),
-                              self.tr(u'Export multiple print composers'),
+                              self.tr(u'Export multiple print layouts'),
                               self.iface.mainWindow()
                               )
         self.helpAction = QAction(QIcon(':/plugins/MapsPrinter/icons/about.png'),
@@ -105,7 +105,7 @@ class MapsPrinter(object):
                                   )
 
         # Connect actions to context menu
-        self.dlg.composerList.customContextMenuRequested.connect(self.context_menu)
+        self.dlg.layoutList.customContextMenuRequested.connect(self.context_menu)
 
         # Connect the action to the run method
         self.action.triggered.connect(self.run)
@@ -117,18 +117,18 @@ class MapsPrinter(object):
 
         # Connect the signal to set the "select all" checkbox behaviour
         self.dlg.checkBox.clicked.connect(self.on_selectAllcbox_changed)
-        self.dlg.composerList.itemChanged.connect(self.on_composercbox_changed)
+        self.dlg.layoutList.itemChanged.connect(self.on_layoutcbox_changed)
 
         # Connect to the browser button to select export folder
         self.dlg.browser.clicked.connect(self.browseDir)
 
-        # Connect the action to the updater button so you can update the list of composers
-        # will be useless if i can synchronise with the composer manager widgetlist
+        # Connect the action to the updater button so you can update the list of layouts
+        # will be useless if i can synchronise with the layout manager widgetlist
         self.dlg.updater.clicked.connect(self.refreshList)
-        # refresh the composer list when a composer is created or deleted (miss renaming case)
-        # self.iface.composerAdded.connect(self.refreshList)
-        # self.iface.composerWillBeRemoved.connect(self.refreshList, Qt.QueuedConnection)
-        # self.iface.composerRemoved.connect(self.refreshList)
+        # refresh the layout list when a layout is created or deleted (miss renaming case)
+        # self.iface.layoutAdded.connect(self.refreshList)
+        # self.iface.layoutWillBeRemoved.connect(self.refreshList, Qt.QueuedConnection)
+        # self.iface.layoutRemoved.connect(self.refreshList)
 
         # Connect some actions to manage dialog status while another project is opened
         self.iface.newProjectCreated.connect(self.dlg.close)
@@ -149,31 +149,31 @@ class MapsPrinter(object):
     def context_menu(self):
         """Add context menu fonctions."""
 
-        menu = QMenu(self.dlg.composerList)
-        menu.addAction(self.tr(u'Check...'), self.actionCheckComposer)
-        menu.addAction(self.tr(u'Uncheck...'), self.actionUncheckComposer)
+        menu = QMenu(self.dlg.layoutList)
+        menu.addAction(self.tr(u'Check...'), self.actionCheckLayout)
+        menu.addAction(self.tr(u'Uncheck...'), self.actionUncheckLayout)
         menu.addSeparator()
-        menu.addAction(self.tr(u'Show...'), self.actionShowComposer)
-        menu.addAction(self.tr(u'Close...'), self.actionHideComposer)
+        menu.addAction(self.tr(u'Show...'), self.actionShowLayout)
+        menu.addAction(self.tr(u'Close...'), self.actionHideLayout)
         menu.exec_(QCursor.pos())
 
-    def actionCheckComposer(self):
-        for item in self.dlg.composerList.selectedItems():
+    def actionCheckLayout(self):
+        for item in self.dlg.layoutList.selectedItems():
             item.setCheckState(Qt.Checked)
 
-    def actionUncheckComposer(self):
-        for item in self.dlg.composerList.selectedItems():
+    def actionUncheckLayout(self):
+        for item in self.dlg.layoutList.selectedItems():
             item.setCheckState(Qt.Unchecked)
 
-    def actionShowComposer(self):
-        selected = {item.text() for item in self.dlg.composerList.selectedItems()}
+    def actionShowLayout(self):
+        selected = {item.text() for item in self.dlg.layoutList.selectedItems()}
         for cView in QgsProject.instance().layoutManager().printLayouts():
             if cView.name() in selected:
                 #print (cView.name(), cView.layoutType())
                 self.iface.openLayoutDesigner(cView)
 
-    def actionHideComposer(self):
-        selected = {item.text() for item in self.dlg.composerList.selectedItems()}
+    def actionHideLayout(self):
+        selected = {item.text() for item in self.dlg.layoutList.selectedItems()}
         #print(selected)
         designers = [d for d in self.iface.openLayoutDesigners() if d.masterLayout().name() in selected]
         #print(designers)
@@ -202,7 +202,7 @@ class MapsPrinter(object):
                 )
 
     def getNewCompo(self, w, cView):
-        """Function that finds new composer to be added to the list."""
+        """Function that finds new layout to be added to the list."""
 
         nameCompo = cView.name()
         if not w.findItems(nameCompo, Qt.MatchExactly):
@@ -212,10 +212,10 @@ class MapsPrinter(object):
             item.setText(nameCompo)
             w.addItem(item)
 
-    def populateComposerList(self, w):
-        """Called to populate the composer list when opening a new dialog."""
+    def populateLayoutList(self, w):
+        """Called to populate the layout list when opening a new dialog."""
 
-        # Get  all the composers in a previously emptied list
+        # Get  all the layouts in a previously emptied list
         w.clear()
         # Populate export format listbox
         self.listFormat(self.dlg.formatBox)
@@ -227,83 +227,83 @@ class MapsPrinter(object):
         w.sortItems()
 
     def refreshList(self):
-        """When updating the list of composers,
-        the state of composers already listed is kept if they are still in the project
-        so just add new composers and erase those deleted/renamed."""
+        """When updating the list of layouts,
+        the state of layouts already listed is kept if they are still in the project
+        so just add new layouts and erase those deleted/renamed."""
 
-        currentComposers = []
+        currentLayouts = []
         i,j = 0,0
 
         if len(QgsProject.instance().layoutManager().printLayouts()) == 0 and self.dlg.isVisible():
             self.iface.messageBar().pushMessage('Maps Printer : ',
-                self.tr(u'dialog shut because no more print composer in the project.'),
+                self.tr(u'dialog shut because no more print layout in the project.'),
                 level = Qgis.Info, duration = 5
                 )
             self.dlg.close()
         else:
-            # Get the current list of composers
+            # Get the current list of layouts
             while i < len(QgsProject.instance().layoutManager().printLayouts()):
             # for i in range(len(QgsProject.instance().layoutManager().printLayouts()):
-                currentComposers.append(
+                currentLayouts.append(
                     QgsProject.instance().layoutManager().printLayouts()[i].name()
                     )
                 i += 1
 
-            # Erase deleted (or renamed) composers
-            while j < self.dlg.composerList.count():
-                if self.dlg.composerList.item(j).text() not in currentComposers:
-                    self.dlg.composerList.takeItem(j)
+            # Erase deleted (or renamed) layouts
+            while j < self.dlg.layoutList.count():
+                if self.dlg.layoutList.item(j).text() not in currentLayouts:
+                    self.dlg.layoutList.takeItem(j)
                 else:
                     j += 1
 
-            # Add new composers to the list
+            # Add new layouts to the list
             for cView in QgsProject.instance().layoutManager().printLayouts():
-                self.getNewCompo(self.dlg.composerList, cView)
-            self.dlg.composerList.sortItems()
+                self.getNewCompo(self.dlg.layoutList, cView)
+            self.dlg.layoutList.sortItems()
 
             # And check if all the remained rows are checked
             # (called to display coherent check boxes). Better way?
-            self.on_composercbox_changed()
+            self.on_layoutcbox_changed()
 
     def on_selectAllcbox_changed(self):
         """When changing the state of the "Check all" checkbox,
-        do the same to the composers listed below.
+        do the same to the layouts listed below.
         """
 
         etat = self.dlg.checkBox.checkState()
-        for rowList in range(0, self.dlg.composerList.count()):
-            self.dlg.composerList.item(rowList).setCheckState(etat)
+        for rowList in range(0, self.dlg.layoutList.count()):
+            self.dlg.layoutList.item(rowList).setCheckState(etat)
 
-    def listCheckedComposer(self):
+    def listCheckedLayout(self):
         """Get all the boxes and texts checked in the list."""
 
         global rowsChecked
 
-        # rowsChecked = [rowList for rowList in range(0, self.dlg.composerList.count()) \
-            # if self.dlg.composerList.item(rowList).checkState() == Qt.Checked]
+        # rowsChecked = [rowList for rowList in range(0, self.dlg.layoutList.count()) \
+            # if self.dlg.layoutList.item(rowList).checkState() == Qt.Checked]
             #
-        # rowsChecked = {(rowList, self.dlg.composerList.item(rowList).text()) \
-            # for rowList in range(0, self.dlg.composerList.count()) \
-            # if self.dlg.composerList.item(rowList).checkState() == Qt.Checked}
+        # rowsChecked = {(rowList, self.dlg.layoutList.item(rowList).text()) \
+            # for rowList in range(0, self.dlg.layoutList.count()) \
+            # if self.dlg.layoutList.item(rowList).checkState() == Qt.Checked}
             #
-        # rowsChecked = {rowList:self.dlg.composerList.item(rowList).text() for rowList in range(0, self.dlg.composerList.count()) \
-            # if self.dlg.composerList.item(rowList).checkState() == Qt.Checked}
+        # rowsChecked = {rowList:self.dlg.layoutList.item(rowList).text() for rowList in range(0, self.dlg.layoutList.count()) \
+            # if self.dlg.layoutList.item(rowList).checkState() == Qt.Checked}
             #
         rowsChecked = {
-            self.dlg.composerList.item(rowList).text(): rowList for rowList in range(
-                0, self.dlg.composerList.count()
-                ) if self.dlg.composerList.item(rowList).checkState() == Qt.Checked
+            self.dlg.layoutList.item(rowList).text(): rowList for rowList in range(
+                0, self.dlg.layoutList.count()
+                ) if self.dlg.layoutList.item(rowList).checkState() == Qt.Checked
         }
 
         return rowsChecked
 
-    def on_composercbox_changed(self):
-        """When at least one of the composers listed is unchecked,
+    def on_layoutcbox_changed(self):
+        """When at least one of the layouts listed is unchecked,
         then the "Check All" checkbox should be unchecked too.
         """
 
-        self.listCheckedComposer()
-        if len(rowsChecked) == self.dlg.composerList.count():
+        self.listCheckedLayout()
+        if len(rowsChecked) == self.dlg.layoutList.count():
             self.dlg.checkBox.setChecked(True)
         else:
             self.dlg.checkBox.setChecked(False)
@@ -481,7 +481,7 @@ class MapsPrinter(object):
         """
         self.iface.messageBar().pushMessage(
             self.tr(u'Empty filename pattern'),
-                self.tr(u'The print composer "{}" has an empty filename '\
+                self.tr(u'The print layout "{}" has an empty filename '\
                     'pattern. {}_$feature is used as default.'
                     ).format(self.title, self.title),
             level = Qgis.Warning
@@ -489,22 +489,22 @@ class MapsPrinter(object):
 
     def saveFile(self):
         """Check if the conditions are filled to export file(s) and
-        export the checked composers to the specified file format."""
+        export the checked layouts to the specified file format."""
 
-        # Ensure list of print composers is up to date
+        # Ensure list of print layouts is up to date
         # (user can launch export without having previously refreshed the list)
         # will not be needed if the list can automatically be refreshed
         self.refreshList()
-        # retrieve the selected composers list
-        self.listCheckedComposer()
+        # retrieve the selected layouts list
+        self.listCheckedLayout()
         # get the output file format and directory
         extension = self.setFormat(self.dlg.formatBox.currentText())
         folder = self.dlg.path.text()
-        # Are there at least one composer checked,
+        # Are there at least one layout checked,
         # an output folder indicated and an output file format chosen?
         d = {
-            # the composer list and the number of checked composers
-            (self.dlg.composerList, len(rowsChecked)),
+            # the layout list and the number of checked layouts
+            (self.dlg.layoutList, len(rowsChecked)),
             # the folder box and its text
             (self.dlg.path, folder),
             # the format list and its choice
@@ -535,7 +535,7 @@ class MapsPrinter(object):
                 self.exportCompo(cView, folder, title, extension)
                 i = i + 1
                 self.dlg.printBar.setValue(i)
-                self.dlg.composerList.item(
+                self.dlg.layoutList.item(
                     rowsChecked[title]).setCheckState(Qt.Unchecked)
 
             QApplication.restoreOverrideCursor()
@@ -604,7 +604,7 @@ class MapsPrinter(object):
             QCoreApplication.processEvents()
 
             # if single file export is required (only compatible with pdf, yet)
-            if extension == '.pdf' and myAtlas.layout().customProperty('singleFile'):
+            if myAtlas.layout().customProperty('singleFile') and extension == '.pdf':
                 success = exporter.exportToPdf(myAtlas, os.path.join(folder, title + '.pdf'), QgsLayoutExporter.PdfExportSettings())
 
             else: #If instead multiple files will be output
@@ -640,11 +640,8 @@ class MapsPrinter(object):
             myAtlas.endRender()
 
             # Reset atlas mode to its original value and, if needed, atlas map
-#            if hasattr(cView.composition(), "atlasMode"): #for QGIS<2.2
-#                cView.composition().setAtlasMode(previous_mode)
-#                if cView.composition().atlasMode()== QgsComposition.PreviewAtlas :
-#                    myAtlas.firstFeature()
-#
+            # was working in QGIS 2 but not yet in 3.1 (see report at https://issues.qgis.org/issues/19021
+
         # if the composition has no atlas
         else:
             success = False
@@ -664,7 +661,7 @@ class MapsPrinter(object):
         """Show message about use of WMS layers in map"""
 
         for elt in list(cView.composition().items()):
-            if isinstance(elt, QgsComposerMap) and elt.containsWMSLayer():
+            if isinstance(elt, QgsLayoutItemMap) and elt.containsWMSLayer():
                 self.iface.messageBar().pushMessage(
                     'Maps Printer : ',
                     self.tr(u'Project contains WMS Layers. '\
@@ -690,11 +687,11 @@ class MapsPrinter(object):
     def run(self):
         """Run method that performs all the real work."""
 
-        # when no composer is in the project, display a message about the lack of composers and exit
+        # when no layout is in the project, display a message about the lack of layouts and exit
         if len(QgsProject.instance().layoutManager().printLayouts()) == 0:
             self.iface.messageBar().pushMessage(
                 'Maps Printer : ',
-                self.tr(u'There is currently no print composer in the project. '\
+                self.tr(u'There is currently no print layout in the project. '\
                 'Please create at least one before running this plugin.'),
                 level = Qgis.Info, duration = 5
                 )
@@ -703,11 +700,11 @@ class MapsPrinter(object):
             self.renameDialog()
             # show the dialog and fill the widget the first time
             if not self.dlg.isVisible():
-                self.populateComposerList(self.dlg.composerList)
+                self.populateLayoutList(self.dlg.layoutList)
                 self.dlg.show()
             else:
                 # if the dialog is already opened but not on top of other windows
                 # Put it on the top of all other widgets,
                 self.dlg.activateWindow()
-                # update the list of composers and keep the previously selected options in the dialog
+                # update the list of layouts and keep the previously selected options in the dialog
                 self.refreshList()
