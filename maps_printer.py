@@ -315,6 +315,7 @@ class MapsPrinter(object):
         list1 = [
             '',
             self.tr(u'PDF format (*.pdf *.PDF)'),
+            self.tr(u'SVG format (*.svg *.SVG)'),
             ]
         #Automatically add supported image formats instead of manually
         imageformats = QImageWriter.supportedImageFormats()
@@ -333,6 +334,7 @@ class MapsPrinter(object):
 
         box.addItems(list1)
         box.insertSeparator(2)
+        box.insertSeparator(4)
 
     def setFormat(self, value):
         """Retrieve the format suffix that will be appended to the file."""
@@ -625,6 +627,10 @@ class MapsPrinter(object):
                 if extension =='.pdf':
                     success = exporter.exportToPdfs(myAtlas, os.path.join(folder, current_fileName), QgsLayoutExporter.PdfExportSettings())
 
+                # export atlas to svg format
+                elif extension =='.svg':
+                    success = exporter.exportToSvg(myAtlas, os.path.join(folder, current_fileName), QgsLayoutExporter.SvgExportSettings())
+
                 # export atlas to image format
                 else:
                     exporter.exportToImage(myAtlas, os.path.join(folder, current_fileName), extension, QgsLayoutExporter.ImageExportSettings())
@@ -644,6 +650,9 @@ class MapsPrinter(object):
             success = False
             if extension == '.pdf':
                 success = exporter.exportToPdf(os.path.join(folder, title + '.pdf'), QgsLayoutExporter.PdfExportSettings())
+
+            elif extension == '.svg':
+                success = exporter.exportToSvg(os.path.join(folder, title + '.svg'), QgsLayoutExporter.SvgExportSettings())
 
             else:
                 success = exporter.exportToImage(os.path.join(folder, title + extension), QgsLayoutExporter.ImageExportSettings())
