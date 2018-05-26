@@ -10,7 +10,7 @@ Documentation de Maps Printer !
    :maxdepth: 2
 
 
-Même si la génération de cartes par atlas et le multipage permettent aujourd'hui dans QGIS de générer plusieurs cartes avec peu de composeurs d'impression dans un seul projet, il n'en reste pas moins que ces options ne sont pas forcément adaptées à tous les projets et qu'on peut souvent se retrouver avec plusieurs composeurs d'impression dans un même projet. Exporter ces mises en page le moment venu peut s'avérer quelque peu pénible, long et répétitif car il faut ouvrir chacun des composeurs pour effectuer l'opération.
+Même si la génération de cartes par atlas et le multipage permettent aujourd'hui dans QGIS de générer plusieurs cartes avec peu de mises en page dans un seul projet, il n'en reste pas moins que ces options ne sont pas forcément adaptées à tous les projets et qu'on peut souvent se retrouver avec plusieurs mises en page dans un seul et même projet. Exporter ces mises en page le moment venu peut s'avérer quelque peu pénible, long et rébarbatif car il faut ouvrir chacune d'elles pour effectuer l'opération.
 
 Si donc vous êtes de ceux qui gèrent plusieurs mises en page dans leurs projets et cherchent un moyen simple pour interagir avec celles-ci, l'extension Maps Printer pourrait être une solution.
 
@@ -26,7 +26,7 @@ C'est le mode d'installation le plus automatique et le plus aisé.
 
 Ouvrez le menu Extension > Gérer/Installer des extensions...
 
-Saisissez dans la barre de recherche une expression comme *carte*, *impression*, *composeur* ...
+Saisissez dans la barre de recherche une expression comme *carte*, *impression*, *mises en page*, *composeur* ...
 
 Sélectionnez Maps Printer dans la liste d'extensions filtrées et cliquez sur Installer.
 
@@ -51,36 +51,36 @@ Décompressez le fichier, renommez le sous-dossier en MapsPrinter et copiez/coll
 Utilisation de l'extension Maps Printer
 -----------------------------------------
 
-L'installation de l'extension Maps Printer ajoute dans le menu Extension un sous-menu qui contient un bouton pour lancer l'export des composeurs et un bouton pour accéder à la présente aide. Une icône est également créée sur la barre d'outils Extensions.  
-Une fois que vous avez créé et paramétré vos composeurs d'impression et que vous souhaitez en imprimer certains, cliquez sur l'icône Maps Printer pour lancer l'extension. Une fenêtre s'ouvre.
+L'installation de l'extension Maps Printer ajoute dans le menu Extension un sous-menu qui contient un bouton pour lancer l'export des mises en page et un bouton pour accéder à la présente aide. Une icône est également créée sur la barre d'outils Extensions.  
+Une fois que vous avez créé et paramétré vos mises en page et que vous souhaitez en imprimer certains, cliquez sur l'icône Maps Printer pour lancer l'extension. Une fenêtre s'ouvre.
 
 .. image:: ../_images/interface_fr.png
    :align: center
 
 Fenêtre Maps Printer
 
-Exporter les composeurs
+Exporter les mises en page
 ...........................
 
-Maps Printer est une extension développée essentiellement pour faciliter l'export des composeurs vers les formats de fichier pdf ou image (jpg, jpeg, tif, tiff, png, ico...). Lorsque vous ouvrez la fenêtre de Maps Printer, le cadre au centre de la fenêtre liste l'ensemble des composeurs de votre projet. Si vous créez de nouveaux composeurs, cette liste peut être actualisée à l'aide du bouton **Mettre à jour**.
+Maps Printer est une extension développée essentiellement pour faciliter l'export des mises en page vers les formats de fichier pdf, svg ou image (jpg, jpeg, tif, tiff, png, ico...). Lorsque vous ouvrez la fenêtre de Maps Printer, le cadre au centre de la fenêtre liste l'ensemble des mises en page de votre projet. Si vous créez de nouvelles mises en page, cette liste peut être actualisée à l'aide du bouton **Mettre à jour**.
 
 Pour exporter vos mises en page, vous devez :
 
-#. cocher les composeurs à exporter (soit un à un, soit en faisant une sélection multiple, clic droit, cocher)
+#. cocher les mises en page à exporter (soit une à une, soit en faisant une sélection multiple via cliquer-glisser puis, clic droit --> Cocher)
 #. indiquer un dossier de destination 
-#. choisir le format de fichier à la sortie
+#. choisir le format de fichier en sortie
 #. et cliquer sur "**Exporter**".
 
-Afficher ou masquer les composeurs
+Afficher ou masquer les mises en page
 ......................................
 
-Lorsque vous souhaitez modifier plusieurs composeurs d'impression dans votre projet, il vous faut en ouvrir un, attendre qu'il se charge puis passer au suivant et ainsi de suite. Avec Maps Printer, vous pouvez désormais lancer l'ouverture (ou la fermeture) de plusieurs composeurs en même temps. Sélectionnez dans la liste de composeurs ceux qui vous intéressent (par cliquer-glisser, CTRL + clic ou SHIFT + clic) et faites un clic droit. Un menu contextuel vous permet de lancer la commande appropriée.
+Lorsque vous souhaitez modifier plusieurs mises en page dans votre projet, il vous faut en ouvrir un, attendre qu'il se charge puis passer au suivant et ainsi de suite. Avec Maps Printer, vous pouvez désormais lancer l'ouverture (ou la fermeture) de plusieurs mises en page en même temps. Sélectionnez dans la liste de mises en page celles qui vous intéressent (par cliquer-glisser, CTRL + clic ou SHIFT + clic) et faites un clic droit. Un menu contextuel vous permet de lancer la commande appropriée.
 
 Astuces
 .........
 
-Si l'option "atlas" est actif pour un composeur, celui-ci sera exporté en mode atlas. Si vous souhaitez n'avoir que la mise en page simple, il vous faut alors décocher l'option "générer un atlas" avant l'export.
+Si l'option "atlas" est actif pour une mise en page, celle-ci sera exportée en mode atlas. Si vous souhaitez n'avoir que la mise en page simple, il vous faut alors décocher l'option "générer un atlas" avant l'export.
 
-Le bouton "Mettre à jour" permet d'actualiser la liste en fonction des créations, renommages ou suppressions de composeurs depuis l'ouverture de la fenêtre.
+Le bouton "Mettre à jour" permet d'actualiser la liste en fonction des créations, renommages ou suppressions de mises en page depuis l'ouverture de la fenêtre.
 
 Extension développée par **Harrissou Sant-anna** (CAUE 49)
