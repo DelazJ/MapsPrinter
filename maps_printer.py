@@ -605,12 +605,14 @@ class MapsPrinter(object):
         if myAtlas.enabled():
             #for i in range(0, myAtlas.count()):
                 #if self.arret: break
+            feedback = QgsFeedback()
+
             # process input events
             QCoreApplication.processEvents()
 
             # if single file export is required (only compatible with pdf, yet)
             if myAtlas.layout().customProperty('singleFile') and extension == '.pdf':
-                success = exporter.exportToPdf(myAtlas, os.path.join(folder, title + '.pdf'), exportSettings)
+                success = exporter.exportToPdf(myAtlas, os.path.join(folder, title + '.pdf'), exportSettings, feedback)
 
             else: #If instead multiple files will be output
             
@@ -630,15 +632,15 @@ class MapsPrinter(object):
 
                 #export atlas to multiple pdfs
                 if extension =='.pdf':
-                    success = exporter.exportToPdfs(myAtlas, os.path.join(folder, current_fileName), exportSettings)
+                    success = exporter.exportToPdfs(myAtlas, os.path.join(folder, current_fileName), exportSettings, feedback)
 
                 # export atlas to svg format
                 elif extension =='.svg':
-                    success = exporter.exportToSvg(myAtlas, os.path.join(folder, current_fileName), exportSettings)
+                    success = exporter.exportToSvg(myAtlas, os.path.join(folder, current_fileName), exportSettings, feedback)
 
                 # export atlas to image format
                 else:
-                    exporter.exportToImage(myAtlas, os.path.join(folder, current_fileName), extension, exportSettings)
+                    exporter.exportToImage(myAtlas, os.path.join(folder, current_fileName), extension, exportSettings, feedback)
             #increase progressbar
             self.pageProcessed()
 
