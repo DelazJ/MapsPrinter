@@ -563,6 +563,8 @@ class MapsPrinter(object):
                 # keep in memory the output folder
                 if extension == '.pdf':
                     QSettings().setValue('/UI/lastSaveAsPdfFile', folder)
+                elif extension == '.svg':
+                    QSettings().setValue('/UI/lastSaveAsSvgFile', folder)
                 else:
                     QSettings().setValue('/UI/lastSaveAsImageDir', folder)
 
@@ -608,7 +610,6 @@ class MapsPrinter(object):
 
             # if single file export is required (only compatible with pdf, yet)
             if myAtlas.layout().customProperty('singleFile') and extension == '.pdf':
-                #success = exporter.exportToPdf(myAtlas, os.path.join(folder, title + '.pdf'), QgsLayoutExporter.PdfExportSettings())
                 success = exporter.exportToPdf(myAtlas, os.path.join(folder, title + '.pdf'), exportSettings)
 
             else: #If instead multiple files will be output
@@ -629,17 +630,14 @@ class MapsPrinter(object):
 
                 #export atlas to multiple pdfs
                 if extension =='.pdf':
-                    #success = exporter.exportToPdfs(myAtlas, os.path.join(folder, current_fileName), QgsLayoutExporter.PdfExportSettings())
                     success = exporter.exportToPdfs(myAtlas, os.path.join(folder, current_fileName), exportSettings)
 
                 # export atlas to svg format
                 elif extension =='.svg':
-                    #success = exporter.exportToSvg(myAtlas, os.path.join(folder, current_fileName), QgsLayoutExporter.SvgExportSettings())
                     success = exporter.exportToSvg(myAtlas, os.path.join(folder, current_fileName), exportSettings)
 
                 # export atlas to image format
                 else:
-                    #exporter.exportToImage(myAtlas, os.path.join(folder, current_fileName), extension, QgsLayoutExporter.ImageExportSettings())
                     exporter.exportToImage(myAtlas, os.path.join(folder, current_fileName), extension, exportSettings)
             #increase progressbar
             self.pageProcessed()
@@ -653,15 +651,12 @@ class MapsPrinter(object):
         else:
             success = False
             if extension == '.pdf':
-                #success = exporter.exportToPdf(os.path.join(folder, title + '.pdf'), QgsLayoutExporter.PdfExportSettings())
                 success = exporter.exportToPdf(os.path.join(folder, title + '.pdf'), exportSettings)
 
             elif extension == '.svg':
-                #success = exporter.exportToSvg(os.path.join(folder, title + '.svg'), QgsLayoutExporter.SvgExportSettings())
                 success = exporter.exportToSvg(os.path.join(folder, title + '.svg'), exportSettings)
 
             else:
-                #success = exporter.exportToImage(os.path.join(folder, title + extension), QgsLayoutExporter.ImageExportSettings())
                 success = exporter.exportToImage(os.path.join(folder, title + extension), exportSettings)
 
                 ## QMessageBox.information(None, "Resultat", "Ret : " + str(success), QMessageBox.Ok)
@@ -680,10 +675,15 @@ class MapsPrinter(object):
             exportSettings = QgsLayoutExporter.SvgExportSettings()
             if layout.customProperty('dpi') and layout.customProperty('dpi') != -1 : exportSettings.dpi = layout.customProperty('dpi')
             if layout.customProperty('forceVector') == True : exportSettings.forceVectorOutput = True
+            if layout.customProperty('svgIncludeMetadata') == True : exportSettings.exportMetadata = True
+            if layout.customProperty('svgGroupLayers') == True : exportSettings.exportAsLayers = True
         else:
             exportSettings = QgsLayoutExporter.ImageExportSettings()
             if layout.customProperty('exportWorldFile') == True : exportSettings.generateWorldFile = True
+            if layout.customProperty('') == True : exportSettings.exportMetadata = True
             if layout.customProperty('dpi') and layout.customProperty('dpi') != -1 : exportSettings.dpi = layout.customProperty('dpi')
+            # if layout.customProperty('atlasRasterFormat') == True : exportSettings.xxxx = True
+            # if layout.customProperty('imageAntialias') == True : exportSettings.xxxx = True
 
         return exportSettings
 
