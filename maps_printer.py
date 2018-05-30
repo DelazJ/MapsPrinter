@@ -475,18 +475,6 @@ class MapsPrinter(object):
 
         self.arret = False
 
-    def msgEmptyPattern(self):
-        """Display a message to tell there's no pattern filename for atlas
-        TODO: offer the ability to fill the pattern name.
-        """
-        self.iface.messageBar().pushMessage(
-            self.tr(u'Empty filename pattern'),
-                self.tr(u'The print layout "{}" has an empty filename '\
-                    'pattern. {}_$feature is used as default.'
-                    ).format(self.title, self.title),
-            level = Qgis.Warning
-            )
-
     def saveFile(self):
         """Check if the conditions are filled to export file(s) and
         export the checked layouts to the specified file format."""
@@ -646,9 +634,6 @@ class MapsPrinter(object):
 
             myAtlas.endRender()
 
-            # Reset atlas mode to its original value and, if needed, atlas map
-            # was working in QGIS 2 but not yet in 3.1 (see report at https://issues.qgis.org/issues/19021
-
         # if the composition has no atlas
         else:
             success = False
@@ -688,6 +673,18 @@ class MapsPrinter(object):
             # if layout.customProperty('imageAntialias') == True : exportSettings.xxxx = True
 
         return exportSettings
+
+    def msgEmptyPattern(self):
+        """Display a message to tell there's no pattern filename for atlas
+        TODO: offer the ability to fill the pattern name.
+        """
+        self.iface.messageBar().pushMessage(
+            self.tr(u'Empty filename pattern'),
+                self.tr(u'The print layout "{}" has an empty filename '\
+                    'pattern. {}_$feature is used as default.'
+                    ).format(self.title, self.title),
+            level = Qgis.Warning
+            )
 
     def msgWMSWarning(self, cView):
         """Show message about use of WMS layers in map"""
