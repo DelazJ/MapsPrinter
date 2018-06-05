@@ -323,8 +323,9 @@ class MapsPrinter(object):
             fs = f.data().decode('utf-8')
             list1.append(self.tr(u'{} format (*.{} *.{})').format(fs.upper(), fs, fs.upper()))
             
-        #Todo: add an entry for the custom property atlasRasterFormat
-        #which will export each print layout to its custom format if selected
+        # Todo: add an entry for the custom property atlasRasterFormat
+        # which will export each print layout to its custom format if selected
+        # is it really worth the effort?
 
             # >>>lst=QgsProject.instance().layoutManager().layouts()
             # >>>lst[0].customProperties()
@@ -352,6 +353,8 @@ class MapsPrinter(object):
         settings = QSettings()
         if self.dlg.formatBox.currentIndex() == 1 : # if extension is pdf
             dir = settings.value('/UI/lastSaveAsPdfFile')
+        elif self.dlg.formatBox.currentIndex() == 3 : # if extension is svg
+            dir = settings.value('/UI/lastSaveAsSvgFile')
         else:
             dir = settings.value('/UI/lastSaveAsImageDir')
 
@@ -566,12 +569,8 @@ class MapsPrinter(object):
 
         myAtlas = cView.atlas()
 
-        # Prepare the layout if it has an atlas
-        if myAtlas.enabled():
-            myAtlas.beginRender()
-
         # Set page progressbar maximum value
-        # only possible for atlases once the rendering has begun, reason why it's placed here
+        # actually this should not be needed, at least for atlases ???
         if myAtlas.enabled():
             if extension == '.pdf':
                 maxIteration = myAtlas.count()
@@ -599,24 +598,23 @@ class MapsPrinter(object):
             QCoreApplication.processEvents()
 
             # if single file export is required (only compatible with pdf, yet)
-            if myAtlas.layout().customProperty('singleFile') and extension == '.pdf':
+            if myAtlas.layout().customProperty('singleFile') == True and extension == '.pdf':
                 success = exporter.exportToPdf(myAtlas, os.path.join(folder, title + '.pdf'), exportSettings, feedback)
 
             else: #If instead multiple files will be output
             
                 # Check if there's a valid expression for filenames,
                 # and otherwise inform that a default one will be used and set it using the layout name.
-                # replacement is failing at the moment
+                # replacement in the GUI is failing at the moment
                 if len(myAtlas.filenameExpression()) == 0:
                     self.iface.messageBar().pushMessage(
                         self.tr(u'Empty filename expression'),
-                        self.tr(u'The print layout "{}" has an empty output filename expression. {}_$feature is used as default.').format(title, title),
+                        self.tr(u'The print layout "{}" has an empty output filename expression. {}_@atlas_pagename is used as default.').format(title, title),
                         level = Qgis.Warning
                         )
                     myAtlas.setFilenameExpression(u"'{}_'||@atlas_pagename".format(title))
 
                 current_fileName = myAtlas.filenameExpression()
-                #print ('current_fileName:', current_fileName)
 
                 #export atlas to multiple pdfs
                 if extension =='.pdf':
