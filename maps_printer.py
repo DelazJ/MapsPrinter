@@ -113,9 +113,10 @@ class MapsPrinter(object):
         self.dlg.buttonBox.helpRequested.connect(self.showHelp)
 
         # Connect to the export button to do the real work
-        self.dlg.buttonBox.accepted.connect(self.saveFile)
         self.dlg.exportButton = self.dlg.buttonBox.button(QDialogButtonBox.Ok)
         self.dlg.exportButton.setText(self.tr(u'Export'))
+        self.dlg.exportButton.clicked.connect(self.saveFile)
+        # self.dlg.buttonBox.accepted.connect(self.saveFile) # weirdly this does not work
 
         # Connect the signal to set the "select all" checkbox behaviour
         self.dlg.checkBox.clicked.connect(self.on_selectAllcbox_changed)
