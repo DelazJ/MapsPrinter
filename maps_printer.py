@@ -601,7 +601,8 @@ class MapsPrinter(object):
             QCoreApplication.processEvents()
 
             # if single file export is required (only compatible with pdf, yet)
-            if myAtlas.layout().customProperty('singleFile') == True and extension == '.pdf':
+            # singleFile can be true and None in that case
+            if cView.customProperty('singleFile') is not False and extension == '.pdf':
                 success = exporter.exportToPdf(myAtlas, os.path.join(folder, title + '.pdf'), exportSettings, feedback)
 
             else: #If instead multiple files will be output
