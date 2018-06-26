@@ -595,7 +595,7 @@ class MapsPrinter(object):
             # if single file export is required (only compatible with pdf, yet)
             # singleFile can be true and None in that case
             if cView.customProperty('singleFile') is not False and extension == '.pdf':
-                success = exporter.exportToPdf(myAtlas, os.path.join(folder, title + '.pdf'), exportSettings, feedback)
+                result, error = exporter.exportToPdf(myAtlas, os.path.join(folder, title + '.pdf'), exportSettings, feedback)
 
             else: #If instead multiple files will be output
             
@@ -614,31 +614,31 @@ class MapsPrinter(object):
 
                 #export atlas to multiple pdfs
                 if extension =='.pdf':
-                    success = exporter.exportToPdfs(myAtlas, os.path.join(folder, current_fileName), exportSettings, feedback)
+                    result, error = exporter.exportToPdfs(myAtlas, os.path.join(folder, current_fileName), exportSettings, feedback)
 
                 # export atlas to svg format
                 elif extension =='.svg':
-                    success = exporter.exportToSvg(myAtlas, os.path.join(folder, current_fileName), exportSettings, feedback)
+                    result, error = exporter.exportToSvg(myAtlas, os.path.join(folder, current_fileName), exportSettings, feedback)
 
                 # export atlas to image format
                 else:
-                    exporter.exportToImage(myAtlas, os.path.join(folder, current_fileName), extension, exportSettings, feedback)
-            #increase progressbar
-            self.pageProcessed()
+                   result, error = exporter.exportToImage(myAtlas, os.path.join(folder, current_fileName), extension, exportSettings, feedback)
 
             myAtlas.endRender()
 
         # if the composition has no atlas
         else:
-            success = False
+            #result = False
             if extension == '.pdf':
-                success = exporter.exportToPdf(os.path.join(folder, title + '.pdf'), exportSettings)
+                result = exporter.exportToPdf(os.path.join(folder, title + '.pdf'), exportSettings)
 
             elif extension == '.svg':
-                success = exporter.exportToSvg(os.path.join(folder, title + '.svg'), exportSettings)
+                result = exporter.exportToSvg(os.path.join(folder, title + '.svg'), exportSettings)
 
             else:
-                success = exporter.exportToImage(os.path.join(folder, title + extension), exportSettings)
+                result = exporter.exportToImage(os.path.join(folder, title + extension), exportSettings)
+                # if result == QgsLayoutExporter.Success:
+                    # self.pageProcessed()
 
                 ## QMessageBox.information(None, "Resultat", "Ret : " + str(success), QMessageBox.Ok)
             #self.pageProcessed()
