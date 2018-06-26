@@ -452,10 +452,14 @@ class MapsPrinter(object):
         self.dlg.buttonBox.rejected.connect(self.stopProcessing)
         # self.dlg.btnCancel.clicked.connect(self.stopProcessing)
 
-    def pageProcessed(self):
+    def pageProcessed(self, feedback):
         """Increment the page progressbar."""
 
-        self.dlg.pageBar.setValue(self.dlg.pageBar.value() + 1)
+        QCoreApplication.processEvents()
+        if feedback:
+            self.dlg.pageBar.setValue(feedback)
+        else:
+            self.dlg.pageBar.setValue(100)
 
     def stopProcessing(self):
         """Help to stop the export processing."""
@@ -526,6 +530,7 @@ class MapsPrinter(object):
                 QCoreApplication.processEvents()
                 if self.arret:
                     break
+                self.dlg.pageBar.setValue(0)
                 self.exportCompo(cView, folder, title, extension)
                 i = i + 1
                 self.dlg.printBar.setValue(i)
@@ -572,21 +577,6 @@ class MapsPrinter(object):
 
         myAtlas = cView.atlas()
 
-        # Set page progressbar maximum value
-        # actually this should not be needed, at least for atlases ???
-        if myAtlas.enabled():
-            if extension == '.pdf':
-                maxIteration = myAtlas.count()
-            else:
-                maxIteration = myAtlas.count() * cView.pageCollection().pageCount()
-        else:
-            if extension == '.pdf': maxIteration = 1
-            else:
-                maxIteration = cView.pageCollection().pageCount()
-        print(maxIteration)
-        self.dlg.pageBar.setValue(0)
-        self.dlg.pageBar.setMaximum(maxIteration)
-
         #Let's use custom export properties if there are
         exportSettings = self.overrideExportSetings(cView, extension)
 
@@ -597,8 +587,10 @@ class MapsPrinter(object):
                 #if self.arret: break
             feedback = QgsFeedback()
 
-            # process input events
+            # Allow to listen to changes and increase progressbar
+            # with process input events
             QCoreApplication.processEvents()
+            feedback.progressChanged.connect(self.pageProcessed)
 
             # if single file export is required (only compatible with pdf, yet)
             # singleFile can be true and None in that case
@@ -649,7 +641,7 @@ class MapsPrinter(object):
                 success = exporter.exportToImage(os.path.join(folder, title + extension), exportSettings)
 
                 ## QMessageBox.information(None, "Resultat", "Ret : " + str(success), QMessageBox.Ok)
-            self.pageProcessed()
+            #self.pageProcessed()
 
     def overrideExportSetings(self, layout, extension):
         """Because GUI settings are not exposed in Python, we need to find and catch user selection
