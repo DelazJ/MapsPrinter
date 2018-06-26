@@ -450,20 +450,24 @@ class MapsPrinter(object):
         self.dlg.btnClose.hide()
         self.dlg.btnCancel.show()
         self.dlg.buttonBox.rejected.connect(self.stopProcessing)
-        # self.dlg.btnCancel.clicked.connect(self.stopProcessing)
 
     def pageProcessed(self, feedback):
-        """Increment the page progressbar."""
+        """Increment the page progressbar. Only atlas makes it run as
+        there seems to be no obvious way to catch page export"""
 
         QCoreApplication.processEvents()
         if feedback:
             self.dlg.pageBar.setValue(feedback)
-        else:
-            self.dlg.pageBar.setValue(100)
+        # else:
+            # self.dlg.pageBar.setValue(100)
 
-    def stopProcessing(self):
+    def stopProcessing(self, feedback=None):
         """Help to stop the export processing."""
 
+        #print ('feed', feedback)
+        if feedback:
+            #print ('feedOK', feedback)
+            emit(feedback.isCanceled)
         self.arret = True
 
     def restoreGui(self):
@@ -474,9 +478,7 @@ class MapsPrinter(object):
         self.dlg.printinglabel.hide()
 
         # Reset standardbuttons and their functions and labels
-        # self.dlg.btnCancel.clicked.disconnect(self.stopProcessing)
         self.dlg.buttonBox.rejected.disconnect(self.stopProcessing)
-        ## QObject.connect(self.dlg.buttonBox, pyqtSignal("rejected()"), self.dlg.reject)
         self.dlg.buttonBox.rejected.connect(self.dlg.reject)
         self.dlg.btnCancel.hide()
         self.dlg.btnClose.show()
@@ -582,14 +584,20 @@ class MapsPrinter(object):
 
         # Do the export process
         exporter = QgsLayoutExporter(cView)
+
+        # Allow export cancelation
+        QCoreApplication.processEvents()
+        self.dlg.buttonBox.rejected.connect(self.stopProcessing)
+        
         if myAtlas.enabled():
-            #for i in range(0, myAtlas.count()):
-                #if self.arret: break
+            # for i in range(0, myAtlas.count()):
             feedback = QgsFeedback()
 
             # Allow to listen to changes and increase progressbar
+            # or abort the operation
             # with process input events
             QCoreApplication.processEvents()
+            self.dlg.buttonBox.rejected.connect(feedback.cancel)
             feedback.progressChanged.connect(self.pageProcessed)
 
             # if single file export is required (only compatible with pdf, yet)
@@ -628,7 +636,6 @@ class MapsPrinter(object):
 
         # if the composition has no atlas
         else:
-            #result = False
             if extension == '.pdf':
                 result = exporter.exportToPdf(os.path.join(folder, title + '.pdf'), exportSettings)
 
@@ -637,11 +644,11 @@ class MapsPrinter(object):
 
             else:
                 result = exporter.exportToImage(os.path.join(folder, title + extension), exportSettings)
-                # if result == QgsLayoutExporter.Success:
-                    # self.pageProcessed()
 
-                ## QMessageBox.information(None, "Resultat", "Ret : " + str(success), QMessageBox.Ok)
-            #self.pageProcessed()
+        # When the export fails (eg it's aborted)
+        if not result == QgsLayoutExporter.Success:
+            #print( 'noresult')
+            self.stopProcessing()
 
     def overrideExportSetings(self, layout, extension):
         """Because GUI settings are not exposed in Python, we need to find and catch user selection
