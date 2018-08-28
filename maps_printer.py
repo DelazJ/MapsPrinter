@@ -170,7 +170,7 @@ class MapsPrinter(object):
 
     def actionShowLayout(self):
         selected = {item.text() for item in self.dlg.layoutList.selectedItems()}
-        for cView in QgsProject.instance().layoutManager().printLayouts():
+        for cView in QgsProject.instance().layoutManager().layouts():
             if cView.name() in selected:
                 #print (cView.name(), cView.layoutType())
                 self.iface.openLayoutDesigner(cView)
@@ -225,7 +225,7 @@ class MapsPrinter(object):
         # Ensure the "select all" box is unchecked
         self.dlg.checkBox.setChecked(False)
 
-        for cView in QgsProject.instance().layoutManager().printLayouts():
+        for cView in QgsProject.instance().layoutManager().layouts():
             self.getNewCompo(w, cView)
         w.sortItems()
 
@@ -237,18 +237,18 @@ class MapsPrinter(object):
         currentLayouts = []
         i,j = 0,0
 
-        if len(QgsProject.instance().layoutManager().printLayouts()) == 0 and self.dlg.isVisible():
+        if len(QgsProject.instance().layoutManager().layouts()) == 0 and self.dlg.isVisible():
             self.iface.messageBar().pushMessage('Maps Printer : ',
-                self.tr(u'dialog shut because no more print layout in the project.'),
+                self.tr(u'dialog shut because no print layout nor report is in the project.'),
                 level = Qgis.Info, duration = 5
                 )
             self.dlg.close()
         else:
             # Get the current list of layouts
-            while i < len(QgsProject.instance().layoutManager().printLayouts()):
-            # for i in range(len(QgsProject.instance().layoutManager().printLayouts()):
+            while i < len(QgsProject.instance().layoutManager().layouts()):
+            # for i in range(len(QgsProject.instance().layoutManager().layouts()):
                 currentLayouts.append(
-                    QgsProject.instance().layoutManager().printLayouts()[i].name()
+                    QgsProject.instance().layoutManager().layouts()[i].name()
                     )
                 i += 1
 
@@ -260,7 +260,7 @@ class MapsPrinter(object):
                     j += 1
 
             # Add new layouts to the list
-            for cView in QgsProject.instance().layoutManager().printLayouts():
+            for cView in QgsProject.instance().layoutManager().layouts():
                 self.getNewCompo(self.dlg.layoutList, cView)
             self.dlg.layoutList.sortItems()
 
@@ -577,7 +577,6 @@ class MapsPrinter(object):
 
         #self.msgWMSWarning(cView)
 
-        myAtlas = cView.atlas()
 
         #Let's use custom export properties if there are
         exportSettings = self.overrideExportSetings(cView, extension)
@@ -589,53 +588,66 @@ class MapsPrinter(object):
         QCoreApplication.processEvents()
         self.dlg.buttonBox.rejected.connect(self.stopProcessing)
         
-        if myAtlas.enabled():
-            # for i in range(0, myAtlas.count()):
-            feedback = QgsFeedback()
+        if cView.layoutType() == 0:# and cView.atlas().enabled():# in case of a print layout with atlas
+            myAtlas = cView.atlas()
+            if myAtlas.enabled():
+                # for i in range(0, myAtlas.count()):
+                feedback = QgsFeedback()
 
-            # Allow to listen to changes and increase progressbar
-            # or abort the operation
-            # with process input events
-            QCoreApplication.processEvents()
-            self.dlg.buttonBox.rejected.connect(feedback.cancel)
-            feedback.progressChanged.connect(self.pageProcessed)
+                # Allow to listen to changes and increase progressbar
+                # or abort the operation
+                # with process input events
+                QCoreApplication.processEvents()
+                self.dlg.buttonBox.rejected.connect(feedback.cancel)
+                feedback.progressChanged.connect(self.pageProcessed)
 
-            # if single file export is required (only compatible with pdf, yet)
-            # singleFile can be true and None in that case
-            if cView.customProperty('singleFile') is not False and extension == '.pdf':
-                result, error = exporter.exportToPdf(myAtlas, os.path.join(folder, title + '.pdf'), exportSettings, feedback)
+                # if single file export is required (only compatible with pdf, yet)
+                # singleFile can be true and None in that case
+                if cView.customProperty('singleFile') is not False and extension == '.pdf':
+                    result, error = exporter.exportToPdf(myAtlas, os.path.join(folder, title + '.pdf'), exportSettings, feedback)
 
-            else: #If instead multiple files will be output
-            
-                # Check if there's a valid expression for filenames,
-                # and otherwise inform that a default one will be used and set it using the layout name.
-                # replacement in the GUI is failing at the moment
-                if len(myAtlas.filenameExpression()) == 0:
-                    self.iface.messageBar().pushMessage(
-                        self.tr(u'Empty filename expression'),
-                        self.tr(u'The print layout "{}" has an empty output filename expression. {}_@atlas_pagename is used as default.').format(title, title),
-                        level = Qgis.Warning
-                        )
-                    myAtlas.setFilenameExpression(u"'{}_'||@atlas_pagename".format(title))
+                else: #If instead multiple files will be output
+                
+                    # Check if there's a valid expression for filenames,
+                    # and otherwise inform that a default one will be used and set it using the layout name.
+                    # replacement in the GUI is failing at the moment
+                    if len(myAtlas.filenameExpression()) == 0:
+                        self.iface.messageBar().pushMessage(
+                            self.tr(u'Empty filename expression'),
+                            self.tr(u'The print layout "{}" has an empty output filename expression. {}_@atlas_pagename is used as default.').format(title, title),
+                            level = Qgis.Warning
+                            )
+                        myAtlas.setFilenameExpression(u"'{}_'||@atlas_pagename".format(title))
 
-                current_fileName = myAtlas.filenameExpression()
+                    current_fileName = myAtlas.filenameExpression()
 
-                #export atlas to multiple pdfs
-                if extension =='.pdf':
-                    result, error = exporter.exportToPdfs(myAtlas, os.path.join(folder, current_fileName), exportSettings, feedback)
+                    #export atlas to multiple pdfs
+                    if extension =='.pdf':
+                        result, error = exporter.exportToPdfs(myAtlas, os.path.join(folder, current_fileName), exportSettings, feedback)
 
-                # export atlas to svg format
-                elif extension =='.svg':
-                    result, error = exporter.exportToSvg(myAtlas, os.path.join(folder, current_fileName), exportSettings, feedback)
+                    # export atlas to svg format
+                    elif extension =='.svg':
+                        result, error = exporter.exportToSvg(myAtlas, os.path.join(folder, current_fileName), exportSettings, feedback)
 
-                # export atlas to image format
+                    # export atlas to image format
+                    else:
+                       result, error = exporter.exportToImage(myAtlas, os.path.join(folder, current_fileName), extension, exportSettings, feedback)
+
+                myAtlas.endRender()
+
+            # if the composition has no atlas
+            else: #if there's no atlas and it can be a report also
+                if extension == '.pdf':
+                    result = exporter.exportToPdf(os.path.join(folder, title + '.pdf'), exportSettings)
+
+                elif extension == '.svg':
+                    result = exporter.exportToSvg(os.path.join(folder, title + '.svg'), exportSettings)
+
                 else:
-                   result, error = exporter.exportToImage(myAtlas, os.path.join(folder, current_fileName), extension, exportSettings, feedback)
+                    result = exporter.exportToImage(os.path.join(folder, title + extension), exportSettings)
 
-            myAtlas.endRender()
 
-        # if the composition has no atlas
-        else:
+        else: # in case of a report
             if extension == '.pdf':
                 result = exporter.exportToPdf(os.path.join(folder, title + '.pdf'), exportSettings)
 
@@ -644,12 +656,13 @@ class MapsPrinter(object):
 
             else:
                 result = exporter.exportToImage(os.path.join(folder, title + extension), exportSettings)
-
+    
         # When the export fails (eg it's aborted)
         if not result == QgsLayoutExporter.Success:
             #print( 'noresult')
             self.stopProcessing()
-
+        
+        
     def overrideExportSetings(self, layout, extension):
         """Because GUI settings are not exposed in Python, we need to find and catch user selection
            See discussion at http://osgeo-org.1560.x6.nabble.com/Programmatically-export-layout-with-georeferenced-file-td5365462.html"""
@@ -718,7 +731,7 @@ class MapsPrinter(object):
         """Run method that performs all the real work."""
 
         # when no layout is in the project, display a message about the lack of layouts and exit
-        if len(QgsProject.instance().layoutManager().printLayouts()) == 0:
+        if len(QgsProject.instance().layoutManager().layouts()) == 0:
             self.iface.messageBar().pushMessage(
                 'Maps Printer : ',
                 self.tr(u'There is currently no print layout in the project. '\
