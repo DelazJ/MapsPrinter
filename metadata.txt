@@ -22,7 +22,9 @@ email=delazj@gmail.com
 # Optional items:
 
 # Uncomment the following line and add your changelog:
-changelog= v.0.5 (2018-09-25)
+changelog= v.0.6 (2019-03-12)
+        - Remove unwanted _MACOSX folder
+    v.0.5 (2018-09-25)
         - Official release with support of QGIS 3
     v.0.4 (2018-06-26)
         - Port to QGIS 3 (thanks to @olivierh65)
@@ -36,7 +38,9 @@ changelog= v.0.5 (2018-09-25)
         - Add progress bar to follow or abort operations
     v.0.1 (2014-07-30)
         - Initial release
-changelog[fr]= v.0.5 (2018-09-25)
+changelog[fr]= v.0.6 (2019-03-12)
+        - Suppression du dossier _MACOSX
+    v.0.5 (2018-09-25)
         - Publication de la version officielle compatible avec QGIS 3
     v.0.4 (2018-06-26)
         - Adaptation à QGIS 3 (avec l'aide de @olivierh65)
