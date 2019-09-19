@@ -34,13 +34,12 @@ from qgis.PyQt.QtWidgets import QAction, QListWidgetItem, QFileDialog, QDialogBu
 from qgis.PyQt.QtGui import QIcon, QCursor, QDesktopServices, QImageWriter
 
 from qgis.core import *
-from qgis.gui import QgsMessageBar
 
 # Initialize Qt resources from file resources.py
 from . import resources_rc
 # Import the code for the dialog
 from .maps_printer_dialog import MapsPrinterDialog
-
+from .processing.maps_printer_provider import MapsPrinterAlgorithmProvider
 
 class MapsPrinter(object):
     """QGIS Plugin Implementation."""
@@ -149,6 +148,10 @@ class MapsPrinter(object):
         self.dlg.btnCancel.hide()
         self.dlg.btnClose = self.dlg.buttonBox.button(QDialogButtonBox.Close)
 
+        # Add Maps Printer algorithm provider to QGIS
+        self.mapsPrinterProvider = MapsPrinterAlgorithmProvider()
+        QgsApplication.processingRegistry().addProvider(self.mapsPrinterProvider)
+
     def context_menu(self):
         """Add context menu fonctions."""
 
@@ -190,6 +193,8 @@ class MapsPrinter(object):
         self.iface.removePluginMenu(u'&Maps Printer', self.action)
         self.iface.removePluginMenu(u'&Maps Printer', self.helpAction)
         self.iface.removeToolBarIcon(self.action)
+
+        QgsApplication.processingRegistry().removeProvider(self.mapsPrinterProvider)
 
     def showHelp(self):
         """Shows the help page."""
