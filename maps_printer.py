@@ -121,19 +121,6 @@ class MapsPrinter(object):
         self.iface.removePluginMenu(u'&Maps Printer', self.helpAction)
         self.iface.removeToolBarIcon(self.action)
 
-    def showHelp(self):
-        """Shows the help page."""
-
-        locale = QSettings().value('locale/userLocale')[0:2]
-        help_file = self.plugin_dir + '/help/help_{}.html'.format(locale)
-
-        if os.path.exists(help_file):
-            QDesktopServices.openUrl(QUrl('file:///'+ help_file))
-        else:
-            QDesktopServices.openUrl(QUrl(
-                'file:///'+ self.plugin_dir + '/help/help.html')
-                )
-
     def getNewCompo(self, w, cView):
         """Function that finds new layout to be added to the list."""
 
