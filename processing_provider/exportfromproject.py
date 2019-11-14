@@ -58,6 +58,7 @@ class ExportFromProjectAlgorithm(QgsProcessingAlgorithm):
     LAYOUTS = 'LAYOUTS'
     EXTENSION = 'EXTENSION'
     OUTPUT_FOLDER = 'OUTPUT_FOLDER'
+    OUTPUT = 'OUTPUT'
 
     def initAlgorithm(self, config):
         """
@@ -101,7 +102,6 @@ class ExportFromProjectAlgorithm(QgsProcessingAlgorithm):
                 self.tr('Output folder')
             )
         )
-
 
     def prepareAlgorithm(self, parameters, context, feedback):
         """
@@ -150,15 +150,18 @@ class ExportFromProjectAlgorithm(QgsProcessingAlgorithm):
             #}
             #}
         #}
-        self.extension = self.parameterAsEnum(parameters, self.EXTENSION, context)
+        extension = self.parameterAsEnum(parameters, self.EXTENSION, context)
 
-        self.output_folder = self.parameterAsString(parameters, self.OUTPUT_FOLDER, context)
+        output_folder = self.parameterAsString(parameters, self.OUTPUT_FOLDER, context)
+        Processor.checkFolder(self.output_folder) #the function needs to move to processor and feedback adapted
 
 
     def processAlgorithm(self, parameters, context, feedback):
         """
         Here is where the processing itself takes place.
         """
+        for layout in self.selectedLayouts:
+            Processor.exportCompo(layout, folder, title, extension)
 
     def name(self):
         """
