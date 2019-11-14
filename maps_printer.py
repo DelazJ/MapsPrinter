@@ -110,7 +110,6 @@ class MapsPrinter(object):
 
         # Connect the action to the run method
         self.action.triggered.connect(self.run)
-        self.helpAction.triggered.connect(self.showHelp)
         self.dlg.buttonBox.helpRequested.connect(self.showHelp)
 
         # Connect to the export button to do the real work
