@@ -40,6 +40,7 @@ from qgis.gui import QgsMessageBar
 from . import resources_rc
 # Import the code for the dialog
 from .maps_printer_dialog import MapsPrinterDialog
+from .gui_utils import GuiUtils
 
 
 class MapsPrinter(object):
@@ -96,11 +97,11 @@ class MapsPrinter(object):
         """Create the menu entries and toolbar icons inside the QGIS GUI."""
 
         # Create action that will start plugin configuration
-        self.action = QAction(QIcon(':/plugins/MapsPrinter/icons/icon.png'),
+        self.action = QAction(GuiUtils.get_icon('icon.png'),
                               self.tr(u'Export multiple print layouts'),
                               self.iface.mainWindow()
                               )
-        self.helpAction = QAction(QIcon(':/plugins/MapsPrinter/icons/about.png'),
+        self.helpAction = QAction(GuiUtils.get_icon('about.png'),
                                   self.tr(u'Help'), self.iface.mainWindow()
                                   )
 
@@ -137,6 +138,8 @@ class MapsPrinter(object):
         self.iface.newProjectCreated.connect(self.dlg.close)
         self.iface.projectRead.connect(self.renameDialog)
         self.iface.projectRead.connect(self.refreshList)
+
+        self.helpAction.triggered.connect(GuiUtils.showHelp)
 
         # Add toolbar button and menu item0
         self.iface.addToolBarIcon(self.action)
