@@ -36,6 +36,8 @@ from qgis.PyQt.QtGui import QIcon, QCursor, QDesktopServices, QImageWriter
 from qgis.core import *
 from qgis.gui import QgsMessageBar
 
+from .processing_provider.maps_printer_provider import MapsPrinterProvider
+
 # Initialize Qt resources from file resources.py
 from . import resources_rc
 # Import the code for the dialog
@@ -56,6 +58,7 @@ class MapsPrinter(object):
         """
         # Save reference to the QGIS interface
         self.iface = iface
+        self.provider = None
         # initialize plugin directory
         self.plugin_dir = os.path.dirname(__file__)
         # initialize locale
@@ -95,6 +98,7 @@ class MapsPrinter(object):
     def initGui(self):
         """Create the menu entries and toolbar icons inside the QGIS GUI."""
 
+        self.initProcessing()
         # Create action that will start plugin configuration
         self.action = QAction(GuiUtils.get_icon('icon.png'),
                               self.tr(u'Export multiple print layouts'),
@@ -113,10 +117,14 @@ class MapsPrinter(object):
         self.iface.addPluginToMenu(u'&Maps Printer', self.action)
         self.iface.addPluginToMenu(u'&Maps Printer', self.helpAction)
 
+    def initProcessing(self):
+        self.provider = MapsPrinterProvider()
+        QgsApplication.processingRegistry().addProvider(self.provider)
 
     def unload(self):
         """Removes the plugin menu item and icon from QGIS GUI."""
 
+        QgsApplication.processingRegistry().removeProvider(self.provider)
         self.iface.removePluginMenu(u'&Maps Printer', self.action)
         self.iface.removePluginMenu(u'&Maps Printer', self.helpAction)
         self.iface.removeToolBarIcon(self.action)
