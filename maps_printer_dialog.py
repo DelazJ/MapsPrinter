@@ -22,7 +22,17 @@
 """
 
 import os
+import errno
+import tempfile
 
+from qgis.core import QgsProject, Qgis
+#from qgis.gui import QgsMessageBar
+from qgis.PyQt.QtCore import Qt, QSettings, QCoreApplication, QTimer
+from qgis.PyQt.QtGui import QCursor
+from qgis.PyQt.QtWidgets import QAction, QDialogButtonBox, QFileDialog, QMenu, QMessageBox, QApplication
+
+from .gui_utils import GuiUtils
+from .processor import Processor
 from qgis.PyQt import QtWidgets, uic
 
 FORM_CLASS, _ = uic.loadUiType(os.path.join(
@@ -40,6 +50,7 @@ class MapsPrinterDialog(QtWidgets.QDialog, FORM_CLASS):
         # #widgets-and-dialogs-with-auto-connect
         self.iface=iface
         self.setupUi(self)
+
         # Connect actions to context menu
         self.layoutList.customContextMenuRequested.connect(self.context_menu)
 

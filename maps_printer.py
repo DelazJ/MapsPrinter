@@ -26,14 +26,12 @@ from builtins import range
 from builtins import object
 import os.path
 import sys
-import errno
-import tempfile
 
-from qgis.PyQt.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, QFileInfo, QDir, QUrl, QTimer, Qt, QObject
-from qgis.PyQt.QtWidgets import QAction, QListWidgetItem, QFileDialog, QDialogButtonBox, QMenu, QMessageBox, QApplication
-from qgis.PyQt.QtGui import QIcon, QCursor, QDesktopServices, QImageWriter
 
-from qgis.core import *
+from qgis.PyQt.QtCore import QSettings, QTranslator, qVersion, QCoreApplication
+from qgis.PyQt.QtWidgets import QAction, QApplication
+
+from qgis.core import Qgis, QgsApplication, QgsProject
 from qgis.gui import QgsMessageBar
 
 from .processing_provider.maps_printer_provider import MapsPrinterProvider
