@@ -89,3 +89,140 @@ class Processor:
 
         return dir
 
+    def exportCompo(self, cView, folder, title, extension):
+        """Function that sets how to export files.
+        Returns a file 
+        :param cView: The print layout to export
+        :param folder: The folder in which to store the output file
+        :param title: The print layout name
+        :param extension: The file extension to use for the output
+        :return: A file representing the layout in the selected format
+        """
+
+        #self.msgWMSWarning(cView)
+
+        myAtlas = cView.atlas()
+
+        #Let's use custom export properties if there are
+        exportSettings = Processor.overrideExportSettings(cView, extension)
+
+        # Do the export process
+        exporter = QgsLayoutExporter(cView)
+
+        # Allow export cancelation
+        QCoreApplication.processEvents()
+        self.buttonBox.rejected.connect(self.stopProcessing)
+        
+        if myAtlas.enabled():
+            # for i in range(0, myAtlas.count()):
+            feedback = QgsFeedback()
+
+            # Allow to listen to changes and increase progressbar
+            # or abort the operation
+            # with process input events
+            QCoreApplication.processEvents()
+            self.buttonBox.rejected.connect(feedback.cancel)
+            feedback.progressChanged.connect(self.pageProcessed)
+
+            # if single file export is required (only compatible with pdf, yet)
+            # singleFile can be true and None in that case
+            if cView.customProperty('singleFile') is not False and extension == '.pdf':
+                result, error = exporter.exportToPdf(myAtlas, os.path.join(folder, title + '.pdf'), exportSettings, feedback)
+
+            else: #If instead multiple files will be output
+            
+                # Check if there's a valid expression for filenames,
+                # and otherwise inform that a default one will be used and set it using the layout name.
+                # replacement in the GUI is failing at the moment
+                if len(myAtlas.filenameExpression()) == 0:
+                    self.iface.messageBar().pushMessage(
+                        self.tr(u'Empty filename expression'),
+                        self.tr(u'The print layout "{}" has an empty output filename expression. {}_@atlas_pagename is used as default.').format(title, title),
+                        level = Qgis.Warning
+                        )
+                    myAtlas.setFilenameExpression(u"'{}_'||@atlas_pagename".format(title))
+
+                current_fileName = myAtlas.filenameExpression()
+
+                #export atlas to multiple pdfs
+                if extension =='.pdf':
+                    result, error = exporter.exportToPdfs(myAtlas, os.path.join(folder, current_fileName), exportSettings, feedback)
+
+                # export atlas to svg format
+                elif extension =='.svg':
+                    result, error = exporter.exportToSvg(myAtlas, os.path.join(folder, current_fileName), exportSettings, feedback)
+
+                # export atlas to image format
+                else:
+                   result, error = exporter.exportToImage(myAtlas, os.path.join(folder, current_fileName), extension, exportSettings, feedback)
+
+            myAtlas.endRender()
+
+        # if the composition has no atlas
+        else:
+            if extension == '.pdf':
+                result = exporter.exportToPdf(os.path.join(folder, title + '.pdf'), exportSettings)
+
+            elif extension == '.svg':
+                result = exporter.exportToSvg(os.path.join(folder, title + '.svg'), exportSettings)
+
+            else:
+                result = exporter.exportToImage(os.path.join(folder, title + extension), exportSettings)
+
+        # When the export fails (eg it's aborted)
+        if not result == QgsLayoutExporter.Success:
+            #print( 'noresult')
+            self.stopProcessing()
+
+    def overrideExportSettings(layout, extension):
+        """Because GUI settings are not exposed in Python, we need to find and catch user selection
+           See discussion at http://osgeo-org.1560.x6.nabble.com/Programmatically-export-layout-with-georeferenced-file-td5365462.html"""
+
+        if extension == '.pdf':
+            exportSettings = QgsLayoutExporter.PdfExportSettings()
+            if layout.customProperty('dpi') and layout.customProperty('dpi') != -1 : exportSettings.dpi = layout.customProperty('dpi')
+            if layout.customProperty('forceVector') == True : exportSettings.forceVectorOutput = True
+            if layout.customProperty('rasterize') == True : exportSettings.rasterizeWholeImage = True
+        elif extension == '.svg':
+            exportSettings = QgsLayoutExporter.SvgExportSettings()
+            if layout.customProperty('dpi') and layout.customProperty('dpi') != -1 : exportSettings.dpi = layout.customProperty('dpi')
+            if layout.customProperty('forceVector') == True : exportSettings.forceVectorOutput = True
+            if layout.customProperty('svgIncludeMetadata') == True : exportSettings.exportMetadata = True
+            if layout.customProperty('svgGroupLayers') == True : exportSettings.exportAsLayers = True
+        else:
+            exportSettings = QgsLayoutExporter.ImageExportSettings()
+            if layout.customProperty('exportWorldFile') == True : exportSettings.generateWorldFile = True
+            if layout.customProperty('') == True : exportSettings.exportMetadata = True
+            if layout.customProperty('dpi') and layout.customProperty('dpi') != -1 : exportSettings.dpi = layout.customProperty('dpi')
+            # if layout.customProperty('atlasRasterFormat') == True : exportSettings.xxxx = True
+            # if layout.customProperty('imageAntialias') == True : exportSettings.xxxx = True
+
+        return exportSettings
+
+    #def msgEmptyPattern(self):
+        #"""Display a message to tell there's no pattern filename for atlas
+        #TODO: offer the ability to fill the pattern name.
+        #"""
+        #self.iface.messageBar().pushMessage(
+            #self.tr(u'Empty filename pattern'),
+                #self.tr(u'The print layout "{}" has an empty filename '\
+                    #'pattern. {}_$feature is used as default.'
+                    #).format(self.title, self.title),
+            #level = Qgis.Warning
+            #)
+
+    #def msgWMSWarning(self, cView):
+        #"""Show message about use of WMS layers in map"""
+
+        #for elt in list(cView.composition().items()):
+            #if isinstance(elt, QgsLayoutItemMap) and elt.containsWMSLayer():
+                #self.iface.messageBar().pushMessage(
+                    #'Maps Printer : ',
+                    #self.tr(u'Project contains WMS Layers. '\
+                    #'Some WMS servers have a limit for the width and height parameter. '\
+                    #'Printing layers from such servers may exceed this limit. '\
+                    #'If this is the case, the WMS layer will not be printed.'),
+                    #level = Qgis.Warning
+                #)
+                ## once we found a map layer concerned, we get out to show just once the message
+                #break
