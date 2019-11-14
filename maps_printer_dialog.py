@@ -43,6 +43,9 @@ class MapsPrinterDialog(QtWidgets.QDialog, FORM_CLASS):
         # Connect actions to context menu
         self.layoutList.customContextMenuRequested.connect(self.context_menu)
 
+        # Connect the help button
+        self.buttonBox.helpRequested.connect(GuiUtils.showHelp)
+
         # Connect to the export button to do the real work
         self.exportButton = self.buttonBox.button(QDialogButtonBox.Ok)
         self.exportButton.setText(self.tr(u'Export'))
