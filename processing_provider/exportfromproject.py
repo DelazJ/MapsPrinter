@@ -25,14 +25,13 @@
 
 __revision__ = '$Format:%H$'
 
-from collections import OrderedDict
-from qgis.PyQt.QtCore import QCoreApplication, QVariant
-from qgis.core import (QgsProcessing,
-                       QgsProcessingAlgorithm,
+from qgis.core import QgsProject
+from qgis.PyQt.QtCore import QCoreApplication
+from qgis.PyQt.QtGui import QImageWriter
+from qgis.core import (QgsProcessingAlgorithm,
+                       QgsProcessingOutputNumber,
                        QgsProcessingParameterEnum,
-                       QgsProcessingParameterFolderDestination,
-                       #QgsProcessingParameterLayout
-                       QgsProject)
+                       QgsProcessingParameterFolderDestination)
 
 from MapsPrinter.gui_utils import GuiUtils
 from MapsPrinter.processor import Processor
@@ -57,8 +56,8 @@ class ExportFromProjectAlgorithm(QgsProcessingAlgorithm):
 
     LAYOUTS = 'LAYOUTS'
     EXTENSION = 'EXTENSION'
-    OUTPUT_FOLDER = 'OUTPUT_FOLDER'
     OUTPUT = 'OUTPUT'
+    EXPORTEDLAYOUTS = 'EXPORTEDLAYOUTS'
 
     def initAlgorithm(self, config):
         """
@@ -66,102 +65,70 @@ class ExportFromProjectAlgorithm(QgsProcessingAlgorithm):
         with some other properties.
         """
 
-        self.listFormats = Processor.listFormat()
-
-
-        # for version >=3.8 only and useless until there's an "allowMultiple" capability
-        # self.addParameter(
-            # QgsProcessingParameterLayout(
-                # self.LAYOUTS,
-                # self.tr('Layouts to export'),
-                # None,
-                # optional=False
-            # )
-        # )
-        #we display layout names in the GUI but need a reference to the layout composition
-        #self.layoutList = (cView.name(), cView) for cView in QgsProject.instance().layoutManager().printLayouts()
-        self.layoutList = OrderedDict([cView.name(), cView] for cView in QgsProject.instance().layoutManager().printLayouts())
-        layoutkeys = list(self.layoutList.keys())
+        self.layoutList = [cView.name() for cView in QgsProject.instance().layoutManager().printLayouts()]
         self.addParameter(
             QgsProcessingParameterEnum(
                 self.LAYOUTS,
                 self.tr('Layouts to export'),
-                options=layoutkeys, #[cView.name() for cView in QgsProject.instance().layoutManager().printLayouts()],
+                options=self.layoutList,
                 allowMultiple=True
             )
         )
+
+        self.listFormats = Processor.listFormat()
         self.addParameter(
             QgsProcessingParameterEnum(
                 self.EXTENSION,
                 self.tr('File format to export to'),
-                options=self.listFormats)
+                options=self.listFormats,
+                defaultValue=11)
         )
+
         self.addParameter(
             QgsProcessingParameterFolderDestination(
-                self.OUTPUT_FOLDER,
+                self.OUTPUT,
                 self.tr('Output folder')
             )
         )
 
-    def prepareAlgorithm(self, parameters, context, feedback):
-        """
-        we need to configure the processing settings formatting
-        since some variables displayed in the GUI are not what we'll actually work with
-        (extension, layout)
-        """
-
-        layouts = self.parameterAsEnum(parameters, self.LAYOUTS, context)
-        #Allow to process on all layouts if none is selected
-        #keys = list(self.layoutList.keys())
-        #self.selectedLayouts = 0
-        #if keys.isEmpty():
-            #for i in Layouts:
-                #keys.append(self.layoutList.keys())
-                
-                #self.selectedLayouts |= self.layoutList[keys[i]]
-        #else:
-            #self.selected
-
-        #from join by nearest attributes algorithm
-        #https://github.com/qgis/QGIS/blob/master/src/analysis/processing/qgsalgorithmjoinbynearest.cpp
-        #const QStringList fieldsToCopy = parameterAsFields( parameters, QStringLiteral( "FIELDS_TO_COPY" ), context );
-
-        #QgsFields outFields2;
-        #QgsAttributeList fields2Indices;
-        #if ( fieldsToCopy.empty() )
-        #{
-            #outFields2 = input2->fields();
-            #fields2Indices.reserve( outFields2.count() );
-            #for ( int i = 0; i < outFields2.count(); ++i )
-            #{
-            #fields2Indices << i;
-            #}
-        #}
-        #else
-        #{
-            #fields2Indices.reserve( fieldsToCopy.count() );
-            #for ( const QString &field : fieldsToCopy )
-            #{
-            #int index = input2->fields().lookupField( field );
-            #if ( index >= 0 )
-            #{
-                #fields2Indices << index;
-                #outFields2.append( input2->fields().at( index ) );
-            #}
-            #}
-        #}
-        extension = self.parameterAsEnum(parameters, self.EXTENSION, context)
-
-        output_folder = self.parameterAsString(parameters, self.OUTPUT_FOLDER, context)
-        Processor.checkFolder(self.output_folder) #the function needs to move to processor and feedback adapted
-
+        self.addOutput(
+            QgsProcessingOutputNumber(
+                self.EXPORTEDLAYOUTS,
+                self.tr('Number of layouts exported')
+            )
+        )
 
     def processAlgorithm(self, parameters, context, feedback):
         """
         Here is where the processing itself takes place.
         """
-        for layout in self.selectedLayouts:
-            Processor.exportCompo(layout, folder, title, extension)
+
+        extensionId = self.parameterAsEnum(parameters, self.EXTENSION, context)
+        extension = Processor.setFormat(self.listFormats[extensionId])
+    
+        output_folder = self.parameterAsFile(parameters, self.OUTPUT, context)
+
+        layoutIds = self.parameterAsEnums(parameters, self.LAYOUTS, context)
+        # # Todo: if no layout is checked, pick them all
+        # if not layoutIds:
+            # layoutIds = self.layoutList.keys()
+        processedLayouts = 0
+        
+        for layout in layoutIds:
+            title = self.layoutList[layout]
+            cView = QgsProject.instance().layoutManager().layoutByName(title)
+            feedback.pushInfo( "cView = {}, Title=  {}, extensionId=  {}, extension=  {},  output_folder=  {}".format(cView, title, extensionId, extension, output_folder)
+                )
+            feedback.pushInfo( "Exporting layout '{}'".format( title ) )
+            Processor.exportCompo(self, cView, output_folder, title, extension)
+            processedLayouts += 1
+
+        EXPORTEDLAYOUTS = processedLayouts
+        feedback.pushInfo( "End of export!'" )
+        
+        return {self.EXPORTEDLAYOUTS: EXPORTEDLAYOUTS,
+                self.OUTPUT: output_folder
+                }
 
     def name(self):
         """
