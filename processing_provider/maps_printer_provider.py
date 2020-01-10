@@ -22,13 +22,13 @@
 """
 
 # This will get replaced with a git SHA1 when you do a git archive
-
 __revision__ = '$Format:%H$'
 
 import os
 from qgis.core import QgsProcessingProvider
 
 from .exportfromproject import ExportFromProjectAlgorithm
+from .export_layouts_from_folder import ExportLayoutsFromFolder
 from MapsPrinter.gui_utils import GuiUtils
 
 class MapsPrinterProvider(QgsProcessingProvider):
@@ -51,6 +51,7 @@ class MapsPrinterProvider(QgsProcessingProvider):
         Loads all algorithms belonging to this provider.
         """
         self.addAlgorithm(ExportFromProjectAlgorithm())
+        self.addAlgorithm(ExportLayoutsFromFolder())
         # add additional algorithms here
         # self.addAlgorithm(MyOtherAlgorithm())
 
