@@ -59,6 +59,10 @@ class ExportFromProjectAlgorithm(QgsProcessingAlgorithm):
     OUTPUT = 'OUTPUT'
     EXPORTEDLAYOUTS = 'EXPORTEDLAYOUTS'
 
+    def __init__(self):
+        super().__init__()
+        self.processor = Processor()
+
     def initAlgorithm(self, config):
         """
         Here we define the inputs and output of the algorithm, along
@@ -75,7 +79,7 @@ class ExportFromProjectAlgorithm(QgsProcessingAlgorithm):
             )
         )
 
-        self.listFormats = Processor.listFormat()
+        self.listFormats = self.processor.listFormat()
         self.addParameter(
             QgsProcessingParameterEnum(
                 self.EXTENSION,
@@ -104,7 +108,7 @@ class ExportFromProjectAlgorithm(QgsProcessingAlgorithm):
         """
 
         extensionId = self.parameterAsEnum(parameters, self.EXTENSION, context)
-        extension = Processor.setFormat(self.listFormats[extensionId])
+        extension = self.processor.setFormat(self.listFormats[extensionId])
     
         output_folder = self.parameterAsFile(parameters, self.OUTPUT, context)
 
@@ -120,7 +124,7 @@ class ExportFromProjectAlgorithm(QgsProcessingAlgorithm):
             feedback.pushInfo( "cView = {}, Title=  {}, extensionId=  {}, extension=  {},  output_folder=  {}".format(cView, title, extensionId, extension, output_folder)
                 )
             feedback.pushInfo( "Exporting layout '{}'".format( title ) )
-            Processor.exportCompo(self, cView, output_folder, title, extension)
+            self.processor.exportCompo(cView, output_folder, title, extension)
             processedLayouts += 1
 
         EXPORTEDLAYOUTS = processedLayouts
