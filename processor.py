@@ -27,10 +27,10 @@ __revision__ = '$Format:%H$'
 
 import os
 from qgis.PyQt.QtWidgets import QListWidgetItem
-from qgis.PyQt.QtCore import Qt, QCoreApplication, QSettings 
+from qgis.PyQt.QtCore import Qt, QCoreApplication, QSettings
 from qgis.PyQt.QtGui import QImageWriter
 
-from qgis.core import QgsLayoutExporter
+from qgis.core import QgsLayoutExporter, QgsFeedback
 
 class Processor:
     """
@@ -91,7 +91,7 @@ class Processor:
 
     def exportCompo(self, cView, folder, title, extension):
         """Function that sets how to export files.
-        Returns a file 
+        Returns a file
         :param cView: The print layout to export
         :param folder: The folder in which to store the output file
         :param title: The print layout name
@@ -112,7 +112,7 @@ class Processor:
         # Allow export cancelation
         #QCoreApplication.processEvents()
         #self.buttonBox.rejected.connect(self.stopProcessing)
-        
+
         if myAtlas.enabled():
             # for i in range(0, myAtlas.count()):
             feedback = QgsFeedback()
@@ -120,9 +120,9 @@ class Processor:
             # Allow to listen to changes and increase progressbar
             # or abort the operation
             # with process input events
-            QCoreApplication.processEvents()
+            #QCoreApplication.processEvents()
             #self.buttonBox.rejected.connect(feedback.cancel)
-            feedback.progressChanged.connect(self.pageProcessed)
+            #feedback.progressChanged.connect(self.pageProcessed)
 
             # if single file export is required (only compatible with pdf, yet)
             # singleFile can be true and None in that case
@@ -130,7 +130,7 @@ class Processor:
                 result, error = exporter.exportToPdf(myAtlas, os.path.join(folder, title + '.pdf'), exportSettings, feedback)
 
             else: #If instead multiple files will be output
-            
+
                 # Check if there's a valid expression for filenames,
                 # and otherwise inform that a default one will be used and set it using the layout name.
                 # replacement in the GUI is failing at the moment
