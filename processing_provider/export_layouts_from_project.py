@@ -37,7 +37,7 @@ from qgis.core import (QgsProcessingAlgorithm,
 from MapsPrinter.gui_utils import GuiUtils
 from MapsPrinter.processor import Processor
 
-class ExportFromProjectAlgorithm(QgsProcessingAlgorithm):
+class ExportLayoutsFromProject(QgsProcessingAlgorithm):
     """
     This is an example algorithm that takes a vector layer and
     creates a new identical one.
@@ -121,6 +121,8 @@ class ExportFromProjectAlgorithm(QgsProcessingAlgorithm):
 
         if not os.path.isdir(outputFolder):
             feedback.reportError(self.tr('\nERROR: No valid output folder given. We cannot continue...\n'))
+        elif not extensionId:
+            feedback.reportError(self.tr('\nERROR: No valid extension selected for output. We cannot continue...\n'))
         else:
             for layout in layoutIds:
                 title = self.layoutList[layout]
@@ -138,9 +140,12 @@ class ExportFromProjectAlgorithm(QgsProcessingAlgorithm):
             EXPORTEDLAYOUTS = exportedCount
             feedback.pushInfo( self.tr('End of export!'))
 
-        return {self.EXPORTEDLAYOUTS: exportedCount,
+        if exportedCount:
+            return {self.EXPORTEDLAYOUTS: exportedCount,
                     self.OUTPUT: outputFolder
-                    }
+                   }
+        else:
+            return {self.OUTPUT: None}
 
     def name(self):
         """
@@ -150,7 +155,7 @@ class ExportFromProjectAlgorithm(QgsProcessingAlgorithm):
         lowercase alphanumeric characters only and no spaces or other
         formatting characters.
         """
-        return 'exportlayoutsfromproject'
+        return 'ExportLayoutsFromProject'
 
     def displayName(self):
         """
@@ -160,10 +165,10 @@ class ExportFromProjectAlgorithm(QgsProcessingAlgorithm):
         return self.tr('Export layouts from project')
 
     def tr(self, string):
-        return QCoreApplication.translate('exportlayoutsfromproject', string)
+        return QCoreApplication.translate('ExportLayoutsFromProject', string)
 
     def createInstance(self):
-        return ExportFromProjectAlgorithm()
+        return ExportLayoutsFromProject()
 
     def shortDescription(self):  # pylint: disable=missing-docstring
         return self.tr("Exports print layouts of the current project file to pdf, svg or image file formats." )

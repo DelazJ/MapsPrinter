@@ -27,7 +27,7 @@ __revision__ = '$Format:%H$'
 import os
 from qgis.core import QgsProcessingProvider
 
-from .exportfromproject import ExportFromProjectAlgorithm
+from .export_layouts_from_project import ExportLayoutsFromProject
 from .export_layouts_from_folder import ExportLayoutsFromFolder
 from MapsPrinter.gui_utils import GuiUtils
 
@@ -50,7 +50,7 @@ class MapsPrinterProvider(QgsProcessingProvider):
         """
         Loads all algorithms belonging to this provider.
         """
-        self.addAlgorithm(ExportFromProjectAlgorithm())
+        self.addAlgorithm(ExportLayoutsFromProject())
         self.addAlgorithm(ExportLayoutsFromFolder())
         # add additional algorithms here
         # self.addAlgorithm(MyOtherAlgorithm())
