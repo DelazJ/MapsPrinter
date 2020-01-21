@@ -227,3 +227,55 @@ class Processor:
                 #)
                 ## once we found a map layer concerned, we get out to show just once the message
                 #break
+
+
+   # def checkFolder(self, outputDir):
+        # """Ensure export's folder exists and is writeable."""
+
+        # # It'd be better to find a way to check writeability in the first try...
+        # try:
+            # os.makedirs(outputDir)
+            # # settings.setValue('/UI/lastSaveAsImageDir', outputDir)
+        # except Exception as e:
+            # # if the folder already exists then let's check it's writeable
+            # if e.errno == errno.EEXIST:
+                # try:
+                    # testfile = tempfile.TemporaryFile(dir = outputDir)
+                    # testfile.close()
+                # except Exception as e:
+                    # if e.errno in (errno.EACCES, errno.EPERM):
+                        # QMessageBox.warning(None, self.tr(u'Unable to write in folder'),
+                            # self.tr(u"You don't have rights to write in this folder. "\
+                            # "Please, select another one!"),
+                            # QMessageBox.Ok, QMessageBox.Ok)
+                    # else:
+                        # raise
+                    # self.browseDir()
+                # else:
+                    # return True
+            # # if the folder doesn't exist and can't be created then choose another directory
+            # elif e.errno in (errno.EACCES, errno.EPERM):
+                # QMessageBox.warning(None, self.tr(u'Unable to use the directory'),
+                    # self.tr(u"You don't have rights to create or use such a folder. " \
+                    # "Please, select another one!"),
+                    # QMessageBox.Ok, QMessageBox.Ok)
+                # self.browseDir()
+            # # for anything else, let user know (mind if it's worth!?)
+            # else:
+                # QMessageBox.warning(None, self.tr(u'An error occurred : '),
+                    # u'{}'.format(e), QMessageBox.Ok, QMessageBox.Ok)
+                # self.browseDir()
+        # else: # if it is created with no exception
+            # return True
+
+    # def setDefaultDir(self, extension):
+        # """Find the last used directory depending on the format."""
+
+        # settings = QSettings()
+        # # keep in memory the output folder
+        # if extension == '.pdf':
+            # QSettings().setValue('/UI/lastSaveAsPdfFile', folder)
+        # elif extension == '.svg':
+            # QSettings().setValue('/UI/lastSaveAsSvgFile', folder)
+        # else:
+            # QSettings().setValue('/UI/lastSaveAsImageDir', folder)
