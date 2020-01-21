@@ -27,10 +27,10 @@ __revision__ = '$Format:%H$'
 
 import os
 from qgis.PyQt.QtWidgets import QListWidgetItem
-from qgis.PyQt.QtCore import Qt, QCoreApplication, QSettings 
+from qgis.PyQt.QtCore import Qt, QCoreApplication, QSettings
 from qgis.PyQt.QtGui import QImageWriter
 
-from qgis.core import QgsLayoutExporter
+from qgis.core import QgsLayoutExporter, QgsFeedback
 
 class Processor:
     """
@@ -49,7 +49,7 @@ class Processor:
             item.setText(nameCompo)
             w.addItem(item)
 
-    def listFormat():
+    def listFormat(self):
         """List all the file formats we can export to."""
 
         formats = [
@@ -65,7 +65,7 @@ class Processor:
 
         return formats
 
-    def setFormat(value):
+    def setFormat(self, value):
         """Retrieves the format suffix to append to the output file."""
 
         try:
@@ -75,11 +75,11 @@ class Processor:
             f = ''
         return f
 
-    def findActiveDir( extension ):
+    def findActiveDir(self, extension ):
         """Find the last used directory depending on the format."""
 
         settings = QSettings()
-        shortExt = Processor.setFormat(extension).lower()
+        shortExt = self.setFormat(extension).lower()
         if shortExt == '.pdf' : # if extension is pdf
             dir = settings.value('/UI/lastSaveAsPdfFile')
         elif shortExt == '.svg' : # if extension is svg
@@ -91,7 +91,7 @@ class Processor:
 
     def exportCompo(self, cView, folder, title, extension):
         """Function that sets how to export files.
-        Returns a file 
+        Returns a file
         :param cView: The print layout to export
         :param folder: The folder in which to store the output file
         :param title: The print layout name
@@ -104,15 +104,15 @@ class Processor:
         myAtlas = cView.atlas()
 
         #Let's use custom export properties if there are
-        exportSettings = Processor.overrideExportSettings(cView, extension)
+        exportSettings = self.overrideExportSettings(cView, extension)
 
         # Do the export process
         exporter = QgsLayoutExporter(cView)
 
         # Allow export cancelation
-        QCoreApplication.processEvents()
-        self.buttonBox.rejected.connect(self.stopProcessing)
-        
+        #QCoreApplication.processEvents()
+        #self.buttonBox.rejected.connect(self.stopProcessing)
+
         if myAtlas.enabled():
             # for i in range(0, myAtlas.count()):
             feedback = QgsFeedback()
@@ -120,9 +120,9 @@ class Processor:
             # Allow to listen to changes and increase progressbar
             # or abort the operation
             # with process input events
-            QCoreApplication.processEvents()
-            self.buttonBox.rejected.connect(feedback.cancel)
-            feedback.progressChanged.connect(self.pageProcessed)
+            #QCoreApplication.processEvents()
+            #self.buttonBox.rejected.connect(feedback.cancel)
+            #feedback.progressChanged.connect(self.pageProcessed)
 
             # if single file export is required (only compatible with pdf, yet)
             # singleFile can be true and None in that case
@@ -130,17 +130,17 @@ class Processor:
                 result, error = exporter.exportToPdf(myAtlas, os.path.join(folder, title + '.pdf'), exportSettings, feedback)
 
             else: #If instead multiple files will be output
-            
+
                 # Check if there's a valid expression for filenames,
                 # and otherwise inform that a default one will be used and set it using the layout name.
                 # replacement in the GUI is failing at the moment
-                if len(myAtlas.filenameExpression()) == 0:
-                    self.iface.messageBar().pushMessage(
-                        self.tr(u'Empty filename expression'),
-                        self.tr(u'The print layout "{}" has an empty output filename expression. {}_@atlas_pagename is used as default.').format(title, title),
-                        level = Qgis.Warning
-                        )
-                    myAtlas.setFilenameExpression(u"'{}_'||@atlas_pagename".format(title))
+                # if len(myAtlas.filenameExpression()) == 0:
+                #     self.iface.messageBar().pushMessage(
+                #         self.tr(u'Empty filename expression'),
+                #         self.tr(u'The print layout "{}" has an empty output filename expression. {}_@atlas_pagename is used as default.').format(title, title),
+                #         level = Qgis.Warning
+                #         )
+                #     myAtlas.setFilenameExpression(u"'{}_'||@atlas_pagename".format(title))
 
                 current_fileName = myAtlas.filenameExpression()
 
@@ -170,11 +170,12 @@ class Processor:
                 result = exporter.exportToImage(os.path.join(folder, title + extension), exportSettings)
 
         # When the export fails (eg it's aborted)
-        if not result == QgsLayoutExporter.Success:
-            #print( 'noresult')
-            self.stopProcessing()
+        # if not result == QgsLayoutExporter.Success:
+        #     #print( 'noresult')
+        #     self.stopProcessing()
+        return result == QgsLayoutExporter.Success
 
-    def overrideExportSettings(layout, extension):
+    def overrideExportSettings(self, layout, extension):
         """Because GUI settings are not exposed in Python, we need to find and catch user selection
            See discussion at http://osgeo-org.1560.x6.nabble.com/Programmatically-export-layout-with-georeferenced-file-td5365462.html"""
 
