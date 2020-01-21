@@ -118,6 +118,7 @@ class ExportLayoutsFromProject(QgsProcessingAlgorithm):
         # if not layoutIds:
             # layoutIds = self.layoutList.keys()
         exportedCount = 0
+        current = 0
 
         if not os.path.isdir(outputFolder):
             feedback.reportError(self.tr('\nERROR: No valid output folder given. We cannot continue...\n'))
@@ -125,10 +126,15 @@ class ExportLayoutsFromProject(QgsProcessingAlgorithm):
             feedback.reportError(self.tr('\nERROR: No valid extension selected for output. We cannot continue...\n'))
         else:
             for layout in layoutIds:
+                if feedback.isCanceled():
+                    feedback.pushInfo(self.tr("Export aborted!"))
+                    break
+
                 title = self.layoutList[layout]
                 cView = QgsProject.instance().layoutManager().layoutByName(title)
                 #feedback.pushInfo('cView= {}, Title=  {}, extension=  {},  outputFolder=  {}'.format(cView, title, extension, outputFolder))
 
+                feedback.pushInfo(self.tr("total layoutIds '{}'").format( len(layoutIds) ) )
                 feedback.pushInfo(self.tr("Exporting layout '{}'").format( title ) )
                 result = self.processor.exportCompo(cView, outputFolder, title, extension)
                 if result:
@@ -136,6 +142,9 @@ class ExportLayoutsFromProject(QgsProcessingAlgorithm):
                     exportedCount += 1
                 else:
                     feedback.reportError(self.tr('      Layout could not be exported!'))
+
+                current += 1
+                feedback.setProgress(current * 100 / len(layoutIds))
 
             EXPORTEDLAYOUTS = exportedCount
             feedback.pushInfo( self.tr('End of export!'))
