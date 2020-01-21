@@ -25,6 +25,7 @@
 
 __revision__ = '$Format:%H$'
 
+import os.path
 from qgis.core import QgsProject
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtGui import QImageWriter
@@ -36,7 +37,7 @@ from qgis.core import (QgsProcessingAlgorithm,
 from MapsPrinter.gui_utils import GuiUtils
 from MapsPrinter.processor import Processor
 
-class ExportFromProjectAlgorithm(QgsProcessingAlgorithm):
+class ExportLayoutsFromProject(QgsProcessingAlgorithm):
     """
     This is an example algorithm that takes a vector layer and
     creates a new identical one.
@@ -83,7 +84,7 @@ class ExportFromProjectAlgorithm(QgsProcessingAlgorithm):
         self.addParameter(
             QgsProcessingParameterEnum(
                 self.EXTENSION,
-                self.tr('File format to export to'),
+                self.tr('Extension for exported maps'),
                 options=self.listFormats,
                 defaultValue=11)
         )
@@ -91,7 +92,7 @@ class ExportFromProjectAlgorithm(QgsProcessingAlgorithm):
         self.addParameter(
             QgsProcessingParameterFolderDestination(
                 self.OUTPUT,
-                self.tr('Output folder')
+                self.tr('Output folder where to save maps')
             )
         )
 
@@ -109,30 +110,42 @@ class ExportFromProjectAlgorithm(QgsProcessingAlgorithm):
 
         extensionId = self.parameterAsEnum(parameters, self.EXTENSION, context)
         extension = self.processor.setFormat(self.listFormats[extensionId])
-    
-        output_folder = self.parameterAsFile(parameters, self.OUTPUT, context)
+
+        outputFolder = self.parameterAsFile(parameters, self.OUTPUT, context)
 
         layoutIds = self.parameterAsEnums(parameters, self.LAYOUTS, context)
         # # Todo: if no layout is checked, pick them all
         # if not layoutIds:
             # layoutIds = self.layoutList.keys()
-        processedLayouts = 0
-        
-        for layout in layoutIds:
-            title = self.layoutList[layout]
-            cView = QgsProject.instance().layoutManager().layoutByName(title)
-            feedback.pushInfo( "cView = {}, Title=  {}, extensionId=  {}, extension=  {},  output_folder=  {}".format(cView, title, extensionId, extension, output_folder)
-                )
-            feedback.pushInfo( "Exporting layout '{}'".format( title ) )
-            self.processor.exportCompo(cView, output_folder, title, extension)
-            processedLayouts += 1
+        exportedCount = 0
 
-        EXPORTEDLAYOUTS = processedLayouts
-        feedback.pushInfo( "End of export!'" )
-        
-        return {self.EXPORTEDLAYOUTS: EXPORTEDLAYOUTS,
-                self.OUTPUT: output_folder
-                }
+        if not os.path.isdir(outputFolder):
+            feedback.reportError(self.tr('\nERROR: No valid output folder given. We cannot continue...\n'))
+        elif not extensionId:
+            feedback.reportError(self.tr('\nERROR: No valid extension selected for output. We cannot continue...\n'))
+        else:
+            for layout in layoutIds:
+                title = self.layoutList[layout]
+                cView = QgsProject.instance().layoutManager().layoutByName(title)
+                #feedback.pushInfo('cView= {}, Title=  {}, extension=  {},  outputFolder=  {}'.format(cView, title, extension, outputFolder))
+
+                feedback.pushInfo(self.tr("Exporting layout '{}'").format( title ) )
+                result = self.processor.exportCompo(cView, outputFolder, title, extension)
+                if result:
+                    feedback.pushInfo(self.tr('      Layout exported!'))
+                    exportedCount += 1
+                else:
+                    feedback.reportError(self.tr('      Layout could not be exported!'))
+
+            EXPORTEDLAYOUTS = exportedCount
+            feedback.pushInfo( self.tr('End of export!'))
+
+        if exportedCount:
+            return {self.EXPORTEDLAYOUTS: exportedCount,
+                    self.OUTPUT: outputFolder
+                   }
+        else:
+            return {self.OUTPUT: None}
 
     def name(self):
         """
@@ -142,43 +155,25 @@ class ExportFromProjectAlgorithm(QgsProcessingAlgorithm):
         lowercase alphanumeric characters only and no spaces or other
         formatting characters.
         """
-        return 'exportlayoutsfromproject'
+        return 'ExportLayoutsFromProject'
 
     def displayName(self):
         """
         Returns the translated algorithm name, which should be used for any
         user-visible display of the algorithm name.
         """
-        return self.tr("Export layouts from a project")
-
-    def group(self):
-        """
-        Returns the name of the group this algorithm belongs to. This string
-        should be localised.
-        """
-        return self.tr(self.groupId())
-
-    def groupId(self):
-        """
-        Returns the unique ID of the group this algorithm belongs to. This
-        string should be fixed for the algorithm, and must not be localised.
-        The group id should be unique within each provider. Group id should
-        contain lowercase alphanumeric characters only and no spaces or other
-        formatting characters.
-        """
-        return 'Cartography'
+        return self.tr('Export layouts from project')
 
     def tr(self, string):
-        return QCoreApplication.translate('Processing', string)
+        return QCoreApplication.translate('ExportLayoutsFromProject', string)
 
     def createInstance(self):
-        return ExportFromProjectAlgorithm()
+        return ExportLayoutsFromProject()
 
     def shortDescription(self):  # pylint: disable=missing-docstring
-        return self.tr("Exports a set of print layouts in the project to pdf, svg or image file formats " \
-               "to an indicated folder.")
+        return self.tr("Exports print layouts of the current project file to pdf, svg or image file formats." )
 
-    # def shortHelpString(self): 
+    # def shortHelpString(self):
         # return self.tr("Exports a set of print layouts in the project to pdf, svg or image file formats " \
                # "to an indicated folder.")
 
@@ -186,7 +181,7 @@ class ExportFromProjectAlgorithm(QgsProcessingAlgorithm):
         # return GuiUtils.showHelp()
 
     def tag(self):
-        return self.tr("print,layout,export,image,pdf,svg,map")
+        return self.tr("print,layout,export,composer,image,pdf,svg,map")
 
     def flags(self):
         """ Important: this algorithm should run in the main thread """

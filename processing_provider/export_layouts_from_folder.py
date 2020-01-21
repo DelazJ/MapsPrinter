@@ -43,12 +43,6 @@ class ExportLayoutsFromFolder(QgsProcessingAlgorithm):
     def createInstance(self):
         return type(self)()
 
-    def group(self):
-        return QCoreApplication.translate("ExportLayoutsFromFolder", "Cartography")
-
-    def groupId(self):
-        return 'Cartography'
-
     def tags(self):
         return (QCoreApplication.translate("ExportLayoutsFromFolder", 'layout,composer,map,printer,batch,project,folder')).split(',')
 
@@ -95,6 +89,10 @@ class ExportLayoutsFromFolder(QgsProcessingAlgorithm):
         """ Important: this algorithm should run in the main thread """
         return super().flags() | QgsProcessingAlgorithm.FlagNoThreading
 
+    def shortDescription(self):  # pylint: disable=missing-docstring
+        return QCoreApplication.translate("ExportLayoutsFromFolder", "Exports print layouts of the project files in a folder " \
+               "to pdf, svg or image file formats.")
+
     def processAlgorithm(self, parameters, context, feedback):
         Projects_folder = self.parameterAsString(parameters, self.PROJECTS_FOLDER, context)
         extensionId = self.parameterAsEnum(parameters, self.EXTENSION, context)
@@ -107,31 +105,61 @@ class ExportLayoutsFromFolder(QgsProcessingAlgorithm):
         exported_count = 0
 
         if not len(projectPaths):
-            feedback.reportError("\nERROR: No QGIS project files (.qgs or .qgz) found in the specified folder. We cannot continue...\n")
+            feedback.reportError(
+                QCoreApplication.translate(
+                    "ExportLayoutsFromFolder",
+                    "\nERROR: No QGIS project files (.qgs or .qgz) found in the specified folder. We cannot continue...\n"
+                    )
+                )
         elif not os.path.isdir(Output_folder):
-            feedback.reportError("\nERROR: No output folder given. We cannot continue...\n")
+            feedback.reportError(
+                QCoreApplication.translate(
+                    "ExportLayoutsFromFolder",
+                    "\nERROR: No valid output folder given. We cannot continue...\n"
+                )
+            )
         else:
             project = QgsProject.instance()
 
             # Do the work!
             for projectPath in projectPaths:
                 project.read(projectPath)
-                feedback.pushInfo("\n'{}' project read!!".format(projectPath))
+                feedback.pushInfo(
+                    QCoreApplication.translate(
+                        "ExportLayoutsFromFolder", "\n'{}' project read!!".format(projectPath)
+                    )
+                )
                 feedback.setProgress(count * 100 / len(projectPaths))
                 count += 1
 
                 for composer in project.layoutManager().layouts():
-                    feedback.pushInfo("\n --> Layout found: '{}'!".format(composer.name()))
+                    feedback.pushInfo(
+                        QCoreApplication.translate(
+                            "ExportLayoutsFromFolder", "\n --> Layout found: '{}'!".format(composer.name())
+                        )
+                    )
                     title = composer.name()
                     title = project.baseName() + '_' + title
                     result = self.processor.exportCompo(composer, Output_folder, title, extension)
                     if result:
-                        feedback.pushInfo("      Layout exported!")
+                        feedback.pushInfo(
+                            QCoreApplication.translate(
+                                "ExportLayoutsFromFolder", "      Layout exported!"
+                            )
+                        )
                         exported_count += 1
                     else:
-                        feedback.reportError("      Layout could not be exported!")
+                        feedback.reportError(
+                            QCoreApplication.translate(
+                                "ExportLayoutsFromFolder", "      Layout could not be exported!!"
+                            )
+                        )
 
             if exported_count:
-                feedback.pushInfo("\nINFO: {} map(s) were saved in '{}'\n".format(exported_count, Output_folder))
+                feedback.pushInfo(
+                    QCoreApplication.translate(
+                        "ExportLayoutsFromFolder", "\nINFO: {} layout(s) were exported to '{}'\n".format(exported_count, Output_folder)
+                    )
+                )
 
         return {self.OUTPUT: Output_folder if exported_count else None}
