@@ -38,12 +38,11 @@ from .processing_provider.maps_printer_provider import MapsPrinterProvider
 
 # Initialize Qt resources from file resources.py
 from . import resources_rc
-# Import the code for the dialog
-from .maps_printer_dialog import MapsPrinterDialog
+# Import code
 from .gui_utils import GuiUtils
 
 
-class MapsPrinter(object):
+class MapsPrinter():
     """QGIS Plugin Implementation."""
 
     def __init__(self, iface):
@@ -73,9 +72,6 @@ class MapsPrinter(object):
             if qVersion() > '4.3.3':
                 QCoreApplication.installTranslator(self.translator)
 
-        # Create the dialog (after translation) and keep reference
-        self.dlg = MapsPrinterDialog(iface)
-
 
     # noinspection PyMethodMayBeStatic
 
@@ -98,8 +94,12 @@ class MapsPrinter(object):
 
         self.initProcessing()
         # Create action that will start plugin configuration
-        self.action = QAction(GuiUtils.get_icon('icon.png'),
-                              self.tr(u'Export multiple print layouts'),
+        self.exportProject = QAction(GuiUtils.get_icon('icon.png'),
+                              self.tr(u'Export layouts from project'),
+                              self.iface.mainWindow()
+                              )
+        self.exportFolder = QAction(GuiUtils.get_icon('icon.png'),
+                              self.tr(u'Export layouts from folder'),
                               self.iface.mainWindow()
                               )
         self.helpAction = QAction(GuiUtils.get_icon('about.png'),
@@ -107,12 +107,14 @@ class MapsPrinter(object):
                                   )
 
         # Connect the action to the run method
-        self.action.triggered.connect(self.run)
+        #self.exportProject.triggered.connect(MapsPrinterProvider.algorithm(ExportLayoutsFromProject))
+        self.exportProject.triggered.connect(self.run)
+        self.exportFolder.triggered.connect(self.run)
         self.helpAction.triggered.connect(GuiUtils.showHelp)
 
         # Add toolbar button and menu item0
-        self.iface.addToolBarIcon(self.action)
-        self.iface.addPluginToMenu(u'&Maps Printer', self.action)
+        self.iface.addPluginToMenu(u'&Maps Printer', self.exportProject)
+        self.iface.addPluginToMenu(u'&Maps Printer', self.exportFolder)
         self.iface.addPluginToMenu(u'&Maps Printer', self.helpAction)
 
     def initProcessing(self):
@@ -123,9 +125,9 @@ class MapsPrinter(object):
         """Removes the plugin menu item and icon from QGIS GUI."""
 
         QgsApplication.processingRegistry().removeProvider(self.provider)
-        self.iface.removePluginMenu(u'&Maps Printer', self.action)
+        self.iface.removePluginMenu(u'&Maps Printer', self.exportProject)
+        self.iface.removePluginMenu(u'&Maps Printer', self.exportFolder)
         self.iface.removePluginMenu(u'&Maps Printer', self.helpAction)
-        self.iface.removeToolBarIcon(self.action)
 
     def run(self):
         """Run method that performs all the real work."""
@@ -138,16 +140,4 @@ class MapsPrinter(object):
                 'Please create at least one before running this plugin.'),
                 level = Qgis.Info, duration = 5
                 )
-            self.dlg.close()
-        else:
-            self.dlg.renameDialog()
-            # show the dialog and fill the widget the first time
-            if not self.dlg.isVisible():
-                self.dlg.populateLayoutList(self.dlg.layoutList)
-                self.dlg.show()
-            else:
-                # if the dialog is already opened but not on top of other windows
-                # Put it on the top of all other widgets,
-                self.dlg.activateWindow()
-                # update the list of layouts and keep the previously selected options in the dialog
-                self.dlg.refreshList()
+
