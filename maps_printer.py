@@ -26,6 +26,7 @@ from builtins import range
 from builtins import object
 import os.path
 import sys
+from functools import partial
 
 
 from qgis.PyQt.QtCore import QSettings, QTranslator, qVersion, QCoreApplication
@@ -34,16 +35,16 @@ from qgis.PyQt.QtWidgets import QAction, QApplication
 from qgis.core import Qgis, QgsApplication, QgsProject
 from qgis.gui import QgsMessageBar
 
+from processing import execAlgorithmDialog #should be moved to qgis.processing when min supported version >= 3.8
 from .processing_provider.maps_printer_provider import MapsPrinterProvider
 
 # Initialize Qt resources from file resources.py
 from . import resources_rc
-# Import the code for the dialog
-from .maps_printer_dialog import MapsPrinterDialog
+# Import code
 from .gui_utils import GuiUtils
 
 
-class MapsPrinter(object):
+class MapsPrinter():
     """QGIS Plugin Implementation."""
 
     def __init__(self, iface):
@@ -72,9 +73,6 @@ class MapsPrinter(object):
             if qVersion() > '4.3.3':
                 QCoreApplication.installTranslator(self.translator)
 
-        # Create the dialog (after translation) and keep reference
-        self.dlg = MapsPrinterDialog(iface)
-
 
     # noinspection PyMethodMayBeStatic
 
@@ -97,56 +95,46 @@ class MapsPrinter(object):
 
         self.initProcessing()
         # Create action that will start plugin configuration
-        self.action = QAction(GuiUtils.get_icon('icon.png'),
-                              self.tr(u'Export multiple print layouts'),
+        self.exportFolder = QAction(GuiUtils.get_icon('icon.png'),
+                              self.tr(u'Export layouts from folder'),
+                              self.iface.mainWindow()
+                              )
+        self.exportProject = QAction(GuiUtils.get_icon('icon.png'),
+                              self.tr(u'Export layouts from project'),
                               self.iface.mainWindow()
                               )
         self.helpAction = QAction(GuiUtils.get_icon('about.png'),
                                   self.tr(u'Help'), self.iface.mainWindow()
                                   )
 
-        # Connect the action to the run method
-        self.action.triggered.connect(self.run)
+        # Connect the action to the openDialog method
+        self.exportFolder.triggered.connect(partial(self.openDialog, self.exportFolder))
+        self.exportProject.triggered.connect(partial(self.openDialog, self.exportProject))
         self.helpAction.triggered.connect(GuiUtils.showHelp)
 
         # Add toolbar button and menu item0
-        self.iface.addToolBarIcon(self.action)
-        self.iface.addPluginToMenu(u'&Maps Printer', self.action)
+        self.iface.addPluginToMenu(u'&Maps Printer', self.exportFolder)
+        self.iface.addPluginToMenu(u'&Maps Printer', self.exportProject)
         self.iface.addPluginToMenu(u'&Maps Printer', self.helpAction)
 
     def initProcessing(self):
         QgsApplication.processingRegistry().addProvider(MapsPrinterProvider())
 
     def unload(self):
-        """Removes the plugin menu item and icon from QGIS GUI."""
+        """Removes the plugin provider, menu item and icon from QGIS GUI."""
 
         QgsApplication.processingRegistry().removeProvider('mapsprinter')
 
-        self.iface.removePluginMenu(u'&Maps Printer', self.action)
+        self.iface.removePluginMenu(u'&Maps Printer', self.exportFolder)
+        self.iface.removePluginMenu(u'&Maps Printer', self.exportProject)
         self.iface.removePluginMenu(u'&Maps Printer', self.helpAction)
-        self.iface.removeToolBarIcon(self.action)
 
-    def run(self):
-        """Run method that performs all the real work."""
+    def openDialog(self, button):
+        """Shortcut method to open the algorithm dialog."""
 
-        # when no layout is in the project, display a message about the lack of layouts and exit
-        if len(QgsProject.instance().layoutManager().printLayouts()) == 0:
-            self.iface.messageBar().pushMessage(
-                'Maps Printer : ',
-                self.tr(u'There is currently no print layout in the project. '\
-                'Please create at least one before running this plugin.'),
-                level = Qgis.Info, duration = 5
-                )
-            self.dlg.close()
-        else:
-            self.dlg.renameDialog()
-            # show the dialog and fill the widget the first time
-            if not self.dlg.isVisible():
-                self.dlg.populateLayoutList(self.dlg.layoutList)
-                self.dlg.show()
-            else:
-                # if the dialog is already opened but not on top of other windows
-                # Put it on the top of all other widgets,
-                self.dlg.activateWindow()
-                # update the list of layouts and keep the previously selected options in the dialog
-                self.dlg.refreshList()
+        params = {}
+        
+        if button == self.exportFolder:
+            alg = execAlgorithmDialog('mapsprinter:ExportLayoutsFromFolder', params)
+        elif button == self.exportProject:
+            alg = execAlgorithmDialog('mapsprinter:ExportLayoutsFromProject', params)
