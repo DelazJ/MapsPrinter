@@ -20,20 +20,13 @@
  *                                                                         *
  ***************************************************************************/
 """
-from __future__ import absolute_import
-from builtins import str
-from builtins import range
-from builtins import object
+
 import os.path
-import sys
 from functools import partial
 
-
 from qgis.PyQt.QtCore import QSettings, QTranslator, qVersion, QCoreApplication
-from qgis.PyQt.QtWidgets import QAction, QApplication
-
-from qgis.core import Qgis, QgsApplication, QgsProject
-from qgis.gui import QgsMessageBar
+from qgis.PyQt.QtWidgets import QAction
+from qgis.core import QgsApplication
 
 from processing import execAlgorithmDialog #should be moved to qgis.processing when min supported version >= 3.8
 from .processing_provider.maps_printer_provider import MapsPrinterProvider
@@ -100,11 +93,11 @@ class MapsPrinter():
                               self.iface.mainWindow()
                               )
         self.exportProject = QAction(GuiUtils.get_icon('icon.png'),
-                              self.tr(u'Export layouts from project'),
+                              self.tr('Export layouts from project'),
                               self.iface.mainWindow()
                               )
         self.helpAction = QAction(GuiUtils.get_icon('about.png'),
-                                  self.tr(u'Help'), self.iface.mainWindow()
+                                  self.tr('Help'), self.iface.mainWindow()
                                   )
 
         # Connect the action to the openDialog method
@@ -113,9 +106,9 @@ class MapsPrinter():
         self.helpAction.triggered.connect(GuiUtils.showHelp)
 
         # Add toolbar button and menu item0
-        self.iface.addPluginToMenu(u'&Maps Printer', self.exportFolder)
-        self.iface.addPluginToMenu(u'&Maps Printer', self.exportProject)
-        self.iface.addPluginToMenu(u'&Maps Printer', self.helpAction)
+        self.iface.addPluginToMenu('&Maps Printer', self.exportFolder)
+        self.iface.addPluginToMenu('&Maps Printer', self.exportProject)
+        self.iface.addPluginToMenu('&Maps Printer', self.helpAction)
 
     def initProcessing(self):
         QgsApplication.processingRegistry().addProvider(MapsPrinterProvider())
@@ -125,9 +118,9 @@ class MapsPrinter():
 
         QgsApplication.processingRegistry().removeProvider('mapsprinter')
 
-        self.iface.removePluginMenu(u'&Maps Printer', self.exportFolder)
-        self.iface.removePluginMenu(u'&Maps Printer', self.exportProject)
-        self.iface.removePluginMenu(u'&Maps Printer', self.helpAction)
+        self.iface.removePluginMenu('&Maps Printer', self.exportFolder)
+        self.iface.removePluginMenu('&Maps Printer', self.exportProject)
+        self.iface.removePluginMenu('&Maps Printer', self.helpAction)
 
     def openDialog(self, button):
         """Shortcut method to open the algorithm dialog."""
