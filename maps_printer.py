@@ -26,6 +26,7 @@ from builtins import range
 from builtins import object
 import os.path
 import sys
+from functools import partial
 
 
 from qgis.PyQt.QtCore import QSettings, QTranslator, qVersion, QCoreApplication
@@ -94,12 +95,12 @@ class MapsPrinter():
 
         self.initProcessing()
         # Create action that will start plugin configuration
-        self.exportProject = QAction(GuiUtils.get_icon('icon.png'),
-                              self.tr(u'Export layouts from project'),
-                              self.iface.mainWindow()
-                              )
         self.exportFolder = QAction(GuiUtils.get_icon('icon.png'),
                               self.tr(u'Export layouts from folder'),
+                              self.iface.mainWindow()
+                              )
+        self.exportProject = QAction(GuiUtils.get_icon('icon.png'),
+                              self.tr(u'Export layouts from project'),
                               self.iface.mainWindow()
                               )
         self.helpAction = QAction(GuiUtils.get_icon('about.png'),
@@ -107,13 +108,13 @@ class MapsPrinter():
                                   )
 
         # Connect the action to the openDialog method
-        self.exportProject.triggered.connect(self.openDialog)
-        self.exportFolder.triggered.connect(self.openDialog)
+        self.exportFolder.triggered.connect(partial(self.openDialog, self.exportFolder))
+        self.exportProject.triggered.connect(partial(self.openDialog, self.exportProject))
         self.helpAction.triggered.connect(GuiUtils.showHelp)
 
         # Add toolbar button and menu item0
-        self.iface.addPluginToMenu(u'&Maps Printer', self.exportProject)
         self.iface.addPluginToMenu(u'&Maps Printer', self.exportFolder)
+        self.iface.addPluginToMenu(u'&Maps Printer', self.exportProject)
         self.iface.addPluginToMenu(u'&Maps Printer', self.helpAction)
 
     def initProcessing(self):
@@ -124,13 +125,16 @@ class MapsPrinter():
 
         QgsApplication.processingRegistry().removeProvider('mapsprinter')
 
-        self.iface.removePluginMenu(u'&Maps Printer', self.exportProject)
         self.iface.removePluginMenu(u'&Maps Printer', self.exportFolder)
+        self.iface.removePluginMenu(u'&Maps Printer', self.exportProject)
         self.iface.removePluginMenu(u'&Maps Printer', self.helpAction)
 
-    def openDialog(self):
+    def openDialog(self, button):
         """Shortcut method to open the algorithm dialog."""
 
         params = {}
-        alg = execAlgorithmDialog('mapsprinter:ExportLayoutsFromFolder', params)
-
+        
+        if button == self.exportFolder:
+            alg = execAlgorithmDialog('mapsprinter:ExportLayoutsFromFolder', params)
+        elif button == self.exportProject:
+            alg = execAlgorithmDialog('mapsprinter:ExportLayoutsFromProject', params)
