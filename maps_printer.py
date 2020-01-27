@@ -34,6 +34,7 @@ from qgis.PyQt.QtWidgets import QAction, QApplication
 from qgis.core import Qgis, QgsApplication, QgsProject
 from qgis.gui import QgsMessageBar
 
+from processing import execAlgorithmDialog #should be moved to qgis.processing when min supported version >= 3.8
 from .processing_provider.maps_printer_provider import MapsPrinterProvider
 
 # Initialize Qt resources from file resources.py
@@ -106,10 +107,9 @@ class MapsPrinter():
                                   self.tr(u'Help'), self.iface.mainWindow()
                                   )
 
-        # Connect the action to the run method
-        #self.exportProject.triggered.connect(MapsPrinterProvider.algorithm(ExportLayoutsFromProject))
-        self.exportProject.triggered.connect(self.run)
-        self.exportFolder.triggered.connect(self.run)
+        # Connect the action to the openDialog method
+        self.exportProject.triggered.connect(self.openDialog)
+        self.exportFolder.triggered.connect(self.openDialog)
         self.helpAction.triggered.connect(GuiUtils.showHelp)
 
         # Add toolbar button and menu item0
@@ -129,15 +129,9 @@ class MapsPrinter():
         self.iface.removePluginMenu(u'&Maps Printer', self.exportFolder)
         self.iface.removePluginMenu(u'&Maps Printer', self.helpAction)
 
-    def run(self):
-        """Run method that performs all the real work."""
+    def openDialog(self):
+        """Shortcut method to open the algorithm dialog."""
 
-        # when no layout is in the project, display a message about the lack of layouts and exit
-        if len(QgsProject.instance().layoutManager().printLayouts()) == 0:
-            self.iface.messageBar().pushMessage(
-                'Maps Printer : ',
-                self.tr(u'There is currently no print layout in the project. '\
-                'Please create at least one before running this plugin.'),
-                level = Qgis.Info, duration = 5
-                )
+        params = {}
+        alg = execAlgorithmDialog('mapsprinter:ExportLayoutsFromFolder', params)
 
