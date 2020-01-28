@@ -1,3 +1,5 @@
-FORMS = ../maps_printer_dialog_base.ui
-SOURCES = ../maps_printer_dialog_base.py ../maps_printer.py
-TRANSLATIONS = MapsPrinter_fr.ts
+SOURCES = ../maps_printer.py ../processor.py \
+          ../processing_provider/maps_printer_provider.py \
+          ../processing_provider/export_layouts_from_folder.py \
+          ../processing_provider/export_layouts_from_project.py
+TRANSLATIONS = MapsPrinter_fr.ts MapsPrinter_es.fr

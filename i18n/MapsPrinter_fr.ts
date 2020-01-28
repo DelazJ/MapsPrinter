@@ -1,200 +1,325 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.0" language="fr_FR" sourcelanguage="en">
+<!DOCTYPE TS><TS version="2.0" language="fr_FR" sourcelanguage="en">
+<context>
+    <name>ExportLayoutsFromFolder</name>
+    <message>
+        <location filename="../processing_provider/export_layouts_from_folder.py" line="47"/>
+        <source>layout,composer,map,printer,batch,project,folder</source>
+        <translation>mise en page,composeur,carte,impression,batch,projet,dossier</translation>
+    </message>
+    <message>
+        <location filename="../processing_provider/export_layouts_from_folder.py" line="55"/>
+        <source>Projects folder</source>
+        <translation>Dossier de projets</translation>
+    </message>
+    <message>
+        <location filename="../processing_provider/export_layouts_from_folder.py" line="62"/>
+        <source>Extension for exported maps</source>
+        <translation>Format d&apos;export des cartes</translation>
+    </message>
+    <message>
+        <location filename="../processing_provider/export_layouts_from_folder.py" line="69"/>
+        <source>Output folder where to save maps</source>
+        <translation>Dossier d&apos;export des cartes</translation>
+    </message>
+    <message>
+        <location filename="../processing_provider/export_layouts_from_folder.py" line="75"/>
+        <source>Output</source>
+        <translation>Sortie</translation>
+    </message>
+    <message>
+        <location filename="../processing_provider/export_layouts_from_folder.py" line="86"/>
+        <source>Export layouts from folder</source>
+        <translation>Export de mises en page depuis un dossier</translation>
+    </message>
+    <message>
+        <location filename="../processing_provider/export_layouts_from_folder.py" line="93"/>
+        <source>Exports print layouts of the project files in a folder to pdf, svg or image file formats.</source>
+        <translation>Exporte au format pdf, svg ou image (jpg, png, tif...) les mises en page contenues dans les projets d&apos;un dossier.</translation>
+    </message>
+    <message>
+        <location filename="../processing_provider/export_layouts_from_folder.py" line="108"/>
+        <source>
+ERROR: No QGIS project files (.qgs or .qgz) found in the specified folder. We cannot continue...
+</source>
+        <translation>
+ERREUR: Pas de fichier projet (qgs ou qgz) trouvé dans le dossier indiqué. Impossible de continuer...
+</translation>
+    </message>
+    <message>
+        <location filename="../processing_provider/export_layouts_from_folder.py" line="115"/>
+        <source>
+ERROR: No valid output folder given. We cannot continue...
+</source>
+        <translation>
+ERREUR: Le dossier de sortie indiqué n&apos;est pas valide. Impossible de continuer...
+</translation>
+    </message>
+    <message>
+        <location filename="../processing_provider/export_layouts_from_folder.py" line="152"/>
+        <source>      Layout exported!</source>
+        <translation>      Mise en page exportée!</translation>
+    </message>
+    <message>
+        <location filename="../processing_provider/export_layouts_from_folder.py" line="159"/>
+        <source>      Layout could not be exported!!</source>
+        <translation>      La mise en page n&apos;a pas pu être exportée!</translation>
+    </message>
+    <message>
+        <location filename="../processing_provider/export_layouts_from_folder.py" line="122"/>
+        <source>
+ERROR: No valid extension selected for output. We cannot continue...
+</source>
+        <translation>
+ERREUR: Le format de sortie indiqué n&apos;est pas valide. Impossible de continuer...
+</translation>
+    </message>
+</context>
+<context>
+    <name>ExportLayoutsFromProject</name>
+    <message>
+        <location filename="../processing_provider/export_layouts_from_project.py" line="74"/>
+        <source>Layouts to export</source>
+        <translation>Mises en page à exporter</translation>
+    </message>
+    <message>
+        <location filename="../processing_provider/export_layouts_from_project.py" line="84"/>
+        <source>Extension for exported maps</source>
+        <translation>Format d&apos;export des cartes</translation>
+    </message>
+    <message>
+        <location filename="../processing_provider/export_layouts_from_project.py" line="92"/>
+        <source>Output folder where to save maps</source>
+        <translation>Dossier d&apos;export des cartes</translation>
+    </message>
+    <message>
+        <location filename="../processing_provider/export_layouts_from_project.py" line="99"/>
+        <source>Number of layouts exported</source>
+        <translation>Nombre de mises en pages exportées</translation>
+    </message>
+    <message>
+        <location filename="../processing_provider/export_layouts_from_project.py" line="124"/>
+        <source>
+ERROR: No valid output folder given. We cannot continue...
+</source>
+        <translation>
+ERREUR: Le dossier de sortie indiqué n&apos;est pas valide. Impossible de continuer...
+</translation>
+    </message>
+    <message>
+        <location filename="../processing_provider/export_layouts_from_project.py" line="126"/>
+        <source>
+ERROR: No valid extension selected for output. We cannot continue...
+</source>
+        <translation>
+ERREUR: Le format de sortie indiqué n&apos;est pas valide. Impossible de continuer...
+</translation>
+    </message>
+    <message>
+        <location filename="../processing_provider/export_layouts_from_project.py" line="130"/>
+        <source>Export aborted!</source>
+        <translation>Export annulé!</translation>
+    </message>
+    <message>
+        <location filename="../processing_provider/export_layouts_from_project.py" line="138"/>
+        <source>Exporting layout &apos;{}&apos;</source>
+        <translation>Export de la mise en page &apos;{}&apos; en cours</translation>
+    </message>
+    <message>
+        <location filename="../processing_provider/export_layouts_from_project.py" line="141"/>
+        <source>      Layout exported!</source>
+        <translation>      Mise en page exportée!</translation>
+    </message>
+    <message>
+        <location filename="../processing_provider/export_layouts_from_project.py" line="144"/>
+        <source>      Layout could not be exported!</source>
+        <translation>      La mise en page n&apos;a pas pu être exportée!</translation>
+    </message>
+    <message>
+        <location filename="../processing_provider/export_layouts_from_project.py" line="150"/>
+        <source>End of export!</source>
+        <translation>Export terminé!</translation>
+    </message>
+    <message>
+        <location filename="../processing_provider/export_layouts_from_project.py" line="174"/>
+        <source>Export layouts from project</source>
+        <translation>Export des mises en page du projet</translation>
+    </message>
+    <message>
+        <location filename="../processing_provider/export_layouts_from_project.py" line="183"/>
+        <source>Exports print layouts of the current project file to pdf, svg or image file formats.</source>
+        <translation>Exporte simultanément des mises en page du projet courant aux formats pdf, svg et image (jpg, png, tif...).</translation>
+    </message>
+    <message>
+        <location filename="../processing_provider/export_layouts_from_project.py" line="193"/>
+        <source>print,layout,export,composer,image,pdf,svg,map</source>
+        <translation>mise en page, composeur,carte,impression,batch,projet,dossier, export, pdf, svg</translation>
+    </message>
+</context>
 <context>
     <name>MapsPrinter</name>
     <message>
-        <location filename="../maps_printer.py" line="103"/>
+        <location filename="../maps_printer.py" line="99"/>
         <source>Help</source>
         <translation>Aide</translation>
     </message>
     <message>
         <location filename="../maps_printer.py" line="155"/>
         <source>Check...</source>
-        <translation>Cocher...</translation>
+        <translation type="obsolete">Cocher...</translation>
     </message>
     <message>
         <location filename="../maps_printer.py" line="156"/>
         <source>Uncheck...</source>
-        <translation>Décocher...</translation>
+        <translation type="obsolete">Décocher...</translation>
     </message>
     <message>
         <location filename="../maps_printer.py" line="158"/>
         <source>Show...</source>
-        <translation>Afficher...</translation>
+        <translation type="obsolete">Afficher...</translation>
     </message>
     <message>
         <location filename="../maps_printer.py" line="159"/>
         <source>Close...</source>
-        <translation>Fermer...</translation>
+        <translation type="obsolete">Fermer...</translation>
     </message>
     <message>
         <location filename="../maps_printer.py" line="431"/>
         <source>Please consider filling the mandatory field(s) outlined in red.</source>
-        <translation>Veuillez svp remplir le(s) champ(s) en surbrillance rouge.</translation>
+        <translation type="obsolete">Veuillez svp remplir le(s) champ(s) en surbrillance rouge.</translation>
     </message>
     <message>
         <location filename="../maps_printer.py" line="392"/>
         <source>Unable to write in folder</source>
-        <translation>Impossible de modifier ce dossier</translation>
+        <translation type="obsolete">Impossible de modifier ce dossier</translation>
     </message>
     <message>
         <location filename="../maps_printer.py" line="392"/>
         <source>You don&apos;t have rights to write in this folder. Please, select another one!</source>
-        <translation>Vous ne disposez pas de droit d&apos;écriture sur ce dossier. Veuillez svp en sélectionner un autre!</translation>
+        <translation type="obsolete">Vous ne disposez pas de droit d&apos;écriture sur ce dossier. Veuillez svp en sélectionner un autre!</translation>
     </message>
     <message>
         <location filename="../maps_printer.py" line="403"/>
         <source>Unable to use the directory</source>
-        <translation>Impossible d&apos;utiliser ce dossier</translation>
+        <translation type="obsolete">Impossible d&apos;utiliser ce dossier</translation>
     </message>
     <message>
         <location filename="../maps_printer.py" line="403"/>
         <source>You don&apos;t have rights to create or use such a folder. Please, select another one!</source>
-        <translation>Vous ne disposez pas de droit d&apos;écriture ou de lecture sur ce dossier. Veuillez svp en sélectionner un autre!</translation>
+        <translation type="obsolete">Vous ne disposez pas de droit d&apos;écriture ou de lecture sur ce dossier. Veuillez svp en sélectionner un autre!</translation>
     </message>
     <message>
         <location filename="../maps_printer.py" line="410"/>
         <source>An error occurred : </source>
-        <translation>Une erreur est survenue :</translation>
+        <translation type="obsolete">Une erreur est survenue :</translation>
     </message>
     <message>
         <location filename="../maps_printer.py" line="681"/>
         <source>Empty filename pattern</source>
-        <translation>Modèle de nom de fichier vide</translation>
+        <translation type="obsolete">Modèle de nom de fichier vide</translation>
     </message>
     <message>
         <location filename="../maps_printer.py" line="520"/>
         <source>Exporting {}...</source>
-        <translation>Export de {}...</translation>
+        <translation type="obsolete">Export de {}...</translation>
     </message>
     <message>
         <location filename="../maps_printer.py" line="539"/>
         <source>Operation interrupted : </source>
-        <translation>Opération interrompue :</translation>
+        <translation type="obsolete">Opération interrompue :</translation>
     </message>
     <message>
         <location filename="../maps_printer.py" line="549"/>
         <source>Operation finished : </source>
-        <translation>Opération terminée :</translation>
+        <translation type="obsolete">Opération terminée :</translation>
     </message>
     <message>
         <location filename="../maps_printer.py" line="319"/>
         <source>PDF format (*.pdf *.PDF)</source>
-        <translation>Format PDF (*.pdf *.PDF)</translation>
+        <translation type="obsolete">Format PDF (*.pdf *.PDF)</translation>
     </message>
     <message>
         <location filename="../maps_printer.py" line="539"/>
         <source>Maps from {} composition(s) on {} have been exported to &quot;{}&quot; before cancelling. Some files may be incomplete.</source>
-        <translation>Des cartes de {} mises en page(s) sur {} ont été exportées dans &quot;{}&quot; avant l&apos;annulation. Certains fichiers pourraient être incomplets.</translation>
+        <translation type="obsolete">Des cartes de {} mises en page(s) sur {} ont été exportées dans &quot;{}&quot; avant l&apos;annulation. Certains fichiers pourraient être incomplets.</translation>
     </message>
     <message>
         <location filename="../maps_printer.py" line="549"/>
         <source>The maps from {} compositions have been exported to &quot;{}&quot;.</source>
-        <translation>Les cartes de {} mise(s) en page ont été exportées dans &quot;{}&quot;.</translation>
+        <translation type="obsolete">Les cartes de {} mise(s) en page ont été exportées dans &quot;{}&quot;.</translation>
     </message>
     <message>
         <location filename="../maps_printer.py" line="99"/>
         <source>Export multiple print layouts</source>
-        <translation>Export groupé de mises en page</translation>
+        <translation type="obsolete">Export groupé de mises en page</translation>
     </message>
     <message>
         <location filename="../maps_printer.py" line="240"/>
         <source>dialog shut because no more print layout in the project.</source>
-        <translation>Fenêtre fermée car il n&apos;y a plus de mises en page dans le projet.</translation>
+        <translation type="obsolete">Fenêtre fermée car il n&apos;y a plus de mises en page dans le projet.</translation>
     </message>
     <message>
         <location filename="../maps_printer.py" line="320"/>
         <source>SVG format (*.svg *.SVG)</source>
-        <translation>Format SVG (*.svg *.SVG)</translation>
+        <translation type="obsolete">Format SVG (*.svg *.SVG)</translation>
     </message>
     <message>
         <location filename="../maps_printer.py" line="326"/>
         <source>{} format (*.{} *.{})</source>
-        <translation>Format {} (*.{} *.{})</translation>
+        <translation type="obsolete">Format {} (*.{} *.{})</translation>
     </message>
     <message>
         <location filename="../maps_printer.py" line="681"/>
         <source>The print layout &quot;{}&quot; has an empty filename pattern. {}_$feature is used as default.</source>
-        <translation>L&apos;expression pour le nommage des fichiers de l&apos;atlas &quot;{}&quot; n&apos;est pas renseignée. La formule {}_$atlas_pagename est utilisée par défaut.</translation>
+        <translation type="obsolete">L&apos;expression pour le nommage des fichiers de l&apos;atlas &quot;{}&quot; n&apos;est pas renseignée. La formule {}_$atlas_pagename est utilisée par défaut.</translation>
     </message>
     <message>
         <location filename="../maps_printer.py" line="612"/>
         <source>Empty filename expression</source>
-        <translation>Expression de nom de fichier vide</translation>
+        <translation type="obsolete">Expression de nom de fichier vide</translation>
     </message>
     <message>
         <location filename="../maps_printer.py" line="694"/>
         <source>Project contains WMS Layers. Some WMS servers have a limit for the width and height parameter. Printing layers from such servers may exceed this limit. If this is the case, the WMS layer will not be printed.</source>
-        <translation>Le projet contient des couches WMS.Du fait de la limitation des paramètres de taille servis sur certains serveurs WMS, imprimer des couches depuis ces serveurs peut échouer car nécessitant d&apos;excéder ces limites.</translation>
+        <translation type="obsolete">Le projet contient des couches WMS.Du fait de la limitation des paramètres de taille servis sur certains serveurs WMS, imprimer des couches depuis ces serveurs peut échouer car nécessitant d&apos;excéder ces limites.</translation>
     </message>
     <message>
         <location filename="../maps_printer.py" line="721"/>
         <source>There is currently no print layout in the project. Please create at least one before running this plugin.</source>
-        <translation>Il faut au moins une mise en page dans le projet pour utiliser cette extension.</translation>
+        <translation type="obsolete">Il faut au moins une mise en page dans le projet pour utiliser cette extension.</translation>
     </message>
     <message>
         <location filename="../maps_printer.py" line="118"/>
         <source>Export</source>
-        <translation>Exporter</translation>
+        <translation type="obsolete">Exporter</translation>
     </message>
     <message>
         <location filename="../maps_printer.py" line="612"/>
         <source>The print layout &quot;{}&quot; has an empty output filename expression. {}_@atlas_pagename is used as default.</source>
-        <translation>L&apos;expression pour le nommage des fichiers de l&apos;atlas &quot;{}&quot; n&apos;est pas renseignée. La formule {}_@atlas_pagename est utilisée par défaut.</translation>
+        <translation type="obsolete">L&apos;expression pour le nommage des fichiers de l&apos;atlas &quot;{}&quot; n&apos;est pas renseignée. La formule {}_@atlas_pagename est utilisée par défaut.</translation>
+    </message>
+    <message>
+        <location filename="../maps_printer.py" line="91"/>
+        <source>Export layouts from folder</source>
+        <translation>Export de mises en page depuis un dossier</translation>
+    </message>
+    <message>
+        <location filename="../maps_printer.py" line="95"/>
+        <source>Export layouts from project</source>
+        <translation>Export des mises en page du projet</translation>
     </message>
 </context>
 <context>
-    <name>mapsPrinter</name>
+    <name>MapsPrinterProvider</name>
     <message>
-        <location filename="../maps_printer_dialog_base.py" line="150"/>
+        <location filename="../processing_provider/maps_printer_provider.py" line="73"/>
         <source>Maps Printer</source>
         <translation>Maps Printer</translation>
     </message>
     <message>
-        <location filename="../maps_printer_dialog_base.py" line="152"/>
-        <source>Check All</source>
-        <translation>Tout cocher</translation>
-    </message>
-    <message>
-        <location filename="../maps_printer_dialog_base.py" line="154"/>
-        <source>Update</source>
-        <translation>Mettre à jour</translation>
-    </message>
-    <message>
-        <location filename="../maps_printer_dialog_base.py" line="158"/>
-        <source>Choose the output folder</source>
-        <translation>Choisir le dossier de destination</translation>
-    </message>
-    <message>
-        <location filename="../maps_printer_dialog_base.py" line="159"/>
-        <source>Br&amp;owse...</source>
-        <translation>&amp;Parcourir...</translation>
-    </message>
-    <message>
-        <location filename="../maps_printer_dialog_base.py" line="156"/>
-        <source>Output File Format</source>
-        <translation>Format d&apos;export</translation>
-    </message>
-    <message>
-        <location filename="../maps_printer_dialog_base.py" line="157"/>
-        <source>Choose the output file format</source>
-        <translation>Choisir le format d&apos;export des fichiers</translation>
-    </message>
-    <message>
-        <location filename="../maps_printer_dialog_base.py" line="151"/>
-        <source>Check all the layouts</source>
-        <translation>Cocher toutes les mises en page</translation>
-    </message>
-    <message>
-        <location filename="../maps_printer_dialog_base.py" line="153"/>
-        <source>Update layout list</source>
-        <translation>Mettre à jour la liste</translation>
-    </message>
-    <message>
-        <location filename="../maps_printer_dialog_base.py" line="155"/>
-        <source>Exporting...</source>
-        <translation>Export de ...</translation>
+        <location filename="../processing_provider/maps_printer_provider.py" line="90"/>
+        <source>Export layouts from projects or folders</source>
+        <translation>Export de mises en page depuis un projet ou un dossier</translation>
     </message>
 </context>
 </TS>
