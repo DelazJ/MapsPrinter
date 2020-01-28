@@ -159,7 +159,7 @@ ERREUR: Le format de sortie indiqué n&apos;est pas valide. Impossible de contin
 <context>
     <name>MapsPrinter</name>
     <message>
-        <location filename="../maps_printer.py" line="99"/>
+        <location filename="../maps_printer.py" line="100"/>
         <source>Help</source>
         <translation>Aide</translation>
     </message>
@@ -299,12 +299,12 @@ ERREUR: Le format de sortie indiqué n&apos;est pas valide. Impossible de contin
         <translation type="obsolete">L&apos;expression pour le nommage des fichiers de l&apos;atlas &quot;{}&quot; n&apos;est pas renseignée. La formule {}_@atlas_pagename est utilisée par défaut.</translation>
     </message>
     <message>
-        <location filename="../maps_printer.py" line="91"/>
+        <location filename="../maps_printer.py" line="92"/>
         <source>Export layouts from folder</source>
         <translation>Export de mises en page depuis un dossier</translation>
     </message>
     <message>
-        <location filename="../maps_printer.py" line="95"/>
+        <location filename="../maps_printer.py" line="96"/>
         <source>Export layouts from project</source>
         <translation>Export des mises en page du projet</translation>
     </message>

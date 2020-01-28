@@ -50,6 +50,7 @@ class MapsPrinter():
         """
         # Save reference to the QGIS interface
         self.iface = iface
+        self.provider = MapsPrinterProvider()
         # initialize plugin directory
         self.plugin_dir = os.path.dirname(__file__)
         # initialize locale
@@ -111,7 +112,7 @@ class MapsPrinter():
         self.iface.addPluginToMenu('&Maps Printer', self.helpAction)
 
     def initProcessing(self):
-        QgsApplication.processingRegistry().addProvider(MapsPrinterProvider())
+        QgsApplication.processingRegistry().addProvider(self.provider)
 
     def unload(self):
         """Removes the plugin provider, menu item and icon from QGIS GUI."""

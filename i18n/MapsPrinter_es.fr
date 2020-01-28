@@ -149,17 +149,17 @@ ERROR: No valid extension selected for output. We cannot continue...
 <context>
     <name>MapsPrinter</name>
     <message>
-        <location filename="../maps_printer.py" line="91"/>
+        <location filename="../maps_printer.py" line="92"/>
         <source>Export layouts from folder</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../maps_printer.py" line="95"/>
+        <location filename="../maps_printer.py" line="96"/>
         <source>Export layouts from project</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../maps_printer.py" line="99"/>
+        <location filename="../maps_printer.py" line="100"/>
         <source>Help</source>
         <translation type="unfinished"></translation>
     </message>
