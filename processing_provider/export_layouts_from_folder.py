@@ -118,6 +118,13 @@ class ExportLayoutsFromFolder(QgsProcessingAlgorithm):
                     "\nERROR: No valid output folder given. We cannot continue...\n"
                 )
             )
+        elif not extensionId:
+            feedback.reportError(
+                QCoreApplication.translate(
+                    "ExportLayoutsFromFolder",
+                    '\nERROR: No valid extension selected for output. We cannot continue...\n'
+                )
+            )
         else:
             project = QgsProject.instance()
 
@@ -126,7 +133,7 @@ class ExportLayoutsFromFolder(QgsProcessingAlgorithm):
                 project.read(projectPath)
                 feedback.pushInfo(
                     QCoreApplication.translate(
-                        "ExportLayoutsFromFolder", "\n'{}' project read!!".format(projectPath)
+                        "ExportLayoutsFromFolder", "\n'{}' project read!".format(projectPath)
                     )
                 )
                 feedback.setProgress(count * 100 / len(projectPaths))

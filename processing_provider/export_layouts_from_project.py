@@ -134,7 +134,7 @@ class ExportLayoutsFromProject(QgsProcessingAlgorithm):
                 cView = QgsProject.instance().layoutManager().layoutByName(title)
                 #feedback.pushInfo('cView= {}, Title=  {}, extension=  {},  outputFolder=  {}'.format(cView, title, extension, outputFolder))
 
-                feedback.pushInfo(self.tr("total layoutIds '{}'").format( len(layoutIds) ) )
+                #feedback.pushInfo(self.tr("total layoutIds '{}'").format( len(layoutIds) ) )
                 feedback.pushInfo(self.tr("Exporting layout '{}'").format( title ) )
                 result = self.processor.exportCompo(cView, outputFolder, title, extension)
                 if result:
