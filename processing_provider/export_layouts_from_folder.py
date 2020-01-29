@@ -141,7 +141,7 @@ class ExportLayoutsFromFolder(QgsProcessingAlgorithm):
                 for composer in project.layoutManager().layouts():
                     feedback.pushInfo(
                         QCoreApplication.translate(
-                            "ExportLayoutsFromFolder", "\n --> Layout found: '{}'!").format(composer.name())
+                            "ExportLayoutsFromFolder", "\n--> Layout found: '{}'!").format(composer.name())
                     )
                     title = composer.name()
                     title = project.baseName() + '_' + title

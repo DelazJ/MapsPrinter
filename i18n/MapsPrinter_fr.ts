@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="2.0" language="fr_FR" sourcelanguage="en">
+<!DOCTYPE TS>
+<TS version="2.1" language="fr_FR" sourcelanguage="en">
 <context>
     <name>ExportLayoutsFromFolder</name>
     <message>
@@ -56,12 +57,12 @@ ERREUR: Le dossier de sortie indiqué n&apos;est pas valide. Impossible de conti
 </translation>
     </message>
     <message>
-        <location filename="../processing_provider/export_layouts_from_folder.py" line="152"/>
+        <location filename="../processing_provider/export_layouts_from_folder.py" line="150"/>
         <source>      Layout exported!</source>
         <translation>      Mise en page exportée!</translation>
     </message>
     <message>
-        <location filename="../processing_provider/export_layouts_from_folder.py" line="159"/>
+        <location filename="../processing_provider/export_layouts_from_folder.py" line="157"/>
         <source>      Layout could not be exported!!</source>
         <translation>      La mise en page n&apos;a pas pu être exportée!</translation>
     </message>
@@ -72,6 +73,29 @@ ERROR: No valid extension selected for output. We cannot continue...
 </source>
         <translation>
 ERREUR: Le format de sortie indiqué n&apos;est pas valide. Impossible de continuer...
+</translation>
+    </message>
+    <message>
+        <location filename="../processing_provider/export_layouts_from_folder.py" line="134"/>
+        <source>
+&apos;{}&apos; project read!</source>
+        <translation>
+Project &apos;{}&apos; lu!</translation>
+    </message>
+    <message>
+        <location filename="../processing_provider/export_layouts_from_folder.py" line="142"/>
+        <source>
+--&gt; Layout found: &apos;{}&apos;!</source>
+        <translation>
+--&gt; Mise en page trouvée: &apos;{}&apos;!</translation>
+    </message>
+    <message>
+        <location filename="../processing_provider/export_layouts_from_folder.py" line="164"/>
+        <source>
+INFO: {} layout(s) were exported to &apos;{}&apos;
+</source>
+        <translation>
+INFO: {} mise(s) en page ont été exportées dans &apos;{}&apos;
 </translation>
     </message>
 </context>
