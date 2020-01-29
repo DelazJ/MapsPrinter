@@ -133,8 +133,7 @@ class ExportLayoutsFromFolder(QgsProcessingAlgorithm):
                 project.read(projectPath)
                 feedback.pushInfo(
                     QCoreApplication.translate(
-                        "ExportLayoutsFromFolder", "\n'{}' project read!".format(projectPath)
-                    )
+                        "ExportLayoutsFromFolder", "\n'{}' project read!").format(projectPath)
                 )
                 feedback.setProgress(count * 100 / len(projectPaths))
                 count += 1
@@ -142,8 +141,7 @@ class ExportLayoutsFromFolder(QgsProcessingAlgorithm):
                 for composer in project.layoutManager().layouts():
                     feedback.pushInfo(
                         QCoreApplication.translate(
-                            "ExportLayoutsFromFolder", "\n --> Layout found: '{}'!".format(composer.name())
-                        )
+                            "ExportLayoutsFromFolder", "\n --> Layout found: '{}'!").format(composer.name())
                     )
                     title = composer.name()
                     title = project.baseName() + '_' + title
@@ -165,8 +163,7 @@ class ExportLayoutsFromFolder(QgsProcessingAlgorithm):
             if exported_count:
                 feedback.pushInfo(
                     QCoreApplication.translate(
-                        "ExportLayoutsFromFolder", "\nINFO: {} layout(s) were exported to '{}'\n".format(exported_count, Output_folder)
-                    )
+                        "ExportLayoutsFromFolder", "\nINFO: {} layout(s) were exported to '{}'\n").format(exported_count, Output_folder)
                 )
 
         return {self.OUTPUT: Output_folder if exported_count else None}
