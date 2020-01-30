@@ -63,7 +63,8 @@ class ExportLayoutsFromFolder(QgsProcessingAlgorithm):
             QgsProcessingParameterEnum(
                 self.EXTENSION,
                 QCoreApplication.translate("ExportLayoutsFromFolder", "Extension for exported maps"),
-                self.listFormats
+                self.listFormats,
+                defaultValue=11
             )
         )
         self.addParameter(
