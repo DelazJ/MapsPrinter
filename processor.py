@@ -164,26 +164,46 @@ class Processor:
 
     def overrideExportSettings(self, layout, extension):
         """Because GUI settings are not exposed in Python, we need to find and catch user selection
-           See discussion at http://osgeo-org.1560.x6.nabble.com/Programmatically-export-layout-with-georeferenced-file-td5365462.html"""
+           See discussion at http://osgeo-org.1560.x6.nabble.com/Programmatically-export-layout-with-georeferenced-file-td5365462.html
+           Some of these custom properties are not part of the API so their behavior is... well!!!"""
 
         if extension == '.pdf':
             exportSettings = QgsLayoutExporter.PdfExportSettings()
-            if layout.customProperty('dpi') and layout.customProperty('dpi') != -1 : exportSettings.dpi = layout.customProperty('dpi')
-            if layout.customProperty('forceVector') == True : exportSettings.forceVectorOutput = True
-            if layout.customProperty('rasterize') == True : exportSettings.rasterizeWholeImage = True
+            exportSettings.flags = layout.renderContext().flags()
+            #exportSettings.dpi = layout.renderContext().dpi() # default value of exportSettings is to use the layout dpi
+            if layout.customProperty('forceVector') in ['true', True]: exportSettings.forceVectorOutput = True
+            if layout.customProperty('pdfIncludeMetadata') in ['true', True]: exportSettings.exportMetadata = True
+            if layout.customProperty('pdfAppendGeoreference') in ['true', True]: exportSettings.appendGeoreference = True
+            if layout.customProperty('pdfExportGeoPdfFeatures') in ['true', True]: exportSettings.includeGeoPdfFeatures = True
+            if layout.customProperty('pdfSimplify') in ['true', True]: exportSettings.simplifyGeometries = True
+            if layout.customProperty('pdfTextFormat') in ['true', True]: exportSettings.textRenderFormat = True
+            if layout.customProperty('pdfOgcBestPracticeFormat') in ['true', True]: exportSettings.useIso32000ExtensionFormatGeoreferencing = False
+            if layout.customProperty('pdfOgcBestPracticeFormat') in ['true', True]: exportSettings.useOgcBestPracticeFormatGeoreferencing = True
+            if layout.customProperty('pdfCreateGeoPdf') in ['true', True]: exportSettings.writeGeoPdf = True
+
         elif extension == '.svg':
+            # See QgsLayoutDesignerDialog::getSvgExportSettings
             exportSettings = QgsLayoutExporter.SvgExportSettings()
-            if layout.customProperty('dpi') and layout.customProperty('dpi') != -1 : exportSettings.dpi = layout.customProperty('dpi')
-            if layout.customProperty('forceVector') == True : exportSettings.forceVectorOutput = True
-            if layout.customProperty('svgIncludeMetadata') == True : exportSettings.exportMetadata = True
-            if layout.customProperty('svgGroupLayers') == True : exportSettings.exportAsLayers = True
+            exportSettings.flags = layout.renderContext().flags()
+            #exportSettings.dpi = layout.renderContext().dpi() # default value of exportSettings is to use the layout dpi
+            if layout.customProperty('forceVector') in ['true', True]: exportSettings.forceVectorOutput = True
+            if layout.customProperty('svgIncludeMetadata') in ['true', True] : exportSettings.exportMetadata = True
+            if layout.customProperty('svgSimplify') in ['true', True] : exportSettings.simplifyGeometries  = True
+            if layout.customProperty('svgGroupLayers') in ['true', True] : exportSettings.exportAsLayers = True
+            if layout.customProperty('svgTextFormat') in ['true', True] : exportSettings.textRenderFormat = True
+            if layout.customProperty('svgCropToContents') in ['true', True] : exportSettings.cropToContents = True
+            # Todo: add margin values when cropping to content
+            #exportSettings.cropMargins = ???QgsMargins???
+            #if layout.customProperty('svgDisableRasterTiles')  in ['true', True] : ??? # to fine tune with flags FlagDisableTiledRasterLayerRenders
+
         else:
+            # see QgsLayoutDesignerDialog::getRasterExportSettings for settings
             exportSettings = QgsLayoutExporter.ImageExportSettings()
-            if layout.customProperty('exportWorldFile') == True : exportSettings.generateWorldFile = True
-            if layout.customProperty('') == True : exportSettings.exportMetadata = True
-            if layout.customProperty('dpi') and layout.customProperty('dpi') != -1 : exportSettings.dpi = layout.customProperty('dpi')
-            # if layout.customProperty('atlasRasterFormat') == True : exportSettings.xxxx = True
-            # if layout.customProperty('imageAntialias') == True : exportSettings.xxxx = True
+            exportSettings.flags = layout.renderContext().flags()
+            if layout.customProperty('exportWorldFile') in ['true', True] : exportSettings.generateWorldFile = True
+            #exportSettings.dpi = layout.renderContext().dpi() # default value of exportSettings is to use the layout dpi
+            if layout.customProperty('imageCropToContents')  in ['true', True] : exportSettings.cropToContents = True
+            # # if layout.customProperty('imageAntialias') == True : : ??? # to fine tune with flags FlagAntialiasing
 
         return exportSettings
 
