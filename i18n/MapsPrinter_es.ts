@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.1" language="es_ES">
+<!DOCTYPE TS><TS version="2.0" language="es_ES" sourcelanguage="">
 <context>
     <name>ExportLayoutsFromFolder</name>
     <message>
@@ -14,22 +13,22 @@
         <translation>Extensión para los mapas exportados</translation>
     </message>
     <message>
-        <location filename="../processing_provider/export_layouts_from_folder.py" line="69"/>
+        <location filename="../processing_provider/export_layouts_from_folder.py" line="70"/>
         <source>Output folder where to save maps</source>
         <translation>Carpeta para guardar los mapas de salida</translation>
     </message>
     <message>
-        <location filename="../processing_provider/export_layouts_from_folder.py" line="86"/>
+        <location filename="../processing_provider/export_layouts_from_folder.py" line="87"/>
         <source>Export layouts from folder</source>
         <translation>Exportar composición desde carpeta</translation>
     </message>
     <message>
-        <location filename="../processing_provider/export_layouts_from_folder.py" line="93"/>
+        <location filename="../processing_provider/export_layouts_from_folder.py" line="94"/>
         <source>Exports print layouts of the project files in a folder to pdf, svg or image file formats.</source>
         <translation>Exporta composiciones de impresión desde proyectos en una carpeta, a PDF, SVG o formatos de imagen.</translation>
     </message>
     <message>
-        <location filename="../processing_provider/export_layouts_from_folder.py" line="108"/>
+        <location filename="../processing_provider/export_layouts_from_folder.py" line="109"/>
         <source>
 ERROR: No QGIS project files (.qgs or .qgz) found in the specified folder. We cannot continue...
 </source>
@@ -38,7 +37,7 @@ ERROR: No hay archivos de proyecto de QGIS (.qgs o .qgz) en la carpeta especific
 </translation>
     </message>
     <message>
-        <location filename="../processing_provider/export_layouts_from_folder.py" line="115"/>
+        <location filename="../processing_provider/export_layouts_from_folder.py" line="116"/>
         <source>
 ERROR: No valid output folder given. We cannot continue...
 </source>
@@ -47,31 +46,31 @@ ERROR: La carpeta de salida no es válida. No podemos continuar...
 </translation>
     </message>
     <message>
-        <location filename="../processing_provider/export_layouts_from_folder.py" line="134"/>
+        <location filename="../processing_provider/export_layouts_from_folder.py" line="135"/>
         <source>
 &apos;{}&apos; project read!</source>
         <translation>
 ¡Proyecto &apos;{}&apos; project leído!</translation>
     </message>
     <message>
-        <location filename="../processing_provider/export_layouts_from_folder.py" line="142"/>
+        <location filename="../processing_provider/export_layouts_from_folder.py" line="143"/>
         <source>
 --&gt; Layout found: &apos;{}&apos;!</source>
         <translation>
 --&gt; ¡Composición encontrada: &apos;{}&apos;!</translation>
     </message>
     <message>
-        <location filename="../processing_provider/export_layouts_from_folder.py" line="150"/>
+        <location filename="../processing_provider/export_layouts_from_folder.py" line="151"/>
         <source>      Layout exported!</source>
         <translation>      ¡Composición exportada!</translation>
     </message>
     <message>
-        <location filename="../processing_provider/export_layouts_from_folder.py" line="157"/>
+        <location filename="../processing_provider/export_layouts_from_folder.py" line="158"/>
         <source>      Layout could not be exported!!</source>
         <translation>      ¡No se pudo exportar la composición!</translation>
     </message>
     <message>
-        <location filename="../processing_provider/export_layouts_from_folder.py" line="164"/>
+        <location filename="../processing_provider/export_layouts_from_folder.py" line="165"/>
         <source>
 INFO: {} layout(s) were exported to &apos;{}&apos;
 </source>
@@ -85,12 +84,12 @@ INFO: {} composición(es) fueron exportadas a &apos;{}&apos;
         <translation>diseño,composición,mapa,impresión,lotes,proyecto,carpeta,directorio</translation>
     </message>
     <message>
-        <location filename="../processing_provider/export_layouts_from_folder.py" line="75"/>
+        <location filename="../processing_provider/export_layouts_from_folder.py" line="76"/>
         <source>Output</source>
         <translation>Salida</translation>
     </message>
     <message>
-        <location filename="../processing_provider/export_layouts_from_folder.py" line="122"/>
+        <location filename="../processing_provider/export_layouts_from_folder.py" line="123"/>
         <source>
 ERROR: No valid extension selected for output. We cannot continue...
 </source>
