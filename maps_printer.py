@@ -3,7 +3,7 @@
 /***************************************************************************
  MapsPrinter
                                  A QGIS plugin
-Export several print layouts to pdf, svg or image file format in one-click
+ Export several print layouts to pdf, svg or image file format in one-click
                               -------------------
         begin                : 2014-07-24
         git sha              : $Format:%H$
