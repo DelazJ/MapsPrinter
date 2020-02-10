@@ -32,7 +32,9 @@ from qgis.PyQt.QtGui import QImageWriter
 from qgis.core import (QgsProcessingAlgorithm,
                        QgsProcessingOutputNumber,
                        QgsProcessingParameterEnum,
-                       QgsProcessingParameterFolderDestination)
+                       QgsProcessingParameterFolderDestination,
+                       QgsProcessingParameterNumber,
+                      )
 
 from MapsPrinter.gui_utils import GuiUtils
 from MapsPrinter.processor import Processor
@@ -57,12 +59,14 @@ class ExportLayoutsFromProject(QgsProcessingAlgorithm):
 
     LAYOUTS = 'LAYOUTS'
     EXTENSION = 'EXTENSION'
+    RESOLUTION = 'RESOLUTION'
     OUTPUT = 'OUTPUT'
     EXPORTEDLAYOUTS = 'EXPORTEDLAYOUTS'
 
     def __init__(self):
         super().__init__()
         self.processor = Processor()
+        self.listFormats = self.processor.listFormat()
 
     def initAlgorithm(self, config):
         """
@@ -80,13 +84,21 @@ class ExportLayoutsFromProject(QgsProcessingAlgorithm):
             )
         )
 
-        self.listFormats = self.processor.listFormat()
         self.addParameter(
             QgsProcessingParameterEnum(
                 self.EXTENSION,
                 self.tr('Extension for exported maps'),
                 options=self.listFormats,
                 defaultValue=11)
+        )
+
+        self.addParameter(
+            QgsProcessingParameterNumber(
+                self.RESOLUTION,
+                self.tr('Export resolution (if not set, the layout resolution is used)'),
+                optional=True,
+                minValue=1
+            )
         )
 
         self.addParameter(
@@ -110,7 +122,7 @@ class ExportLayoutsFromProject(QgsProcessingAlgorithm):
 
         extensionId = self.parameterAsEnum(parameters, self.EXTENSION, context)
         extension = self.processor.setFormat(self.listFormats[extensionId])
-
+        resolution = self.parameterAsInt(parameters, self.RESOLUTION, context)
         outputFolder = self.parameterAsFile(parameters, self.OUTPUT, context)
 
         layoutIds = self.parameterAsEnums(parameters, self.LAYOUTS, context)
@@ -132,6 +144,12 @@ class ExportLayoutsFromProject(QgsProcessingAlgorithm):
 
                 title = self.layoutList[layout]
                 cView = QgsProject.instance().layoutManager().layoutByName(title)
+
+                # Save the layout dialog's dpi and override it with the user selection
+                oldResolution = cView.renderContext().dpi()
+                if resolution:
+                    cView.renderContext().setDpi(resolution)
+
                 #feedback.pushInfo('cView= {}, Title=  {}, extension=  {},  outputFolder=  {}'.format(cView, title, extension, outputFolder))
 
                 #feedback.pushInfo(self.tr("total layoutIds '{}'").format( len(layoutIds) ) )
@@ -145,6 +163,9 @@ class ExportLayoutsFromProject(QgsProcessingAlgorithm):
 
                 current += 1
                 feedback.setProgress(current * 100 / len(layoutIds))
+                
+                # Set back the original dpi in the layout dialog
+                cView.renderContext().setDpi(oldResolution)
 
             EXPORTEDLAYOUTS = exportedCount
             feedback.pushInfo( self.tr('End of export!'))
