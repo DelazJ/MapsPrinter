@@ -3,7 +3,7 @@
 /***************************************************************************
  MapsPrinter
                                  A QGIS plugin
- Show, hide and export several print layouts to pdf, svg or image file format in one-click
+ Export several print layouts to pdf, svg or image file format in one-click
                               -------------------
         begin                : 2019-11-05
         git sha              : $Format:%H$
@@ -96,20 +96,8 @@ class Processor:
         # Do the export process
         exporter = QgsLayoutExporter(cView)
 
-        # Allow export cancelation
-        #QCoreApplication.processEvents()
-        #self.buttonBox.rejected.connect(self.stopProcessing)
-
         if myAtlas.enabled():
-            # for i in range(0, myAtlas.count()):
             feedback = QgsFeedback()
-
-            # Allow to listen to changes and increase progressbar
-            # or abort the operation
-            # with process input events
-            #QCoreApplication.processEvents()
-            #self.buttonBox.rejected.connect(feedback.cancel)
-            #feedback.progressChanged.connect(self.pageProcessed)
 
             # if single file export is required (only compatible with pdf, yet)
             # singleFile can be true and None in that case
@@ -156,10 +144,6 @@ class Processor:
             else:
                 result = exporter.exportToImage(os.path.join(folder, title + extension), exportSettings)
 
-        # When the export fails (eg it's aborted)
-        # if not result == QgsLayoutExporter.Success:
-        #     #print( 'noresult')
-        #     self.stopProcessing()
         return result == QgsLayoutExporter.Success
 
     def overrideExportSettings(self, layout, extension):
