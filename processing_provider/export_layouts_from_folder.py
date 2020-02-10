@@ -27,7 +27,9 @@ from qgis.core import (QgsProject,
                        QgsProcessingParameterFolderDestination,
                        QgsProcessingParameterFile,
                        QgsProcessingParameterEnum,
-                       QgsProcessingOutputFolder)
+                       QgsProcessingOutputFolder,
+                       QgsProcessingParameterNumber,
+                      )
 from qgis.PyQt.QtCore import QCoreApplication
 
 from MapsPrinter.processor import Processor
@@ -37,6 +39,7 @@ class ExportLayoutsFromFolder(QgsProcessingAlgorithm):
 
     PROJECTS_FOLDER = 'PROJECTS_FOLDER'
     EXTENSION = 'EXTENSION'
+    RESOLUTION = 'RESOLUTION'
     OUTPUT_FOLDER = 'OUTPUT_FOLDER'
     OUTPUT = 'OUTPUT'
 
@@ -65,6 +68,14 @@ class ExportLayoutsFromFolder(QgsProcessingAlgorithm):
                 QCoreApplication.translate("ExportLayoutsFromFolder", "Extension for exported maps"),
                 self.listFormats,
                 defaultValue=11
+            )
+        )
+        self.addParameter(
+            QgsProcessingParameterNumber(
+                self.RESOLUTION,
+                QCoreApplication.translate("ExportLayoutsFromFolder", "Export resolution (if not set, the layout resolution is used)"),
+                optional=True,
+                minValue=1
             )
         )
         self.addParameter(
@@ -98,6 +109,7 @@ class ExportLayoutsFromFolder(QgsProcessingAlgorithm):
         Projects_folder = self.parameterAsString(parameters, self.PROJECTS_FOLDER, context)
         extensionId = self.parameterAsEnum(parameters, self.EXTENSION, context)
         extension = self.processor.setFormat(self.listFormats[extensionId])
+        resolution = self.parameterAsInt(parameters, self.RESOLUTION, context)
         Output_folder = self.parameterAsString(parameters, self.OUTPUT_FOLDER, context)
 
         projectPaths = glob.glob(os.path.join(Projects_folder, '*.qg[s|z]'))
@@ -144,6 +156,12 @@ class ExportLayoutsFromFolder(QgsProcessingAlgorithm):
                         QCoreApplication.translate(
                             "ExportLayoutsFromFolder", "\n--> Layout found: '{}'!").format(composer.name())
                     )
+
+                    # Save the layout dialog's dpi and override it with the user selection
+                    oldResolution = composer.renderContext().dpi()
+                    if resolution:
+                        composer.renderContext().setDpi(resolution)
+
                     title = composer.name()
                     title = project.baseName() + '_' + title
                     result = self.processor.exportCompo(composer, Output_folder, title, extension)
@@ -161,6 +179,9 @@ class ExportLayoutsFromFolder(QgsProcessingAlgorithm):
                             )
                         )
 
+                    # Set back the original dpi in the layout dialog
+                    composer.renderContext().setDpi(oldResolution)
+
             if exported_count:
                 feedback.pushInfo(
                     QCoreApplication.translate(
@@ -168,3 +189,4 @@ class ExportLayoutsFromFolder(QgsProcessingAlgorithm):
                 )
 
         return {self.OUTPUT: Output_folder if exported_count else None}
+
