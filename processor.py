@@ -164,11 +164,9 @@ class Processor:
 
     def overrideExportSettings(self, layout, extension):
         """Because GUI settings are not exposed in Python,
-           we need to find and catch user selection
+           we need to find and catch user selection and override
+           export settings values with what is actually active in the GUI.
            See discussion at http://osgeo-org.1560.x6.nabble.com/Programmatically-export-layout-with-georeferenced-file-td5365462.html
-           We need to override some of the default values of export settings with
-           what is actually active in the GUI. Some of these custom properties are
-           not part of the API so their behavior is... well!!!
         """
 
         if extension == '.pdf':
@@ -240,12 +238,13 @@ class Processor:
             exportSettings.flags = layout.renderContext().flags()
             #exportSettings.dpi = layout.renderContext().dpi() # default value of exportSettings is to use the layout dpi
             if layout.customProperty('exportWorldFile') in ['true', True]:
-                exportSettings.generateWorldFile = True #does not seem to work?
+                exportSettings.generateWorldFile = True
 
             if layout.customProperty('imageCropToContents')  in ['true', True]:
                 exportSettings.cropToContents = True
             # Todo: add margin values when cropping to content
             #exportSettings.cropMargins = ???QgsMargins???
+            # exportSettings.exportMetadata = False # what's the corresponding layout's property? 
             # layout.customProperty('atlasRasterFormat') # overridden by extension 
             # # if layout.customProperty('imageAntialias') in ['true', True] : ??? # to fine tune with flags FlagAntialiasing
 
