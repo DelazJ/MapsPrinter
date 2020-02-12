@@ -152,11 +152,15 @@ class Processor:
         :param layout: The print layout to export
         :param resolution: The custom value set by user
         """
-        
+
+        global layoutDpi
         if resolution:
-            return resolution
+            layoutDpi = resolution
         else:
-            return layout.renderContext().dpi()
+            # rely on value set in the layout properties dialog
+            layoutDpi = layout.renderContext().dpi()
+
+        return layoutDpi
     
     def overrideExportSettings(self, layout, extension):
         """Because GUI settings are not exposed in Python,
@@ -170,7 +174,7 @@ class Processor:
             # let's follow non-default values if set
             exportSettings = QgsLayoutExporter.PdfExportSettings()
             exportSettings.flags = layout.renderContext().flags()
-            exportSettings.dpi = self.getResolution()
+            exportSettings.dpi = layoutDpi
             if layout.customProperty('rasterize') in ['true', True]:
                 exportSettings.rasterizeWholeImage = True
 
@@ -206,7 +210,7 @@ class Processor:
             # See QgsLayoutDesignerDialog::getSvgExportSettings
             exportSettings = QgsLayoutExporter.SvgExportSettings()
             exportSettings.flags = layout.renderContext().flags()
-            #exportSettings.dpi = layout.renderContext().dpi() # default value of exportSettings is to use the layout dpi
+            exportSettings.dpi = layoutDpi
             if layout.customProperty('forceVector') == 1:
                 exportSettings.forceVectorOutput = True
 
@@ -232,7 +236,7 @@ class Processor:
             # see QgsLayoutDesignerDialog::getRasterExportSettings for settings
             exportSettings = QgsLayoutExporter.ImageExportSettings()
             exportSettings.flags = layout.renderContext().flags()
-            #exportSettings.dpi = layout.renderContext().dpi() # default value of exportSettings is to use the layout dpi
+            exportSettings.dpi = layoutDpi
             if layout.customProperty('exportWorldFile') in ['true', True]:
                 exportSettings.generateWorldFile = True
 
