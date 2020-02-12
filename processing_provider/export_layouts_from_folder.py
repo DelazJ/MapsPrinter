@@ -151,7 +151,7 @@ class ExportLayoutsFromFolder(QgsProcessingAlgorithm):
                 feedback.setProgress(count * 100 / len(projectPaths))
                 count += 1
 
-                for composer in project.layoutManager().layouts():
+                for composer in project.layoutManager().printLayouts():
                     feedback.pushInfo(
                         QCoreApplication.translate(
                             "ExportLayoutsFromFolder", "\n--> Layout found: '{}'!").format(composer.name())
