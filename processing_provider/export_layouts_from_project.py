@@ -146,10 +146,12 @@ class ExportLayoutsFromProject(QgsProcessingAlgorithm):
                 cView = QgsProject.instance().layoutManager().layoutByName(title)
 
                 # Save the layout dialog's dpi and override it with the user selection
-                oldResolution = cView.renderContext().dpi()
-                if resolution:
-                    cView.renderContext().setDpi(resolution)
+                #oldResolution = cView.renderContext().dpi()
+                #if resolution:
+                    #cView.renderContext().setDpi(resolution)
+                self.processor.getResolution(cView, resolution)
 
+                #feedback.pushInfo('resolution=  {}'.format(self.processor.getResolution(cView, resolution))
                 #feedback.pushInfo('cView= {}, Title=  {}, extension=  {},  outputFolder=  {}'.format(cView, title, extension, outputFolder))
 
                 #feedback.pushInfo(self.tr("total layoutIds '{}'").format( len(layoutIds) ) )
@@ -165,7 +167,7 @@ class ExportLayoutsFromProject(QgsProcessingAlgorithm):
                 feedback.setProgress(current * 100 / len(layoutIds))
                 
                 # Set back the original dpi in the layout dialog
-                cView.renderContext().setDpi(oldResolution)
+                #cView.renderContext().setDpi(oldResolution)
 
             EXPORTEDLAYOUTS = exportedCount
             feedback.pushInfo( self.tr('End of export!'))
