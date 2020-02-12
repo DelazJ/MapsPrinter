@@ -157,10 +157,8 @@ class ExportLayoutsFromFolder(QgsProcessingAlgorithm):
                             "ExportLayoutsFromFolder", "\n--> Layout found: '{}'!").format(composer.name())
                     )
 
-                    # Save the layout dialog's dpi and override it with the user selection
-                    oldResolution = composer.renderContext().dpi()
-                    if resolution:
-                        composer.renderContext().setDpi(resolution)
+                    # Retrieve the resolution to apply to the export
+                    self.processor.getResolution(composer, resolution)
 
                     title = composer.name()
                     title = project.baseName() + '_' + title
@@ -178,9 +176,6 @@ class ExportLayoutsFromFolder(QgsProcessingAlgorithm):
                                 "ExportLayoutsFromFolder", "      Layout could not be exported!!"
                             )
                         )
-
-                    # Set back the original dpi in the layout dialog
-                    composer.renderContext().setDpi(oldResolution)
 
             if exported_count:
                 feedback.pushInfo(
