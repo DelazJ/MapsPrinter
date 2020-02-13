@@ -89,7 +89,7 @@ class ExportLayoutsFromProject(QgsProcessingAlgorithm):
                 self.EXTENSION,
                 self.tr('Extension for exported maps'),
                 options=self.listFormats,
-                defaultValue=11)
+                defaultValue=self.processor.pngIndex())
         )
 
         self.addParameter(
