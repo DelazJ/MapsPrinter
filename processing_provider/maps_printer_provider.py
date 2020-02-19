@@ -26,10 +26,12 @@ __revision__ = '$Format:%H$'
 
 import os
 from qgis.core import QgsProcessingProvider
+from processing.core.ProcessingConfig import ProcessingConfig, Setting
 
 from .export_layouts_from_project import ExportLayoutsFromProject
 from .export_layouts_from_folder import ExportLayoutsFromFolder
 from MapsPrinter.gui_utils import GuiUtils
+from MapsPrinter.processor import Processor
 
 class MapsPrinterProvider(QgsProcessingProvider):
 
@@ -38,13 +40,31 @@ class MapsPrinterProvider(QgsProcessingProvider):
         Default constructor.
         """
         QgsProcessingProvider.__init__(self)
+        self.processor = Processor()
+
+    def load(self):
+        """
+        Loads the provider with its settings.
+        """
+        ProcessingConfig.settingIcons[self.name()] = self.icon()
+
+        ProcessingConfig.addSetting(Setting(
+            self.name(),
+            'DEFAULT_EXPORT_EXTENSION',
+            self.tr('Default layout export format'),
+            default='PNG format (*.png *.PNG)',
+            valuetype=Setting.SELECTION,
+            options=self.processor.listFormat()))
+
+        ProcessingConfig.readSettings()
+        return super().load()
 
     def unload(self):
         """
         Unloads the provider. Any tear-down steps required by the provider
         should be implemented here.
         """
-        pass
+        ProcessingConfig.removeSetting('DEFAULT_EXPORT_EXTENSION')
 
     def loadAlgorithms(self):
         """
