@@ -35,6 +35,7 @@ from qgis.core import (QgsProcessingAlgorithm,
                        QgsProcessingParameterFolderDestination,
                        QgsProcessingParameterNumber,
                       )
+from processing.core.ProcessingConfig import ProcessingConfig
 
 from MapsPrinter.gui_utils import GuiUtils
 from MapsPrinter.processor import Processor
@@ -89,7 +90,8 @@ class ExportLayoutsFromProject(QgsProcessingAlgorithm):
                 self.EXTENSION,
                 self.tr('Extension for exported maps'),
                 options=self.listFormats,
-                defaultValue=self.processor.pngIndex())
+                defaultValue=ProcessingConfig.getSetting('DEFAULT_EXPORT_EXTENSION')
+            )
         )
 
         self.addParameter(
