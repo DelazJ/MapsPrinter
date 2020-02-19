@@ -40,7 +40,6 @@ class Processor:
         """List all the file formats we can export to."""
 
         formats = [
-            '',
             'PDF format (*.pdf *.PDF)',
             'SVG format (*.svg *.SVG)',
             ]
@@ -61,17 +60,6 @@ class Processor:
         except:
             f = ''
         return f
-
-    def pngIndex(self):
-        """Because list of formats vary between OSes and dependencies
-        let's catch the png index to use as default"""
-
-        try:
-            idx = self.listFormat().index('PNG format (*.png *.PNG)')
-        except:
-            idx = 0
-
-        return idx
 
     def findActiveDir(self, extension ):
         """Find the last used directory depending on the format."""
