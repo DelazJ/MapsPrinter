@@ -1,44 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="2.0" language="fr_FR" sourcelanguage="en">
+<!DOCTYPE TS>
+<TS version="2.1" language="fr_FR" sourcelanguage="en">
 <context>
     <name>ExportLayoutsFromFolder</name>
     <message>
-        <location filename="../processing_provider/export_layouts_from_folder.py" line="50"/>
+        <location filename="../processing_provider/export_layouts_from_folder.py" line="51"/>
         <source>layout,composer,map,printer,batch,project,folder</source>
         <translation>mise en page,composeur,carte,impression,batch,projet,dossier</translation>
     </message>
     <message>
-        <location filename="../processing_provider/export_layouts_from_folder.py" line="58"/>
+        <location filename="../processing_provider/export_layouts_from_folder.py" line="59"/>
         <source>Projects folder</source>
         <translation>Dossier de projets</translation>
     </message>
     <message>
-        <location filename="../processing_provider/export_layouts_from_folder.py" line="65"/>
+        <location filename="../processing_provider/export_layouts_from_folder.py" line="66"/>
         <source>Extension for exported maps</source>
         <translation>Format d&apos;export des cartes</translation>
     </message>
     <message>
-        <location filename="../processing_provider/export_layouts_from_folder.py" line="81"/>
+        <location filename="../processing_provider/export_layouts_from_folder.py" line="82"/>
         <source>Output folder where to save maps</source>
         <translation>Dossier d&apos;export des cartes</translation>
     </message>
     <message>
-        <location filename="../processing_provider/export_layouts_from_folder.py" line="87"/>
+        <location filename="../processing_provider/export_layouts_from_folder.py" line="88"/>
         <source>Output</source>
         <translation>Sortie</translation>
     </message>
     <message>
-        <location filename="../processing_provider/export_layouts_from_folder.py" line="98"/>
+        <location filename="../processing_provider/export_layouts_from_folder.py" line="102"/>
         <source>Export layouts from folder</source>
         <translation>Export de mises en page depuis un dossier</translation>
     </message>
     <message>
-        <location filename="../processing_provider/export_layouts_from_folder.py" line="105"/>
+        <location filename="../processing_provider/export_layouts_from_folder.py" line="109"/>
         <source>Exports print layouts of the project files in a folder to pdf, svg or image file formats.</source>
         <translation>Exporte au format pdf, svg ou image (jpg, png, tif...) les mises en page contenues dans les projets d&apos;un dossier.</translation>
     </message>
     <message>
-        <location filename="../processing_provider/export_layouts_from_folder.py" line="121"/>
+        <location filename="../processing_provider/export_layouts_from_folder.py" line="125"/>
         <source>
 ERROR: No QGIS project files (.qgs or .qgz) found in the specified folder. We cannot continue...
 </source>
@@ -47,7 +48,7 @@ ERREUR: Pas de fichier projet (qgs ou qgz) trouvé dans le dossier indiqué. Imp
 </translation>
     </message>
     <message>
-        <location filename="../processing_provider/export_layouts_from_folder.py" line="128"/>
+        <location filename="../processing_provider/export_layouts_from_folder.py" line="131"/>
         <source>
 ERROR: No valid output folder given. We cannot continue...
 </source>
@@ -56,17 +57,17 @@ ERREUR: Le dossier de sortie indiqué n&apos;est pas valide. Impossible de conti
 </translation>
     </message>
     <message>
-        <location filename="../processing_provider/export_layouts_from_folder.py" line="169"/>
+        <location filename="../processing_provider/export_layouts_from_folder.py" line="166"/>
         <source>      Layout exported!</source>
         <translation>      Mise en page exportée!</translation>
     </message>
     <message>
-        <location filename="../processing_provider/export_layouts_from_folder.py" line="176"/>
+        <location filename="../processing_provider/export_layouts_from_folder.py" line="171"/>
         <source>      Layout could not be exported!!</source>
         <translation>      La mise en page n&apos;a pas pu être exportée!</translation>
     </message>
     <message>
-        <location filename="../processing_provider/export_layouts_from_folder.py" line="135"/>
+        <location filename="../processing_provider/export_layouts_from_folder.py" line="137"/>
         <source>
 ERROR: No valid extension selected for output. We cannot continue...
 </source>
@@ -75,7 +76,7 @@ ERREUR: Le format de sortie indiqué n&apos;est pas valide. Impossible de contin
 </translation>
     </message>
     <message>
-        <location filename="../processing_provider/export_layouts_from_folder.py" line="147"/>
+        <location filename="../processing_provider/export_layouts_from_folder.py" line="148"/>
         <source>
 &apos;{}&apos; project read!</source>
         <translation>
@@ -89,7 +90,7 @@ Project &apos;{}&apos; lu!</translation>
 --&gt; Mise en page trouvée: &apos;{}&apos;!</translation>
     </message>
     <message>
-        <location filename="../processing_provider/export_layouts_from_folder.py" line="186"/>
+        <location filename="../processing_provider/export_layouts_from_folder.py" line="176"/>
         <source>
 INFO: {} layout(s) were exported to &apos;{}&apos;
 </source>
@@ -98,7 +99,7 @@ INFO: {} mise(s) en page ont été exportées dans &apos;{}&apos;
 </translation>
     </message>
     <message>
-        <location filename="../processing_provider/export_layouts_from_folder.py" line="73"/>
+        <location filename="../processing_provider/export_layouts_from_folder.py" line="74"/>
         <source>Export resolution (if not set, the layout resolution is used)</source>
         <translation>Résolution d&apos;export (applique la résolution de la mise en page si non définie)</translation>
     </message>
@@ -106,27 +107,27 @@ INFO: {} mise(s) en page ont été exportées dans &apos;{}&apos;
 <context>
     <name>ExportLayoutsFromProject</name>
     <message>
-        <location filename="../processing_provider/export_layouts_from_project.py" line="78"/>
+        <location filename="../processing_provider/export_layouts_from_project.py" line="79"/>
         <source>Layouts to export</source>
         <translation>Mises en page à exporter</translation>
     </message>
     <message>
-        <location filename="../processing_provider/export_layouts_from_project.py" line="87"/>
+        <location filename="../processing_provider/export_layouts_from_project.py" line="88"/>
         <source>Extension for exported maps</source>
         <translation>Format d&apos;export des cartes</translation>
     </message>
     <message>
-        <location filename="../processing_provider/export_layouts_from_project.py" line="104"/>
+        <location filename="../processing_provider/export_layouts_from_project.py" line="106"/>
         <source>Output folder where to save maps</source>
         <translation>Dossier d&apos;export des cartes</translation>
     </message>
     <message>
-        <location filename="../processing_provider/export_layouts_from_project.py" line="111"/>
+        <location filename="../processing_provider/export_layouts_from_project.py" line="113"/>
         <source>Number of layouts exported</source>
         <translation>Nombre de mises en pages exportées</translation>
     </message>
     <message>
-        <location filename="../processing_provider/export_layouts_from_project.py" line="136"/>
+        <location filename="../processing_provider/export_layouts_from_project.py" line="138"/>
         <source>
 ERROR: No valid output folder given. We cannot continue...
 </source>
@@ -135,7 +136,7 @@ ERREUR: Le dossier de sortie indiqué n&apos;est pas valide. Impossible de conti
 </translation>
     </message>
     <message>
-        <location filename="../processing_provider/export_layouts_from_project.py" line="138"/>
+        <location filename="../processing_provider/export_layouts_from_project.py" line="140"/>
         <source>
 ERROR: No valid extension selected for output. We cannot continue...
 </source>
@@ -144,22 +145,22 @@ ERREUR: Le format de sortie indiqué n&apos;est pas valide. Impossible de contin
 </translation>
     </message>
     <message>
-        <location filename="../processing_provider/export_layouts_from_project.py" line="142"/>
+        <location filename="../processing_provider/export_layouts_from_project.py" line="144"/>
         <source>Export aborted!</source>
         <translation>Export annulé!</translation>
     </message>
     <message>
-        <location filename="../processing_provider/export_layouts_from_project.py" line="156"/>
+        <location filename="../processing_provider/export_layouts_from_project.py" line="160"/>
         <source>Exporting layout &apos;{}&apos;</source>
         <translation>Export de la mise en page &apos;{}&apos; en cours</translation>
     </message>
     <message>
-        <location filename="../processing_provider/export_layouts_from_project.py" line="159"/>
+        <location filename="../processing_provider/export_layouts_from_project.py" line="163"/>
         <source>      Layout exported!</source>
         <translation>      Mise en page exportée!</translation>
     </message>
     <message>
-        <location filename="../processing_provider/export_layouts_from_project.py" line="162"/>
+        <location filename="../processing_provider/export_layouts_from_project.py" line="166"/>
         <source>      Layout could not be exported!</source>
         <translation>      La mise en page n&apos;a pas pu être exportée!</translation>
     </message>
@@ -184,7 +185,7 @@ ERREUR: Le format de sortie indiqué n&apos;est pas valide. Impossible de contin
         <translation>mise en page, composeur,carte,impression,batch,projet,dossier, export, pdf, svg</translation>
     </message>
     <message>
-        <location filename="../processing_provider/export_layouts_from_project.py" line="95"/>
+        <location filename="../processing_provider/export_layouts_from_project.py" line="97"/>
         <source>Export resolution (if not set, the layout resolution is used)</source>
         <translation>Résolution d&apos;export (applique la résolution de la mise en page si non définie)</translation>
     </message>
@@ -345,14 +346,19 @@ ERREUR: Le format de sortie indiqué n&apos;est pas valide. Impossible de contin
 <context>
     <name>MapsPrinterProvider</name>
     <message>
-        <location filename="../processing_provider/maps_printer_provider.py" line="73"/>
+        <location filename="../processing_provider/maps_printer_provider.py" line="93"/>
         <source>Maps Printer</source>
         <translation>Maps Printer</translation>
     </message>
     <message>
-        <location filename="../processing_provider/maps_printer_provider.py" line="90"/>
+        <location filename="../processing_provider/maps_printer_provider.py" line="110"/>
         <source>Export layouts from projects or folders</source>
         <translation>Export de mises en page depuis un projet ou un dossier</translation>
+    </message>
+    <message>
+        <location filename="../processing_provider/maps_printer_provider.py" line="51"/>
+        <source>Default layout export format</source>
+        <translation>Format de sortie des mises en page</translation>
     </message>
 </context>
 </TS>
