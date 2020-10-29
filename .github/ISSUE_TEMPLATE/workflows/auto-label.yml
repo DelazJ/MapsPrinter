@@ -1,0 +1,29 @@
+name: "Set Issue Label for issues from main QGIS repo"
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: DelazJ/issue-action@patch-1
+        with:
+          keywords: '["bug"]'
+          labels: '["bug", "duplicate"]'
+          milestone:'1'
+          github-token: "${{ secrets.GITHUB_TOKEN }}"
+
+      - uses: DelazJ/issue-action@patch-1
+        with:
+          keywords: '["feedback"]'
+          labels: '["feedback", "help wanted"]'
+          milestone:'3'
+          github-token: "${{ secrets.GITHUB_TOKEN }}"
+
+      - uses: DelazJ/issue-action@patch-1
+        with:
+          keywords: '["test"]'
+          labels: '["test"]'
+          milestone:'1.0'
+          github-token: "${{ secrets.GITHUB_TOKEN }}"
