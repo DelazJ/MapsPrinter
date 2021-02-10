@@ -95,6 +95,9 @@ class Processor:
         # Do the export process
         exporter = QgsLayoutExporter(cView)
 
+        # Refresh the layout before printing
+        exporter.layout().refresh()
+
         if myAtlas.enabled():
             feedback = QgsFeedback()
 
