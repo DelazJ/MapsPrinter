@@ -22,7 +22,8 @@ email=delazj@gmail.com
 # Optional items:
 
 # Uncomment the following line and add your changelog:
-changelog= v.0.6 (2020-02-10)
+changelog= v.0.6 (2021-02-10)
+        - Fixes "HTML based items are not refreshed on time" bug (thanks to @mickmm) 
         - Remove custom GUI and move to Processing
         - Add "Export Layout from Folder" algorithm (thanks to Germán Carrillo)
         - Fixes bugs (dpi not respected) and more export settings override - #25
@@ -43,7 +44,8 @@ changelog= v.0.6 (2020-02-10)
         - Add progress bar to follow or abort operations
     v.0.1 (2014-07-30)
         - Initial release
-changelog[fr]= v.0.6 (2019-02-01)
+changelog[fr]= v.0.6 (2021-02-10)
+        - Correction du bug du "non rafraichissement des éléments basés sur le HTML" (merci à @mickmm)
         - Remplacement de l'interface personnalisée par celui de Processing
         - Ajout de l'algorithme "Export de mises en page depuis un dossier" (merci à Germán Carrillo)
         - Correction de bug (non respect de la résolution de sortie)
