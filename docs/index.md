@@ -1,9 +1,4 @@
 
-.. MapsPrinter documentation master file, created by
-   sphinx-quickstart on Sun Feb 12 17:11:03 2012.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
-
 Welcome to Maps Printer's documentation!
 ============================================
 
@@ -85,7 +80,7 @@ from projects in a folder.
 
 1. Click the `...` button of the Projects folder` field
    and select the folder to use as input
-1. Fill the other settings as explained in :ref:`exportlayoutsfromproject`.
+1. Fill the other settings as explained in `exportlayoutsfromproject`.
 1. Click `Run` to execute.
    QGIS will successively open each concerned project files and output their
    layouts' maps.
