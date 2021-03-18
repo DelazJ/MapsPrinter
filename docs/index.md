@@ -1,37 +1,93 @@
-## Welcome to GitHub Pages
 
-You can use the [editor on GitHub](https://github.com/DelazJ/MapsPrinter/edit/master/docs/index.md) to maintain and preview the content for your website in Markdown files.
+.. MapsPrinter documentation master file, created by
+   sphinx-quickstart on Sun Feb 12 17:11:03 2012.
+   You can adapt this file completely to your liking, but it should at least
+   contain the root `toctree` directive.
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+Welcome to Maps Printer's documentation!
+============================================
 
-### Markdown
+* [Installing](#installing)
+* [Using Maps Printer plugin](#using-maps-printer-plugin)
+  * [Export layouts from project](#export-layouts-from-project)
+  * [Export layouts from folder](#export-layouts-from-folder)
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
 
-```markdown
-Syntax highlighted code block
+Even though multiple pages and atlas options have improved print layouts
+usability and help enough to create many maps with few print layouts in a project,
+you can still have many print layouts in your project. And when comes the time
+to print or export them, it is not as fun as it could be. You indeed need to
+open each print layout, wait till it renders, fill the export options,
+wait till the export finishes to open the next layout. And so on...
 
-# Header 1
-## Header 2
-### Header 3
+If you find this process long and somehow boring (and even if you do not),
+then Maps Printer plugin is designed for you. It offers an easy, simple and
+quicker way to export print layouts to pdf, svg or image (jpg, tif, png, bmp...)
+file format.
 
-- Bulleted
-- List
+## Installing
 
-1. Numbered
-2. List
+The easiest way to install Maps Printer plugin in QGIS is through
+the `Plugins --> Manage and Install plugins...` menu of QGIS.
 
-**Bold** and _Italic_ and `Code` text
+## Using Maps Printer plugin
 
-[Link](url) and ![Image](src)
-```
+When installed, Maps Printer adds to the Processing Toolbox a new `Maps Printer`
+entry with following algorithms:
 
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
+* `Export layouts from project`: exports a set of layouts from the current project
+* `Export layouts from folder`: exports all the layouts from all the projects
+  files in a selected folder
 
-### Jekyll Themes
+A shortcut is also added to the Plugins menu with abovementioned tools and
+a ``Help`` entry to open this documentation:
 
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/DelazJ/MapsPrinter/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
+### Export layouts from project
 
-### Support or Contact
+Once you have created and set at your convenience your print layouts and wish to
+export some of them,
 
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.
+1. Expand the `Maps Printer` entry in the `Processing Toolbox`
+   panel and double-click `Export layouts from project`.
+   The following dialog is opened.
+
+   ![exportfromproject](./images/exportfromproject.png)
+
+    The Export from Project algorithm dialog
+
+1. Click the `...` next to the `Layouts to export` field.
+1. Check the print layouts from the list that opens, validate.
+1. Select the file format to use in `Extension for exported maps`.
+   By default, its value is set to `.png` format but you can configure it.
+1. Enter a custom `Export resolution` to apply to all the outputs. 
+1. From the `...` menu of `Output folder of exported maps`,
+   select `Save to Directory` and the output folder
+1. Click `Run` to execute.
+   Maps will be output to the indicated folder. Check the log tab for issues,
+   if any.
+
+.. tip:: Customize the default extension of outputs
+
+   From the Processing options dialog (`Settings --> Options -->
+   Processing`), under `Providers --> Maps Printer`, you can
+   select the default format you wish to use while exporting.
+
+### Export layouts from folder
+
+The `Export layouts from folder` algorithm helps you export layouts
+from projects in a folder.
+
+1. Launch it with a double-click
+
+   ![exportfromfolder](./images/exportfromfolder.png)
+
+    The Export from Folder algorithm dialog
+
+1. Click the `...` button of the Projects folder` field
+   and select the folder to use as input
+1. Fill the other settings as explained in :ref:`exportlayoutsfromproject`.
+1. Click `Run` to execute.
+   QGIS will successively open each concerned project files and output their
+   layouts' maps.
+
+Plugin developped by **Harrissou Sant-anna** (CAUE 49)
