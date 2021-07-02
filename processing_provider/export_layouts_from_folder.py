@@ -24,6 +24,7 @@ import glob
 import qgis
 from qgis.core import (QgsProject,
                        QgsProcessingAlgorithm,
+                       QgsProcessingParameterBoolean,
                        QgsProcessingParameterFolderDestination,
                        QgsProcessingParameterFile,
                        QgsProcessingParameterEnum,
@@ -41,6 +42,7 @@ class ExportLayoutsFromFolder(QgsProcessingAlgorithm):
     PROJECTS_FOLDER = 'PROJECTS_FOLDER'
     EXTENSION = 'EXTENSION'
     RESOLUTION = 'RESOLUTION'
+    PREFIX = 'PREFIX'
     OUTPUT_FOLDER = 'OUTPUT_FOLDER'
     OUTPUT = 'OUTPUT'
 
@@ -80,6 +82,13 @@ class ExportLayoutsFromFolder(QgsProcessingAlgorithm):
             )
         )
         self.addParameter(
+            QgsProcessingParameterBoolean(
+                self.PREFIX,
+                QCoreApplication.translate("ExportLayoutsFromFolder", "Prefix with project file name"),
+                defaultValue=False
+            )
+        )
+        self.addParameter(
             QgsProcessingParameterFolderDestination(
                 self.OUTPUT_FOLDER,
                 self.tr("Output folder where to save maps")
@@ -114,6 +123,7 @@ class ExportLayoutsFromFolder(QgsProcessingAlgorithm):
         extensionId = self.parameterAsEnum(parameters, self.EXTENSION, context)
         extension = self.processor.setFormat(self.listFormats[extensionId])
         resolution = self.parameterAsInt(parameters, self.RESOLUTION, context)
+        prefix = self.parameterAsBoolean(parameters, self.PREFIX, context)
         Output_folder = self.parameterAsString(parameters, self.OUTPUT_FOLDER, context)
 
         projectPaths = glob.glob(os.path.join(Projects_folder, '*.qg[s|z]'))
@@ -160,7 +170,9 @@ class ExportLayoutsFromFolder(QgsProcessingAlgorithm):
                     self.processor.getResolution(composer, resolution)
 
                     title = composer.name()
-                    title = project.baseName() + '_' + title
+                    if prefix:
+                        title = project.baseName() + '_' + title
+
                     result = self.processor.exportCompo(composer, Output_folder, title, extension)
                     if result:
                         feedback.pushInfo(
