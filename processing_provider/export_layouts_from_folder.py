@@ -133,7 +133,7 @@ class ExportLayoutsFromFolder(QgsProcessingAlgorithm):
                     "\nERROR: No valid output folder given. We cannot continue...\n"
                 )
             )
-        elif not extensionId:
+        elif extensionId is None:
             feedback.reportError(
                 self.tr(
                     '\nERROR: No valid extension selected for output. We cannot continue...\n'
