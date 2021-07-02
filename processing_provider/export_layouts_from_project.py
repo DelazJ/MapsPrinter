@@ -136,7 +136,7 @@ class ExportLayoutsFromProject(QgsProcessingAlgorithm):
 
         if not os.path.isdir(outputFolder):
             feedback.reportError(self.tr('\nERROR: No valid output folder given. We cannot continue...\n'))
-        elif not extensionId:
+        elif extensionId is None:
             feedback.reportError(self.tr('\nERROR: No valid extension selected for output. We cannot continue...\n'))
         else:
             for layout in layoutIds:
