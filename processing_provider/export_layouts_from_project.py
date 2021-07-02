@@ -75,7 +75,7 @@ class ExportLayoutsFromProject(QgsProcessingAlgorithm):
         with some other properties.
         """
 
-        self.layoutList = [cView.name() for cView in QgsProject.instance().layoutManager().printLayouts()]
+        self.layoutList = sorted([cView.name() for cView in QgsProject.instance().layoutManager().printLayouts()], key=str.lower)
         self.addParameter(
             QgsProcessingParameterEnum(
                 self.LAYOUTS,
@@ -128,7 +128,7 @@ class ExportLayoutsFromProject(QgsProcessingAlgorithm):
         outputFolder = self.parameterAsFile(parameters, self.OUTPUT, context)
 
         layoutIds = self.parameterAsEnums(parameters, self.LAYOUTS, context)
-        # # Todo: if no layout is checked, pick them all
+        # # Todo?: if no layout is checked, pick them all
         # if not layoutIds:
             # layoutIds = self.layoutList.keys()
         exportedCount = 0
