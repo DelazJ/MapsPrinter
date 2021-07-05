@@ -26,6 +26,7 @@
 __revision__ = '$Format:%H$'
 
 import os.path
+from qgis.core import QgsProject
 from qgis.PyQt.QtCore import QSettings
 from qgis.PyQt.QtGui import QImageWriter
 
@@ -75,13 +76,14 @@ class Processor:
 
         return dir
 
-    def exportCompo(self, cView, folder, title, extension):
+    def exportCompo(self, cView, folder, title, extension, prefix=False):
         """Function that sets how to export files.
         Returns a file
         :param cView: The print layout to export
         :param folder: The folder in which to store the output file
         :param title: The print layout name
         :param extension: The file extension to use for the output
+        :param prefix: A boolean whether the output should be prefixed with filename
         :return: A file representing the layout in the selected format
         """
 
@@ -89,7 +91,7 @@ class Processor:
 
         myAtlas = cView.atlas()
 
-        #Let's use custom export properties if there are
+        # Let's use custom export properties if there are
         exportSettings = self.overrideExportSettings(cView, extension)
 
         # Do the export process
@@ -119,23 +121,32 @@ class Processor:
                 #         )
                 #     myAtlas.setFilenameExpression(u"'{}_'||@atlas_pagename".format(title))
 
+                # Store original expression
+                user_expression = myAtlas.filenameExpression()
+                # Prefix the expression with filename if desired
+                if prefix:
+                    myAtlas.setFilenameExpression(u"'{}_'||{}".format(QgsProject.instance().baseName(), user_expression ))
+                
                 current_fileName = myAtlas.filenameExpression()
 
-                #export atlas to multiple pdfs
+                # Export atlas to multiple pdfs
                 if extension =='.pdf':
                     result, error = exporter.exportToPdfs(myAtlas, os.path.join(folder, current_fileName), exportSettings, feedback)
 
-                # export atlas to svg format
+                # Export atlas to svg format
                 elif extension =='.svg':
                     result, error = exporter.exportToSvg(myAtlas, os.path.join(folder, current_fileName), exportSettings, feedback)
 
-                # export atlas to image format
+                # Export atlas to image format
                 else:
                    result, error = exporter.exportToImage(myAtlas, os.path.join(folder, current_fileName), extension, exportSettings, feedback)
 
+                # Reset to the user default expression
+                myAtlas.setFilenameExpression(user_expression)
+
             myAtlas.endRender()
 
-        # if the composition has no atlas
+        # If the composition has no atlas
         else:
             if extension == '.pdf':
                 result = exporter.exportToPdf(os.path.join(folder, title + '.pdf'), exportSettings)
