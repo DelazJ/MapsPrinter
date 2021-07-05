@@ -173,7 +173,7 @@ class ExportLayoutsFromFolder(QgsProcessingAlgorithm):
                     if prefix:
                         title = project.baseName() + '_' + title
 
-                    result = self.processor.exportCompo(composer, Output_folder, title, extension)
+                    result = self.processor.exportCompo(composer, Output_folder, title, extension, prefix)
                     if result:
                         feedback.pushInfo(
                             self.tr("      Layout exported!")
