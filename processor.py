@@ -123,26 +123,27 @@ class Processor:
 
                 # Store original expression
                 user_expression = myAtlas.filenameExpression()
-                # Prefix the expression with filename if desired
                 if prefix:
                     myAtlas.setFilenameExpression(u"'{}_'||{}".format(QgsProject.instance().baseName(), user_expression ))
                 
                 current_fileName = myAtlas.filenameExpression()
 
-                # Export atlas to multiple pdfs
-                if extension =='.pdf':
-                    result, error = exporter.exportToPdfs(myAtlas, os.path.join(folder, current_fileName), exportSettings, feedback)
+                try:
+                    # Export atlas to multiple pdfs
+                    if extension =='.pdf':
+                        result, error = exporter.exportToPdfs(myAtlas, os.path.join(folder, current_fileName), exportSettings, feedback)
 
-                # Export atlas to svg format
-                elif extension =='.svg':
-                    result, error = exporter.exportToSvg(myAtlas, os.path.join(folder, current_fileName), exportSettings, feedback)
+                    # Export atlas to svg format
+                    elif extension =='.svg':
+                        result, error = exporter.exportToSvg(myAtlas, os.path.join(folder, current_fileName), exportSettings, feedback)
 
-                # Export atlas to image format
-                else:
-                   result, error = exporter.exportToImage(myAtlas, os.path.join(folder, current_fileName), extension, exportSettings, feedback)
+                    # Export atlas to image format
+                    else:
+                       result, error = exporter.exportToImage(myAtlas, os.path.join(folder, current_fileName), extension, exportSettings, feedback)
 
-                # Reset to the user default expression
-                myAtlas.setFilenameExpression(user_expression)
+                finally:
+                    # Reset to the user default expression
+                    myAtlas.setFilenameExpression(user_expression)
 
             myAtlas.endRender()
 
