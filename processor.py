@@ -103,9 +103,9 @@ class Processor:
         if myAtlas.enabled():
             feedback = QgsFeedback()
 
-            # if single file export is required (only compatible with pdf, yet)
-            # singleFile can be true and None in that case
-            if cView.customProperty('singleFile') is not False and extension == '.pdf':
+            # If single file export is required (only compatible with pdf, yet)
+            # singleFile can be 'true', 'false' or None
+            if cView.customProperty('singleFile') == 'true' and extension == '.pdf':
                 result, error = exporter.exportToPdf(myAtlas, os.path.join(folder, title + '.pdf'), exportSettings, feedback)
 
             else: #If instead multiple files will be output
