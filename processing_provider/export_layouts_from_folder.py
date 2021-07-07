@@ -40,6 +40,7 @@ from MapsPrinter.processor import Processor
 class ExportLayoutsFromFolder(QgsProcessingAlgorithm):
 
     PROJECTS_FOLDER = 'PROJECTS_FOLDER'
+    RECURSIVE = 'RECURSIVE'
     EXTENSION = 'EXTENSION'
     RESOLUTION = 'RESOLUTION'
     PREFIX = 'PREFIX'
@@ -63,6 +64,13 @@ class ExportLayoutsFromFolder(QgsProcessingAlgorithm):
                 self.PROJECTS_FOLDER,
                 self.tr("Projects folder"),
                 QgsProcessingParameterFile.Folder
+            )
+        )
+        self.addParameter(
+            QgsProcessingParameterBoolean(
+                self.RECURSIVE,
+                QCoreApplication.translate("ExportLayoutsFromFolder", "Include sub-directories"),
+                defaultValue=False
             )
         )
         self.addParameter(
@@ -119,17 +127,22 @@ class ExportLayoutsFromFolder(QgsProcessingAlgorithm):
                "to pdf, svg or image file formats.")
 
     def processAlgorithm(self, parameters, context, feedback):
-        Projects_folder = self.parameterAsString(parameters, self.PROJECTS_FOLDER, context)
+        projectsFolder = self.parameterAsString(parameters, self.PROJECTS_FOLDER, context)
+        isRecursive = self.parameterAsBoolean(parameters, self.RECURSIVE, context)
         extensionId = self.parameterAsEnum(parameters, self.EXTENSION, context)
         extension = self.processor.setFormat(self.listFormats[extensionId])
         resolution = self.parameterAsInt(parameters, self.RESOLUTION, context)
         prefix = self.parameterAsBoolean(parameters, self.PREFIX, context)
-        Output_folder = self.parameterAsString(parameters, self.OUTPUT_FOLDER, context)
+        mainOutputFolder = self.parameterAsString(parameters, self.OUTPUT_FOLDER, context)
 
-        projectPaths = glob.glob(os.path.join(Projects_folder, '*.qg[s|z]'))
+        if not isRecursive:
+            projectPaths = glob.glob(os.path.join(projectsFolder, '*.qg[s|z]'))
+        else:
+            projectPaths = glob.glob(os.path.join(projectsFolder, '**/*.qg[s|z]'), recursive=True)
+        #feedback.pushInfo(self.tr('{} project files found: {}').format(len(projectPaths), projectPaths))
 
         count = 0
-        exported_count = 0
+        exportedCount = 0
 
         if not len(projectPaths):
             feedback.reportError(
@@ -137,7 +150,7 @@ class ExportLayoutsFromFolder(QgsProcessingAlgorithm):
                     "\nERROR: No QGIS project files (.qgs or .qgz) found in the specified folder. We cannot continue...\n"
                     )
                 )
-        elif not os.path.isdir(Output_folder):
+        elif not os.path.isdir(mainOutputFolder):
             feedback.reportError(
                 self.tr(
                     "\nERROR: No valid output folder given. We cannot continue...\n"
@@ -161,6 +174,20 @@ class ExportLayoutsFromFolder(QgsProcessingAlgorithm):
                 feedback.setProgress(count * 100 / len(projectPaths))
                 count += 1
 
+                # Compute the destination folder for the current file outputs
+                # by appending sub-directories name to the user set output folder
+                outputFolder = os.path.join(mainOutputFolder,
+                                            os.path.dirname(projectPath)[len(projectsFolder) + 1 : ]
+                                           )
+                # Create the destination folder if it does not exist yet
+                if not os.path.exists(outputFolder):
+                    try:
+                        os.makedirs(outputFolder)
+                    except OSError:
+                        feedback.pushInfo(self.tr("Creation of the directory '{}' failed").format(outputFolder))
+                    else:
+                        feedback.pushInfo(self.tr("Successfully created the directory '{}'").format(outputFolder))
+
                 for composer in project.layoutManager().printLayouts():
                     feedback.pushInfo(
                         self.tr("\n--> Layout found: '{}'!").format(composer.name())
@@ -173,21 +200,21 @@ class ExportLayoutsFromFolder(QgsProcessingAlgorithm):
                     if prefix:
                         title = project.baseName() + '_' + title
 
-                    result = self.processor.exportCompo(composer, Output_folder, title, extension, prefix)
+                    result = self.processor.exportCompo(composer, outputFolder, title, extension, prefix)
                     if result:
                         feedback.pushInfo(
                             self.tr("      Layout exported!")
                         )
-                        exported_count += 1
+                        exportedCount += 1
                     else:
                         feedback.reportError(
                             self.tr("      Layout could not be exported!!")
                         )
 
-            if exported_count:
+            if exportedCount:
                 feedback.pushInfo(
-                    self.tr("\nINFO: {} layout(s) were exported to '{}'\n").format(exported_count, Output_folder)
+                    self.tr("\nINFO: {} layout(s) were exported to '{}'\n").format(exportedCount, mainOutputFolder)
                 )
 
-        return {self.OUTPUT: Output_folder if exported_count else None}
+        return {self.OUTPUT: mainOutputFolder if exportedCount else None}
 
