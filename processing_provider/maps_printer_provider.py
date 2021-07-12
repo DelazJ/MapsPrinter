@@ -24,13 +24,13 @@
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import os
+import os.path
+from qgis.PyQt.QtGui import QIcon
 from qgis.core import QgsProcessingProvider
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
 
 from .export_layouts_from_project import ExportLayoutsFromProject
 from .export_layouts_from_folder import ExportLayoutsFromFolder
-from MapsPrinter.gui_utils import GuiUtils
 from MapsPrinter.processor import Processor
 
 class MapsPrinterProvider(QgsProcessingProvider):
@@ -97,7 +97,7 @@ class MapsPrinterProvider(QgsProcessingProvider):
         Should return a QIcon which is used for your provider inside
         the Processing toolbox.
         """
-        return GuiUtils.get_icon('icon.png')
+        return QIcon(os.path.join(os.path.dirname(__file__),'../icons/icon.png'))
 
 
     def longName(self):
