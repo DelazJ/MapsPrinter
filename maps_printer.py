@@ -129,6 +129,6 @@ class MapsPrinter():
         params = {}
         
         if button == self.exportFolder:
-            alg = execAlgorithmDialog('mapsprinter:ExportLayoutsFromFolder', params)
+            alg = execAlgorithmDialog('mapsprinter:exportlayoutsfromfolder', params)
         elif button == self.exportProject:
-            alg = execAlgorithmDialog('mapsprinter:ExportLayoutsFromProject', params)
+            alg = execAlgorithmDialog('mapsprinter:exportlayoutsfromproject', params)

@@ -110,7 +110,7 @@ class ExportLayoutsFromFolder(QgsProcessingAlgorithm):
         )
 
     def name(self):
-        return 'ExportLayoutsFromFolder'
+        return 'exportlayoutsfromfolder'
 
     def tr(self, string):
         return QCoreApplication.translate('ExportLayoutsFromFolder', string)
