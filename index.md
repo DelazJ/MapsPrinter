@@ -46,7 +46,7 @@ export some of them,
    panel and double-click `Export layouts from project`.
    The following dialog is opened.
 
-   ![exportfromproject](./images/exportfromproject.png)
+   ![exportfromproject](https://github.com/DelazJ/MapsPrinter/blob/master/docs/images/exportfromproject.png)
 
     The Export from Project algorithm dialog
 
@@ -74,7 +74,7 @@ from projects in a folder.
 
 1. Launch it with a double-click
 
-   ![exportfromfolder](./images/exportfromfolder.png)
+   ![exportfromfolder](https://github.com/DelazJ/MapsPrinter/blob/master/docs/images/exportfromfolder.png)
 
     The Export from Folder algorithm dialog
 
