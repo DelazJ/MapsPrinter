@@ -44,7 +44,7 @@ export some of them,
 
 1. Expand the `Maps Printer` entry in the `Processing Toolbox`
    panel and double-click `Export layouts from project`.
-   The following dialog is opened.
+   The following dialog opens.
 
    ![exportfromproject](./images/exportfromproject.png)
 
@@ -53,11 +53,15 @@ export some of them,
 1. Click the `...` next to the `Layouts to export` field.
 1. Check the print layouts from the list that opens, validate.
 1. Select the file format to use in `Extension for exported maps`.
-   By default, its value is set to `.png` format but you can configure it.
-1. Enter a custom `Export resolution` to apply to all the outputs. 
+   By default, its value is set to `.png` format but you can configure it
+   (as explained below).
+1. Enter a custom `Export resolution` to apply to all the outputs.
+   If not set, each layout is exported using its own set resolution.
 1. From the `...` menu of `Output folder of exported maps`,
    select `Save to Directory` and the output folder
+1. Provide the `Output folder` location.
 1. Click `Run` to execute.
+
    Maps will be output to the indicated folder. Check the log tab for issues,
    if any.
 
@@ -72,7 +76,10 @@ export some of them,
 The `Export layouts from folder` algorithm helps you export layouts
 from projects in a folder.
 
-1. Launch it with a double-click
+
+1. Expand the `Maps Printer` entry in the `Processing Toolbox`
+   panel and double-click `Export layouts from folder`.
+   The following dialog opens.
 
    ![exportfromfolder](./images/exportfromfolder.png)
 
@@ -80,8 +87,19 @@ from projects in a folder.
 
 1. Click the `...` button of the Projects folder` field
    and select the folder to use as input
-1. Fill the other settings as explained in `exportlayoutsfromproject`.
+1. Check the `Include sub-directories` option if you want to also export
+   layouts from the subfolders of the input director
+1. Select the file format to use in `Extension for exported maps`.
+   By default, its value is set to `.png` format but you can configure it
+   (as explained above).
+1. Enter a custom `Export resolution` to apply to all the outputs.
+   If not set, each layout is exported using its own set resolution.
+1. With many files (containing many layouts) being exported to the same directory,
+   you can hit filename collision.
+   Check `Prefix with project file name` to minimize the risk.
+1. Provide the `Output folder` location.
 1. Click `Run` to execute.
+
    QGIS will successively open each concerned project files and output their
    layouts' maps.
 
