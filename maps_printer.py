@@ -24,7 +24,8 @@
 import os.path
 from functools import partial
 
-from qgis.PyQt.QtCore import QSettings, QTranslator, qVersion, QCoreApplication
+from qgis.PyQt.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, QUrl
+from qgis.PyQt.QtGui import QIcon, QDesktopServices
 from qgis.PyQt.QtWidgets import QAction
 from qgis.core import QgsApplication
 
@@ -34,7 +35,6 @@ from .processing_provider.maps_printer_provider import MapsPrinterProvider
 # Initialize Qt resources from file resources.py
 from . import resources_rc
 # Import code
-from .gui_utils import GuiUtils
 
 
 class MapsPrinter():
@@ -89,22 +89,29 @@ class MapsPrinter():
 
         self.initProcessing()
         # Create action that will start plugin configuration
-        self.exportFolder = QAction(GuiUtils.get_icon('icon.png'),
-                              self.tr(u'Export layouts from folder'),
-                              self.iface.mainWindow()
-                              )
-        self.exportProject = QAction(GuiUtils.get_icon('icon.png'),
-                              self.tr('Export layouts from project'),
-                              self.iface.mainWindow()
-                              )
-        self.helpAction = QAction(GuiUtils.get_icon('about.png'),
-                                  self.tr('Help'), self.iface.mainWindow()
-                                  )
-
+        self.exportFolder = QAction(
+            QIcon(os.path.join(self.plugin_dir, 'icons/icon.png')),
+            self.tr('Export layouts from folder'),
+            self.iface.mainWindow()
+        )
+        self.exportProject = QAction(
+            QIcon(os.path.join(self.plugin_dir, 'icons/icon.png')),
+            self.tr('Export layouts from project'),
+            self.iface.mainWindow()
+        )
+        self.helpAction = QAction(
+            QIcon(QgsApplication.iconPath("mActionHelpContents.svg")),
+            self.tr("Help") + "...",
+            self.iface.mainWindow()
+        )
         # Connect the action to the openDialog method
         self.exportFolder.triggered.connect(partial(self.openDialog, self.exportFolder))
         self.exportProject.triggered.connect(partial(self.openDialog, self.exportProject))
-        self.helpAction.triggered.connect(GuiUtils.showHelp)
+        self.helpAction.triggered.connect(
+            lambda: QDesktopServices.openUrl(
+                QUrl('https://delazj.github.io/MapsPrinter')
+            )
+        )
 
         # Add toolbar button and menu item0
         self.iface.addPluginToMenu('&Maps Printer', self.exportFolder)

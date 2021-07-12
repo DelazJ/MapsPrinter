@@ -37,7 +37,6 @@ from qgis.core import (QgsProcessingAlgorithm,
                       )
 from processing.core.ProcessingConfig import ProcessingConfig
 
-from MapsPrinter.gui_utils import GuiUtils
 from MapsPrinter.processor import Processor
 
 class ExportLayoutsFromProject(QgsProcessingAlgorithm):
@@ -208,7 +207,7 @@ class ExportLayoutsFromProject(QgsProcessingAlgorithm):
                # "to an indicated folder.")
 
     # def helpUrl(self):
-        # return GuiUtils.showHelp()
+        # return ...
 
     def tag(self):
         return self.tr("print,layout,export,composer,image,pdf,svg,map")
