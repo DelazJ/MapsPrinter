@@ -22,7 +22,10 @@ email=delazj@gmail.com
 # Optional items:
 
 # Uncomment the following line and add your changelog:
-changelog= v.0.6 (2021-02-10)
+changelog= v.0.7 (2021-07-12)
+        - Adds new options to export from folder 
+        - Fix PDF multifile outputs
+    v.0.6 (2021-02-10)
         - Fixes "HTML based items are not refreshed on time" bug (thanks to @mickmm) 
         - Remove custom GUI and move to Processing
         - Add "Export Layout from Folder" algorithm (thanks to Germán Carrillo)
@@ -44,7 +47,10 @@ changelog= v.0.6 (2021-02-10)
         - Add progress bar to follow or abort operations
     v.0.1 (2014-07-30)
         - Initial release
-changelog[fr]= v.0.6 (2021-02-10)
+changelog[fr]= v.0.7 (2021-07-12)
+        - Ajout de nouvelles options à l'algo exporter depuis un dossier 
+        - Correction de l'export PDF en multiple fichiers
+    v.0.6 (2021-02-10)
         - Correction du bug du "non rafraichissement des éléments basés sur le HTML" (merci à @mickmm)
         - Remplacement de l'interface personnalisée par celui de Processing
         - Ajout de l'algorithme "Export de mises en page depuis un dossier" (merci à Germán Carrillo)
