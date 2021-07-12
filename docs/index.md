@@ -65,11 +65,13 @@ export some of them,
    Maps will be output to the indicated folder. Check the log tab for issues,
    if any.
 
-.. tip:: Customize the default extension of outputs
+``` 
+   **Customize the default extension of outputs**
 
    From the Processing options dialog (`Settings --> Options -->
    Processing`), under `Providers --> Maps Printer`, you can
    select the default format you wish to use while exporting.
+```
 
 ### Export layouts from folder
 
@@ -85,7 +87,7 @@ from projects in a folder.
 
     The Export from Folder algorithm dialog
 
-1. Click the `...` button of the Projects folder` field
+1. Click the `...` button of the `Projects folder` field
    and select the folder to use as input
 1. Check the `Include sub-directories` option if you want to also export
    layouts from the subfolders of the input director
