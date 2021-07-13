@@ -4,8 +4,10 @@ Welcome to Maps Printer's documentation!
 
 * [Installing](#installing)
 * [Using Maps Printer plugin](#using-maps-printer-plugin)
+  * [Custom settings](#custom-settings)
   * [Export layouts from project](#export-layouts-from-project)
   * [Export layouts from folder](#export-layouts-from-folder)
+  * [From command line](#from-command-line)
 
 
 Even though multiple pages and atlas options have improved print layouts
@@ -37,6 +39,13 @@ entry with following algorithms:
 A shortcut is also added to the Plugins menu with abovementioned tools and
 a ``Help`` entry to open this documentation:
 
+### Custom settings
+
+From the Processing options dialog (`Settings --> Options -->
+Processing -->`), under `Providers --> Maps Printer`, you can
+select the default format you wish to use while exporting.
+The list of available formats is based on the one supported by your OS.
+
 ### Export layouts from project
 
 Once you have created and set at your convenience your print layouts and wish to
@@ -59,19 +68,10 @@ export some of them,
    If not set, each layout is exported using its own set resolution.
 1. From the `...` menu of `Output folder of exported maps`,
    select `Save to Directory` and the output folder
-1. Provide the `Output folder` location.
 1. Click `Run` to execute.
 
    Maps will be output to the indicated folder. Check the log tab for issues,
    if any.
-
-``` 
-   **Customize the default extension of outputs**
-
-   From the Processing options dialog (`Settings --> Options -->
-   Processing`), under `Providers --> Maps Printer`, you can
-   select the default format you wish to use while exporting.
-```
 
 ### Export layouts from folder
 
@@ -98,11 +98,40 @@ from projects in a folder.
    If not set, each layout is exported using its own set resolution.
 1. With many files (containing many layouts) being exported to the same directory,
    you can hit filename collision.
-   Check `Prefix with project file name` to minimize the risk.
-1. Provide the `Output folder` location.
+   Check `Prefix with project file name` to minimize the risk;
+   exported layouts will will be placed following the project folder structure.
+1. From the `...` menu of `Output folder of exported maps`,
+   select `Save to Directory` and the output folder
 1. Click `Run` to execute.
 
-   QGIS will successively open each concerned project files and output their
+   QGIS will successively open each available project file and output their
    layouts' maps.
 
-Plugin developped by **Harrissou Sant-anna** (CAUE 49)
+### From command line
+
+Maps Printer's algorithms can be run from the QGIS Python console:
+
+```py
+ # Display help, for algorithm parameters
+ >>> processing.algorithmHelp("mapsprinter:exportlayoutsfromproject")
+ # Export few layouts to PDF
+ >>> processing.run("mapsprinter:exportlayoutsfromproject", {'LAYOUTS': [0,2],
+               'EXTENSION': 0,
+               'OUTPUT': '/path/to/exports/folder'}
+               )
+```
+
+Starting from QGIS 3.14, it's also possible to call Maps Printer's algorithms
+and export layouts from the command line using
+[qgis_process](https://docs.qgis.org/latest/en/docs/user_manual/processing/standalone.html).
+
+``` bash
+ # Display help, for algorithm parameters
+ $ qgis_process help mapsprinter:exportlayoutsfromfolder
+ # Export layouts from project files within a folder and subfolders
+ $ qgis_process run mapsprinter:exportlayoutsfromfolder --PROJECTS_FOLDER=/path/to/projects/folder \
+   --RECURSIVE=1 --EXTENSION=0 --OUTPUT_FOLDER=/path/to/exports/folder
+```
+
+
+Plugin developped by **Harrissou Sant-anna** (CAUE 49) - 2021
