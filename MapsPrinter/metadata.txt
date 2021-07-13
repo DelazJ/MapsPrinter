@@ -8,7 +8,7 @@
 
 [general]
 name=Maps Printer
-qgisMinimumVersion=3.0
+qgisMinimumVersion=3.8
 description=Export several print layouts to pdf, svg or image file (jpg, tif, png...) format in one click, from the current project or from projects in a folder.
 description[fr]=Permet en un clic d'exporter au format pdf, svg ou image (jpg, tif, png...) plusieurs mises en page de cartes. Ces mises en page peuvent provenir du projet en cours ou d'un dossier de projets.
 version=0.7
@@ -22,7 +22,9 @@ email=delazj@gmail.com
 # Optional items:
 
 # Uncomment the following line and add your changelog:
-changelog= v.0.7 (2021-07-12)
+changelog= v.0.8 (2021-07-13)
+        - Adds hasProcessingProvider parameter (for qgis_process use)
+    v.0.7 (2021-07-12)
         - Adds new options to export from folder 
         - Fix PDF multifile outputs
     v.0.6 (2021-02-10)
@@ -47,7 +49,9 @@ changelog= v.0.7 (2021-07-12)
         - Add progress bar to follow or abort operations
     v.0.1 (2014-07-30)
         - Initial release
-changelog[fr]= v.0.7 (2021-07-12)
+changelog[fr]=  v.0.8 (2021-07-13)
+        - Ajout du paramètre hasProcessingProvider (afin d'utiliser qgis_process)
+    v.0.7 (2021-07-12)
         - Ajout de nouvelles options à l'algo exporter depuis un dossier 
         - Correction de l'export PDF en multiple fichiers
     v.0.6 (2021-02-10)
@@ -85,3 +89,5 @@ experimental=False
 # deprecated flag (applies to the whole plugin, not just a single version)
 deprecated=False
 
+# determines if the plugin provides processing algorithms
+hasProcessingProvider=yes
