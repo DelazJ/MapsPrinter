@@ -30,6 +30,7 @@ from qgis.core import QgsProject
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtGui import QImageWriter
 from qgis.core import (QgsProcessingAlgorithm,
+                       QgsProcessingMultiStepFeedback,
                        QgsProcessingOutputNumber,
                        QgsProcessingParameterEnum,
                        QgsProcessingParameterFolderDestination,
@@ -131,14 +132,15 @@ class ExportLayoutsFromProject(QgsProcessingAlgorithm):
         # if not layoutIds:
             # layoutIds = self.layoutList.keys()
         exportedCount = 0
-        current = 0
+        
+        feedback = QgsProcessingMultiStepFeedback(len(layoutIds), feedback)
 
         if not os.path.isdir(outputFolder):
             feedback.reportError(self.tr('\nERROR: No valid output folder given. We cannot continue...\n'))
         elif extensionId is None:
             feedback.reportError(self.tr('\nERROR: No valid extension selected for output. We cannot continue...\n'))
         else:
-            for layout in layoutIds:
+            for current, layout in enumerate(layoutIds):
                 if feedback.isCanceled():
                     feedback.pushInfo(self.tr("Export aborted!"))
                     break
@@ -157,15 +159,14 @@ class ExportLayoutsFromProject(QgsProcessingAlgorithm):
                                     # )
                 #feedback.pushInfo(self.tr("total layoutIds '{}'").format( len(layoutIds) ) )
                 feedback.pushInfo(self.tr("Exporting layout '{}'").format( title ) )
-                result = self.processor.exportCompo(cView, outputFolder, title, extension)
+                result = self.processor.exportCompo(cView, outputFolder, title, extension, feedback=feedback)
                 if result:
                     feedback.pushInfo(self.tr('      Layout exported!'))
                     exportedCount += 1
                 else:
                     feedback.reportError(self.tr('      Layout could not be exported!'))
 
-                current += 1
-                feedback.setProgress(current * 100 / len(layoutIds))
+                feedback.setCurrentStep(current + 1)
 
             feedback.pushInfo( self.tr('End of export!'))
 
@@ -200,7 +201,7 @@ class ExportLayoutsFromProject(QgsProcessingAlgorithm):
         return ExportLayoutsFromProject()
 
     def shortDescription(self):  # pylint: disable=missing-docstring
-        return self.tr("Exports print layouts of the current project file to pdf, svg or image file formats." )
+        return self.tr("Exports print layouts of the current project file to pdf, svg or image file formats.")
 
     # def shortHelpString(self):
         # return self.tr("Exports a set of print layouts in the project to pdf, svg or image file formats " \
