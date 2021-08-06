@@ -141,7 +141,7 @@ class ExportLayoutsFromFolder(QgsProcessingAlgorithm):
             projectPaths = glob.glob(os.path.join(projectsFolder, '**/*.qg[s|z]'), recursive=True)
         #feedback.pushInfo(self.tr('{} project files found: {}').format(len(projectPaths), projectPaths))
 
-        count = 0
+        total = 100 / len(projectPath)
         exportedCount = 0
 
         if not len(projectPaths):
@@ -166,13 +166,12 @@ class ExportLayoutsFromFolder(QgsProcessingAlgorithm):
             project = QgsProject.instance()
 
             # Do the work!
-            for projectPath in projectPaths:
+            for count, projectPath in enumerate(projectPaths):
                 project.read(projectPath)
                 feedback.pushInfo(
                     self.tr("\n'{}' project read!").format(projectPath)
                 )
-                feedback.setProgress(count * 100 / len(projectPaths))
-                count += 1
+                feedback.setProgress(count * total)
 
                 # Compute the destination folder for the current file outputs
                 # by appending sub-directories name to the user set output folder
