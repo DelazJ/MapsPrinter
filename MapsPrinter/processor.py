@@ -62,7 +62,7 @@ class Processor:
             f = ''
         return f
 
-    def findActiveDir(self, extension ):
+    def findActiveDir(self, extension):
         """Find the last used directory depending on the format."""
 
         settings = QSettings()
@@ -76,7 +76,7 @@ class Processor:
 
         return dir
 
-    def exportCompo(self, cView, folder, title, extension, prefix=False):
+    def exportCompo(self, cView, folder, title, extension, prefix=False, feedback=None):
         """Function that sets how to export files.
         Returns a file
         :param cView: The print layout to export
@@ -101,7 +101,8 @@ class Processor:
         exporter.layout().refresh()
 
         if myAtlas.enabled():
-            feedback = QgsFeedback()
+            if feedback is None:
+                feedback = QgsFeedback()
 
             # If single file export is required (only compatible with pdf, yet)
             # singleFile can be 'true', 'false' or None
