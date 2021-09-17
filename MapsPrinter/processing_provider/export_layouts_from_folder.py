@@ -141,7 +141,7 @@ class ExportLayoutsFromFolder(QgsProcessingAlgorithm):
             projectPaths = glob.glob(os.path.join(projectsFolder, '**/*.qg[s|z]'), recursive=True)
         #feedback.pushInfo(self.tr('{} project files found: {}').format(len(projectPaths), projectPaths))
 
-        total = 100 / len(projectPath)
+        total = 100 / len(projectPaths)
         exportedCount = 0
 
         if not len(projectPaths):
