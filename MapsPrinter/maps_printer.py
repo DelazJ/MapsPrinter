@@ -27,7 +27,7 @@ from functools import partial
 from qgis.PyQt.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, QUrl
 from qgis.PyQt.QtGui import QIcon, QDesktopServices
 from qgis.PyQt.QtWidgets import QAction
-from qgis.core import QgsApplication
+from qgis.core import QgsApplication, Qgis
 
 from .processing_provider.maps_printer_provider import MapsPrinterProvider
 
@@ -92,7 +92,10 @@ class MapsPrinter():
             self.tr("Maps Printer"),
             self.iface.mainWindow()
         )
-        self.iface.pluginHelpMenu().addAction(self.helpAction)
+        if Qgis.QGIS_VERSION_INT<31000:
+            self.iface.addPluginToMenu('&Maps Printer', self.helpAction)
+        else:
+            self.iface.pluginHelpMenu().addAction(self.helpAction)
 
         # Connect the action to the docs method
         self.helpAction.triggered.connect(
@@ -109,5 +112,9 @@ class MapsPrinter():
 
         QgsApplication.processingRegistry().removeProvider('mapsprinter')
 
-        self.iface.pluginHelpMenu().removeAction(self.helpAction)
+        if Qgis.QGIS_VERSION_INT<31000:
+            self.iface.removePluginMenu('&Maps Printer', self.helpAction)
+        else:
+            self.iface.pluginHelpMenu().removeAction(self.helpAction)
+
         del self.helpAction
