@@ -26,11 +26,13 @@
 __revision__ = '$Format:%H$'
 
 import os.path
-from qgis.core import QgsProject
+from qgis.core import (QgsFeedback,
+                       QgsFileUtils,
+                       QgsLayoutExporter,
+                       QgsProject,
+                      )
 from qgis.PyQt.QtCore import QSettings
 from qgis.PyQt.QtGui import QImageWriter
-
-from qgis.core import QgsLayoutExporter, QgsFeedback
 
 class Processor:
     """
@@ -100,6 +102,9 @@ class Processor:
         # Refresh the layout before printing
         exporter.layout().refresh()
 
+        # Sanitize output file name, removing illegal characters
+        title = QgsFileUtils.stringToSafeFilename(title)
+
         if myAtlas.enabled():
             if feedback is None:
                 feedback = QgsFeedback()
@@ -127,20 +132,20 @@ class Processor:
                 if prefix:
                     myAtlas.setFilenameExpression(u"'{}_'||{}".format(QgsProject.instance().baseName(), user_expression ))
                 
-                current_fileName = myAtlas.filenameExpression()
+                current_filename = myAtlas.filenameExpression()
 
                 try:
                     # Export atlas to multiple pdfs
                     if extension =='.pdf':
-                        result, error = exporter.exportToPdfs(myAtlas, os.path.join(folder, current_fileName), exportSettings, feedback)
+                        result, error = exporter.exportToPdfs(myAtlas, os.path.join(folder, current_filename), exportSettings, feedback)
 
                     # Export atlas to svg format
                     elif extension =='.svg':
-                        result, error = exporter.exportToSvg(myAtlas, os.path.join(folder, current_fileName), exportSettings, feedback)
+                        result, error = exporter.exportToSvg(myAtlas, os.path.join(folder, current_filename), exportSettings, feedback)
 
                     # Export atlas to image format
                     else:
-                       result, error = exporter.exportToImage(myAtlas, os.path.join(folder, current_fileName), extension, exportSettings, feedback)
+                       result, error = exporter.exportToImage(myAtlas, os.path.join(folder, current_filename), extension, exportSettings, feedback)
 
                 finally:
                     # Reset to the user default expression
