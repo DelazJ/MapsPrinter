@@ -24,11 +24,10 @@ import glob
 import qgis
 from qgis.core import (QgsProject,
                        QgsProcessingAlgorithm,
-                       QgsProcessingParameterBoolean,
-                       QgsProcessingParameterFolderDestination,
-                       QgsProcessingParameterFile,
-                       QgsProcessingParameterEnum,
                        QgsProcessingOutputFolder,
+                       QgsProcessingParameterBoolean,
+                       QgsProcessingParameterEnum,
+                       QgsProcessingParameterFile,
                        QgsProcessingParameterNumber,
                       )
 from qgis.PyQt.QtCore import QCoreApplication
@@ -97,9 +96,10 @@ class ExportLayoutsFromFolder(QgsProcessingAlgorithm):
             )
         )
         self.addParameter(
-            QgsProcessingParameterFolderDestination(
+            QgsProcessingParameterFile(
                 self.OUTPUT_FOLDER,
-                self.tr("Output folder where to save maps")
+                self.tr("Output folder where to save maps"),
+                QgsProcessingParameterFile.Folder
             )
         )
         self.addOutput(
