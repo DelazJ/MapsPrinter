@@ -36,8 +36,8 @@ entry with following algorithms:
 * `Export layouts from folder`: exports all the layouts from all the projects
   files in a selected folder
 
-A shortcut is also added to the Plugins menu with abovementioned tools and
-a ``Help`` entry to open this documentation:
+A ``Help`` entry is also added to the top `Help --> Plugins --> Maps Printer` menu
+and opens this documentation.
 
 ### Custom settings
 
@@ -78,7 +78,6 @@ export some of them,
 The `Export layouts from folder` algorithm helps you export layouts
 from projects in a folder.
 
-
 1. Expand the `Maps Printer` entry in the `Processing Toolbox`
    panel and double-click `Export layouts from folder`.
    The following dialog opens.
@@ -115,10 +114,12 @@ Maps Printer's algorithms can be run from the QGIS Python console:
  # Display help, for algorithm parameters
  >>> processing.algorithmHelp("mapsprinter:exportlayoutsfromproject")
  # Export few layouts to PDF
- >>> processing.run("mapsprinter:exportlayoutsfromproject", {'LAYOUTS': [0,2],
-               'EXTENSION': 0,
-               'OUTPUT': '/path/to/exports/folder'}
-               )
+ >>> processing.run("mapsprinter:exportlayoutsfromproject",
+         {'LAYOUTS': [0,2],
+         'EXTENSION': 0,
+         'OUTPUT': '/path/to/exports/folder'
+         }
+     )
 ```
 
 Starting from QGIS 3.14, it's also possible to call Maps Printer's algorithms
