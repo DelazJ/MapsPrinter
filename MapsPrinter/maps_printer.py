@@ -29,7 +29,6 @@ from qgis.PyQt.QtGui import QIcon, QDesktopServices
 from qgis.PyQt.QtWidgets import QAction
 from qgis.core import QgsApplication
 
-from processing import execAlgorithmDialog #should be moved to qgis.processing when min supported version >= 3.8
 from .processing_provider.maps_printer_provider import MapsPrinterProvider
 
 # Initialize Qt resources from file resources.py
@@ -67,7 +66,6 @@ class MapsPrinter():
             if qVersion() > '4.3.3':
                 QCoreApplication.installTranslator(self.translator)
 
-
     # noinspection PyMethodMayBeStatic
 
     def tr(self, message):
@@ -88,35 +86,20 @@ class MapsPrinter():
         """Create the menu entries and toolbar icons inside the QGIS GUI."""
 
         self.initProcessing()
-        # Create action that will start plugin configuration
-        self.exportFolder = QAction(
-            QIcon(os.path.join(self.plugin_dir, 'icons/icon.png')),
-            self.tr('Export layouts from folder'),
-            self.iface.mainWindow()
-        )
-        self.exportProject = QAction(
-            QIcon(os.path.join(self.plugin_dir, 'icons/icon.png')),
-            self.tr('Export layouts from project'),
-            self.iface.mainWindow()
-        )
+        # Create action that will start plugin help
         self.helpAction = QAction(
-            QIcon(QgsApplication.iconPath("mActionHelpContents.svg")),
-            self.tr("Help") + "...",
+            QIcon(os.path.join(self.plugin_dir, 'icons/icon.png')),
+            self.tr("Maps Printer"),
             self.iface.mainWindow()
         )
-        # Connect the action to the openDialog method
-        self.exportFolder.triggered.connect(partial(self.openDialog, self.exportFolder))
-        self.exportProject.triggered.connect(partial(self.openDialog, self.exportProject))
+        self.iface.pluginHelpMenu().addAction(self.helpAction)
+
+        # Connect the action to the docs method
         self.helpAction.triggered.connect(
             lambda: QDesktopServices.openUrl(
                 QUrl('https://delazj.github.io/MapsPrinter')
             )
         )
-
-        # Add toolbar button and menu item0
-        self.iface.addPluginToMenu('&Maps Printer', self.exportFolder)
-        self.iface.addPluginToMenu('&Maps Printer', self.exportProject)
-        self.iface.addPluginToMenu('&Maps Printer', self.helpAction)
 
     def initProcessing(self):
         QgsApplication.processingRegistry().addProvider(self.provider)
@@ -126,16 +109,5 @@ class MapsPrinter():
 
         QgsApplication.processingRegistry().removeProvider('mapsprinter')
 
-        self.iface.removePluginMenu('&Maps Printer', self.exportFolder)
-        self.iface.removePluginMenu('&Maps Printer', self.exportProject)
-        self.iface.removePluginMenu('&Maps Printer', self.helpAction)
-
-    def openDialog(self, button):
-        """Shortcut method to open the algorithm dialog."""
-
-        params = {}
-        
-        if button == self.exportFolder:
-            alg = execAlgorithmDialog('mapsprinter:exportlayoutsfromfolder', params)
-        elif button == self.exportProject:
-            alg = execAlgorithmDialog('mapsprinter:exportlayoutsfromproject', params)
+        self.iface.pluginHelpMenu().removeAction(self.helpAction)
+        del self.helpAction
