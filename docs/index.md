@@ -66,8 +66,8 @@ export some of them,
    (as explained below).
 1. Enter a custom `Export resolution` to apply to all the outputs.
    If not set, each layout is exported using its own set resolution.
-1. From the `...` menu of `Output folder of exported maps`,
-   select `Save to Directory` and the output folder
+1. Press the `...` button of `Output folder of exported maps` to
+   browse your file explorer and select the output folder
 1. Click `Run` to execute.
 
    Maps will be output to the indicated folder. Check the log tab for issues,
@@ -100,8 +100,8 @@ from projects in a folder.
    you can hit filename collision.
    Check `Prefix with project file name` to minimize the risk;
    exported layouts will will be placed following the project folder structure.
-1. From the `...` menu of `Output folder of exported maps`,
-   select `Save to Directory` and the output folder
+1. Press the `...` button of `Output folder of exported maps` to
+   browse your file explorer and select the output folder
 1. Click `Run` to execute.
 
    QGIS will successively open each available project file and output their
