@@ -33,7 +33,7 @@ from qgis.core import (QgsProcessingAlgorithm,
                        QgsProcessingMultiStepFeedback,
                        QgsProcessingOutputNumber,
                        QgsProcessingParameterEnum,
-                       QgsProcessingParameterFolderDestination,
+                       QgsProcessingParameterFile,
                        QgsProcessingParameterNumber,
                       )
 from processing.core.ProcessingConfig import ProcessingConfig
@@ -104,9 +104,10 @@ class ExportLayoutsFromProject(QgsProcessingAlgorithm):
         )
 
         self.addParameter(
-            QgsProcessingParameterFolderDestination(
+            QgsProcessingParameterFile(
                 self.OUTPUT,
-                self.tr('Output folder where to save maps')
+                self.tr('Output folder where to save maps'),
+                QgsProcessingParameterFile.Folder
             )
         )
 
