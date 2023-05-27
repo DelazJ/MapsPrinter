@@ -209,7 +209,7 @@ class Processor:
                 exportSettings.useOgcBestPracticeFormatGeoreferencing = True
 
             if layout.customProperty('pdfExportThemes'):
-                exportSettings.exportThemes = layout.customProperty('pdfExportThemes')
+                exportSettings.exportThemes = layout.customProperty('pdfExportThemes').split("~~~")
 
             if layout.customProperty('pdfIncludeMetadata') == 0:
                 exportSettings.exportMetadata = False
