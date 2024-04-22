@@ -35,7 +35,6 @@ from qgis.core import (QgsFeedback,
 from qgis.PyQt.QtCore import QSettings
 from qgis.PyQt.QtGui import QImageWriter
 
-
 class Processor:
     """
     Utilities for managing layout export components
@@ -47,8 +46,8 @@ class Processor:
         formats = [
             'PDF format (*.pdf *.PDF)',
             'SVG format (*.svg *.SVG)',
-        ]
-        # Automatically add supported image formats instead of manually
+            ]
+        #Automatically add supported image formats instead of manually
         imageformats = QImageWriter.supportedImageFormats()
         for f in imageformats:
             fs = f.data().decode('utf-8')
@@ -71,9 +70,9 @@ class Processor:
 
         settings = QSettings()
         shortExt = self.setFormat(extension).lower()
-        if shortExt == '.pdf':  # if extension is pdf
+        if shortExt == '.pdf' : # if extension is pdf
             dir = settings.value('/UI/lastSaveAsPdfFile')
-        elif shortExt == '.svg':  # if extension is svg
+        elif shortExt == '.svg' : # if extension is svg
             dir = settings.value('/UI/lastSaveAsSvgFile')
         else:
             dir = settings.value('/UI/lastSaveAsImageDir')
@@ -91,7 +90,7 @@ class Processor:
         :return: A file representing the layout in the selected format
         """
 
-        # self.msgWMSWarning(cView)
+        #self.msgWMSWarning(cView)
 
         myAtlas = cView.atlas()
 
@@ -114,10 +113,9 @@ class Processor:
             # If single file export is required (only compatible with pdf, yet)
             # singleFile can be True, False or None
             if cView.customProperty('singleFile') in [None, True] and extension == '.pdf':
-                result, error = exporter.exportToPdf(myAtlas, os.path.join(folder, title + '.pdf'), exportSettings,
-                                                     feedback)
+                result, error = exporter.exportToPdf(myAtlas, os.path.join(folder, title + '.pdf'), exportSettings, feedback)
 
-            else:  # If instead multiple files will be output
+            else: #If instead multiple files will be output
 
                 # Check if there's a valid expression for filenames,
                 # and otherwise inform that a default one will be used and set it using the layout name.
@@ -133,26 +131,22 @@ class Processor:
                 # Store original expression
                 user_expression = myAtlas.filenameExpression()
                 if prefix:
-                    myAtlas.setFilenameExpression(
-                        u"'{}_'||{}".format(QgsProject.instance().baseName(), user_expression))
-
+                    myAtlas.setFilenameExpression(u"'{}_'||{}".format(QgsProject.instance().baseName(), user_expression ))
+                
                 current_filename = myAtlas.filenameExpression()
 
                 try:
                     # Export atlas to multiple pdfs
-                    if extension == '.pdf':
-                        result, error = exporter.exportToPdfs(myAtlas, os.path.join(folder, current_filename),
-                                                              exportSettings, feedback)
+                    if extension =='.pdf':
+                        result, error = exporter.exportToPdfs(myAtlas, os.path.join(folder, current_filename), exportSettings, feedback)
 
                     # Export atlas to svg format
-                    elif extension == '.svg':
-                        result, error = exporter.exportToSvg(myAtlas, os.path.join(folder, current_filename),
-                                                             exportSettings, feedback)
+                    elif extension =='.svg':
+                        result, error = exporter.exportToSvg(myAtlas, os.path.join(folder, current_filename), exportSettings, feedback)
 
                     # Export atlas to image format
                     else:
-                        result, error = exporter.exportToImage(myAtlas, os.path.join(folder, current_filename),
-                                                               extension, exportSettings, feedback)
+                       result, error = exporter.exportToImage(myAtlas, os.path.join(folder, current_filename), extension, exportSettings, feedback)
 
                 finally:
                     # Reset to the user default expression
@@ -188,7 +182,7 @@ class Processor:
             layoutDpi = layout.renderContext().dpi()
 
         return layoutDpi
-
+    
     def overrideExportSettings(self, layout, extension):
         """Because GUI settings are not exposed in Python,
            we need to find and catch user selection and override
@@ -219,7 +213,7 @@ class Processor:
                 exportSettings.useOgcBestPracticeFormatGeoreferencing = True
 
             if layout.customProperty('pdfExportThemes'):
-                exportSettings.exportThemes = layout.customProperty('pdfExportThemes')
+                exportSettings.exportThemes = layout.customProperty('pdfExportThemes').split("~~~")
 
             if layout.customProperty('pdfIncludeMetadata') == 0:
                 exportSettings.exportMetadata = False
@@ -250,7 +244,7 @@ class Processor:
             if layout.customProperty('svgSimplify') == 0:
                 exportSettings.simplifyGeometries = False
 
-            if layout.customProperty('svgGroupLayers') in ['true', True]:
+            if layout.customProperty('svgGroupLayers')  in ['true', True]:
                 exportSettings.exportAsLayers = True
 
             if layout.customProperty('svgTextFormat') == 1:
@@ -262,8 +256,8 @@ class Processor:
             if layout.customProperty('svgCropToContents') in ['true', True]:
                 exportSettings.cropToContents = True
             # Todo: add margin values when cropping to content
-            # exportSettings.cropMargins = ???QgsMargins???
-            # if layout.customProperty('svgDisableRasterTiles')  in ['true', True] : ??? # to fine tune with flags FlagDisableTiledRasterLayerRenders
+            #exportSettings.cropMargins = ???QgsMargins???
+            #if layout.customProperty('svgDisableRasterTiles')  in ['true', True] : ??? # to fine tune with flags FlagDisableTiledRasterLayerRenders
 
         else:
             # see QgsLayoutDesignerDialog::getRasterExportSettings for settings
@@ -273,91 +267,92 @@ class Processor:
             if layout.customProperty('exportWorldFile') in ['true', True]:
                 exportSettings.generateWorldFile = True
 
-            if layout.customProperty('imageCropToContents') in ['true', True]:
+            if layout.customProperty('imageCropToContents')  in ['true', True]:
                 exportSettings.cropToContents = True
             # Todo: add margin values when cropping to content
-            # exportSettings.cropMargins = ???QgsMargins???
+            #exportSettings.cropMargins = ???QgsMargins???
             # exportSettings.exportMetadata = False # what's the corresponding layout's property? 
             # layout.customProperty('atlasRasterFormat') # overridden by extension 
             # # if layout.customProperty('imageAntialias') in ['true', True] : ??? # to fine tune with flags FlagAntialiasing
 
         return exportSettings
 
-    # def msgEmptyPattern(self):
-    # """Display a message to tell there's no pattern filename for atlas
-    # TODO: offer the ability to fill the pattern name.
-    # """
-    # self.iface.messageBar().pushMessage(
-    # self.tr(u'Empty filename pattern'),
-    # self.tr(u'The print layout "{}" has an empty filename '\
-    # 'pattern. {}_$feature is used as default.'
-    # ).format(self.title, self.title),
-    # level = Qgis.Warning
-    # )
+    #def msgEmptyPattern(self):
+        #"""Display a message to tell there's no pattern filename for atlas
+        #TODO: offer the ability to fill the pattern name.
+        #"""
+        #self.iface.messageBar().pushMessage(
+            #self.tr(u'Empty filename pattern'),
+                #self.tr(u'The print layout "{}" has an empty filename '\
+                    #'pattern. {}_$feature is used as default.'
+                    #).format(self.title, self.title),
+            #level = Qgis.Warning
+            #)
 
-    # def msgWMSWarning(self, cView):
-    # """Show message about use of WMS layers in map"""
+    #def msgWMSWarning(self, cView):
+        #"""Show message about use of WMS layers in map"""
 
-    # for elt in list(cView.composition().items()):
-    # if isinstance(elt, QgsLayoutItemMap) and elt.containsWMSLayer():
-    # self.iface.messageBar().pushMessage(
-    # 'Maps Printer : ',
-    # self.tr(u'Project contains WMS Layers. '\
-    # 'Some WMS servers have a limit for the width and height parameter. '\
-    # 'Printing layers from such servers may exceed this limit. '\
-    # 'If this is the case, the WMS layer will not be printed.'),
-    # level = Qgis.Warning
-    # )
-    ## once we found a map layer concerned, we get out to show just once the message
-    # break
+        #for elt in list(cView.composition().items()):
+            #if isinstance(elt, QgsLayoutItemMap) and elt.containsWMSLayer():
+                #self.iface.messageBar().pushMessage(
+                    #'Maps Printer : ',
+                    #self.tr(u'Project contains WMS Layers. '\
+                    #'Some WMS servers have a limit for the width and height parameter. '\
+                    #'Printing layers from such servers may exceed this limit. '\
+                    #'If this is the case, the WMS layer will not be printed.'),
+                    #level = Qgis.Warning
+                #)
+                ## once we found a map layer concerned, we get out to show just once the message
+                #break
+
 
     # def checkFolder(self, outputDir):
-    # """Ensure export's folder exists and is writeable."""
+        # """Ensure export's folder exists and is writeable."""
 
-    # # It'd be better to find a way to check writeability in the first try...
-    # try:
-    # os.makedirs(outputDir)
-    # # settings.setValue('/UI/lastSaveAsImageDir', outputDir)
-    # except Exception as e:
-    # # if the folder already exists then let's check it's writeable
-    # if e.errno == errno.EEXIST:
-    # try:
-    # testfile = tempfile.TemporaryFile(dir = outputDir)
-    # testfile.close()
-    # except Exception as e:
-    # if e.errno in (errno.EACCES, errno.EPERM):
-    # QMessageBox.warning(None, self.tr(u'Unable to write in folder'),
-    # self.tr(u"You don't have rights to write in this folder. "\
-    # "Please, select another one!"),
-    # QMessageBox.Ok, QMessageBox.Ok)
-    # else:
-    # raise
-    # self.browseDir()
-    # else:
-    # return True
-    # # if the folder doesn't exist and can't be created then choose another directory
-    # elif e.errno in (errno.EACCES, errno.EPERM):
-    # QMessageBox.warning(None, self.tr(u'Unable to use the directory'),
-    # self.tr(u"You don't have rights to create or use such a folder. " \
-    # "Please, select another one!"),
-    # QMessageBox.Ok, QMessageBox.Ok)
-    # self.browseDir()
-    # # for anything else, let user know (mind if it's worth!?)
-    # else:
-    # QMessageBox.warning(None, self.tr(u'An error occurred : '),
-    # u'{}'.format(e), QMessageBox.Ok, QMessageBox.Ok)
-    # self.browseDir()
-    # else: # if it is created with no exception
-    # return True
+        # # It'd be better to find a way to check writeability in the first try...
+        # try:
+            # os.makedirs(outputDir)
+            # # settings.setValue('/UI/lastSaveAsImageDir', outputDir)
+        # except Exception as e:
+            # # if the folder already exists then let's check it's writeable
+            # if e.errno == errno.EEXIST:
+                # try:
+                    # testfile = tempfile.TemporaryFile(dir = outputDir)
+                    # testfile.close()
+                # except Exception as e:
+                    # if e.errno in (errno.EACCES, errno.EPERM):
+                        # QMessageBox.warning(None, self.tr(u'Unable to write in folder'),
+                            # self.tr(u"You don't have rights to write in this folder. "\
+                            # "Please, select another one!"),
+                            # QMessageBox.Ok, QMessageBox.Ok)
+                    # else:
+                        # raise
+                    # self.browseDir()
+                # else:
+                    # return True
+            # # if the folder doesn't exist and can't be created then choose another directory
+            # elif e.errno in (errno.EACCES, errno.EPERM):
+                # QMessageBox.warning(None, self.tr(u'Unable to use the directory'),
+                    # self.tr(u"You don't have rights to create or use such a folder. " \
+                    # "Please, select another one!"),
+                    # QMessageBox.Ok, QMessageBox.Ok)
+                # self.browseDir()
+            # # for anything else, let user know (mind if it's worth!?)
+            # else:
+                # QMessageBox.warning(None, self.tr(u'An error occurred : '),
+                    # u'{}'.format(e), QMessageBox.Ok, QMessageBox.Ok)
+                # self.browseDir()
+        # else: # if it is created with no exception
+            # return True
 
     # def setDefaultDir(self, extension):
-    # """Find the last used directory depending on the format."""
+        # """Find the last used directory depending on the format."""
 
-    # settings = QSettings()
-    # # keep in memory the output folder
-    # if extension == '.pdf':
-    # QSettings().setValue('/UI/lastSaveAsPdfFile', folder)
-    # elif extension == '.svg':
-    # QSettings().setValue('/UI/lastSaveAsSvgFile', folder)
-    # else:
-    # QSettings().setValue('/UI/lastSaveAsImageDir', folder)
+        # settings = QSettings()
+        # # keep in memory the output folder
+        # if extension == '.pdf':
+            # QSettings().setValue('/UI/lastSaveAsPdfFile', folder)
+        # elif extension == '.svg':
+            # QSettings().setValue('/UI/lastSaveAsSvgFile', folder)
+        # else:
+            # QSettings().setValue('/UI/lastSaveAsImageDir', folder)
