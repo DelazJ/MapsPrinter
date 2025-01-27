@@ -30,7 +30,8 @@ from qgis.core import (QgsFeedback,
                        QgsFileUtils,
                        QgsLayoutExporter,
                        QgsProject,
-                      )
+                       QgsRenderContext
+                       )
 from qgis.PyQt.QtCore import QSettings
 from qgis.PyQt.QtGui import QImageWriter
 
@@ -202,7 +203,10 @@ class Processor:
                 exportSettings.forceVectorOutput = True
 
             if layout.customProperty('pdfTextFormat') == 1:
-                exportSettings.textRenderFormat = 1
+                exportSettings.textRenderFormat = QgsRenderContext.TextFormatAlwaysText
+
+            if layout.customProperty('pdfTextFormat') == 0:
+                exportSettings.textRenderFormat = QgsRenderContext.TextFormatAlwaysOutlines  # default
 
             if layout.customProperty('pdfOgcBestPracticeFormat') == 1:
                 exportSettings.useIso32000ExtensionFormatGeoreferencing = False
@@ -244,7 +248,10 @@ class Processor:
                 exportSettings.exportAsLayers = True
 
             if layout.customProperty('svgTextFormat') == 1:
-                exportSettings.textRenderFormat = 1
+                exportSettings.textRenderFormat = QgsRenderContext.TextFormatAlwaysText
+
+            if layout.customProperty('svgTextFormat') == 0:
+                exportSettings.textRenderFormat = QgsRenderContext.TextFormatAlwaysOutlines  # default
 
             if layout.customProperty('svgCropToContents') in ['true', True]:
                 exportSettings.cropToContents = True
@@ -349,4 +356,3 @@ class Processor:
             # QSettings().setValue('/UI/lastSaveAsSvgFile', folder)
         # else:
             # QSettings().setValue('/UI/lastSaveAsImageDir', folder)
-
