@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 /***************************************************************************
  MapsPrinter
@@ -33,10 +32,11 @@ from .processing_provider.maps_printer_provider import MapsPrinterProvider
 
 # Initialize Qt resources from file resources.py
 from . import resources_rc
+
 # Import code
 
 
-class MapsPrinter():
+class MapsPrinter:
     """QGIS Plugin Implementation."""
 
     def __init__(self, iface):
@@ -53,17 +53,14 @@ class MapsPrinter():
         # initialize plugin directory
         self.plugin_dir = os.path.dirname(__file__)
         # initialize locale
-        locale = QSettings().value('locale/userLocale')[0:2]
-        locale_path = os.path.join(
-            self.plugin_dir,
-            'i18n',
-            'MapsPrinter_{}.qm'.format(locale))
+        locale = QSettings().value("locale/userLocale")[0:2]
+        locale_path = os.path.join(self.plugin_dir, "i18n", f"MapsPrinter_{locale}.qm")
 
         if os.path.exists(locale_path):
             self.translator = QTranslator()
             self.translator.load(locale_path)
 
-            if qVersion() > '4.3.3':
+            if qVersion() > "4.3.3":
                 QCoreApplication.installTranslator(self.translator)
 
     # noinspection PyMethodMayBeStatic
@@ -80,7 +77,7 @@ class MapsPrinter():
         :rtype: QString
         """
         # noinspection PyTypeChecker,PyArgumentList,PyCallByClass
-        return QCoreApplication.translate('MapsPrinter', message)
+        return QCoreApplication.translate("MapsPrinter", message)
 
     def initGui(self):
         """Create the menu entries and toolbar icons inside the QGIS GUI."""
@@ -88,19 +85,19 @@ class MapsPrinter():
         self.initProcessing()
         # Create action that will start plugin help
         self.helpAction = QAction(
-            QIcon(os.path.join(self.plugin_dir, 'icons/icon.png')),
+            QIcon(os.path.join(self.plugin_dir, "icons/icon.png")),
             self.tr("Maps Printer"),
-            self.iface.mainWindow()
+            self.iface.mainWindow(),
         )
-        if Qgis.QGIS_VERSION_INT<31000:
-            self.iface.addPluginToMenu('&Maps Printer', self.helpAction)
+        if Qgis.QGIS_VERSION_INT < 31000:
+            self.iface.addPluginToMenu("&Maps Printer", self.helpAction)
         else:
             self.iface.pluginHelpMenu().addAction(self.helpAction)
 
         # Connect the action to the docs method
         self.helpAction.triggered.connect(
             lambda: QDesktopServices.openUrl(
-                QUrl('https://delazj.github.io/MapsPrinter')
+                QUrl("https://delazj.github.io/MapsPrinter")
             )
         )
 
@@ -110,10 +107,10 @@ class MapsPrinter():
     def unload(self):
         """Removes the plugin provider, menu item and icon from QGIS GUI."""
 
-        QgsApplication.processingRegistry().removeProvider('mapsprinter')
+        QgsApplication.processingRegistry().removeProvider("mapsprinter")
 
-        if Qgis.QGIS_VERSION_INT<31000:
-            self.iface.removePluginMenu('&Maps Printer', self.helpAction)
+        if Qgis.QGIS_VERSION_INT < 31000:
+            self.iface.removePluginMenu("&Maps Printer", self.helpAction)
         else:
             self.iface.pluginHelpMenu().removeAction(self.helpAction)
 

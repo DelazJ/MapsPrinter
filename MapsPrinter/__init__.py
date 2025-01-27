@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 /***************************************************************************
  MapsPrinter
@@ -32,4 +31,5 @@ def classFactory(iface):  # pylint: disable=invalid-name
     """
     #
     from .maps_printer import MapsPrinter
+
     return MapsPrinter(iface)
