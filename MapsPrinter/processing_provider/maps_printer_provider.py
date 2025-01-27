@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 /***************************************************************************
  MapsPrinter
@@ -22,7 +21,7 @@
 """
 
 # This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
+__revision__ = "$Format:%H$"
 
 import os.path
 from qgis.PyQt.QtGui import QIcon
@@ -32,6 +31,7 @@ from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from .export_layouts_from_project import ExportLayoutsFromProject
 from .export_layouts_from_folder import ExportLayoutsFromFolder
 from MapsPrinter.processor import Processor
+
 
 class MapsPrinterProvider(QgsProcessingProvider):
 
@@ -48,13 +48,16 @@ class MapsPrinterProvider(QgsProcessingProvider):
         """
         ProcessingConfig.settingIcons[self.name()] = self.icon()
 
-        ProcessingConfig.addSetting(Setting(
-            self.name(),
-            'DEFAULT_EXPORT_EXTENSION',
-            self.tr('Default layout export format'),
-            default='PNG format (*.png *.PNG)',
-            valuetype=Setting.SELECTION,
-            options=self.processor.listFormat()))
+        ProcessingConfig.addSetting(
+            Setting(
+                self.name(),
+                "DEFAULT_EXPORT_EXTENSION",
+                self.tr("Default layout export format"),
+                default="PNG format (*.png *.PNG)",
+                valuetype=Setting.SELECTION,
+                options=self.processor.listFormat(),
+            )
+        )
 
         ProcessingConfig.readSettings()
         return super().load()
@@ -64,7 +67,7 @@ class MapsPrinterProvider(QgsProcessingProvider):
         Unloads the provider. Any tear-down steps required by the provider
         should be implemented here.
         """
-        ProcessingConfig.removeSetting('DEFAULT_EXPORT_EXTENSION')
+        ProcessingConfig.removeSetting("DEFAULT_EXPORT_EXTENSION")
 
     def loadAlgorithms(self):
         """
@@ -81,7 +84,7 @@ class MapsPrinterProvider(QgsProcessingProvider):
         string should be a unique, short, character only string, eg "qgis" or
         "gdal". This string should not be localised.
         """
-        return 'mapsprinter'
+        return "mapsprinter"
 
     def name(self):
         """
@@ -90,15 +93,14 @@ class MapsPrinterProvider(QgsProcessingProvider):
 
         This string should be short (e.g. "Lastools") and localised.
         """
-        return self.tr('Maps Printer')
+        return self.tr("Maps Printer")
 
     def icon(self):
         """
         Should return a QIcon which is used for your provider inside
         the Processing toolbox.
         """
-        return QIcon(os.path.join(os.path.dirname(__file__),'../icons/icon.png'))
-
+        return QIcon(os.path.join(os.path.dirname(__file__), "../icons/icon.png"))
 
     def longName(self):
         """

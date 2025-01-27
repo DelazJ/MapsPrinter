@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 /***************************************************************************
  MapsPrinter
@@ -23,22 +22,24 @@
 
 # This will get replaced with a git SHA1 when you do a git archive
 
-__revision__ = '$Format:%H$'
+__revision__ = "$Format:%H$"
 
 import os.path
 from qgis.core import QgsProject
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtGui import QImageWriter
-from qgis.core import (QgsProcessingAlgorithm,
-                       QgsProcessingMultiStepFeedback,
-                       QgsProcessingOutputNumber,
-                       QgsProcessingParameterEnum,
-                       QgsProcessingParameterFile,
-                       QgsProcessingParameterNumber,
-                      )
+from qgis.core import (
+    QgsProcessingAlgorithm,
+    QgsProcessingMultiStepFeedback,
+    QgsProcessingOutputNumber,
+    QgsProcessingParameterEnum,
+    QgsProcessingParameterFile,
+    QgsProcessingParameterNumber,
+)
 from processing.core.ProcessingConfig import ProcessingConfig
 
 from MapsPrinter.processor import Processor
+
 
 class ExportLayoutsFromProject(QgsProcessingAlgorithm):
     """
@@ -58,11 +59,11 @@ class ExportLayoutsFromProject(QgsProcessingAlgorithm):
     # used when calling the algorithm from another algorithm, or when
     # calling from the QGIS console.
 
-    LAYOUTS = 'LAYOUTS'
-    EXTENSION = 'EXTENSION'
-    RESOLUTION = 'RESOLUTION'
-    OUTPUT = 'OUTPUT'
-    EXPORTEDLAYOUTS = 'EXPORTEDLAYOUTS'
+    LAYOUTS = "LAYOUTS"
+    EXTENSION = "EXTENSION"
+    RESOLUTION = "RESOLUTION"
+    OUTPUT = "OUTPUT"
+    EXPORTEDLAYOUTS = "EXPORTEDLAYOUTS"
 
     def __init__(self):
         super().__init__()
@@ -75,46 +76,53 @@ class ExportLayoutsFromProject(QgsProcessingAlgorithm):
         with some other properties.
         """
 
-        self.layoutList = sorted([cView.name() for cView in QgsProject.instance().layoutManager().printLayouts()], key=str.lower)
+        self.layoutList = sorted(
+            [
+                cView.name()
+                for cView in QgsProject.instance().layoutManager().printLayouts()
+            ],
+            key=str.lower,
+        )
         self.addParameter(
             QgsProcessingParameterEnum(
                 self.LAYOUTS,
-                self.tr('Layouts to export'),
+                self.tr("Layouts to export"),
                 options=self.layoutList,
-                allowMultiple=True
+                allowMultiple=True,
             )
         )
 
         self.addParameter(
             QgsProcessingParameterEnum(
                 self.EXTENSION,
-                self.tr('Extension for exported maps'),
+                self.tr("Extension for exported maps"),
                 options=self.listFormats,
-                defaultValue=ProcessingConfig.getSetting('DEFAULT_EXPORT_EXTENSION')
+                defaultValue=ProcessingConfig.getSetting("DEFAULT_EXPORT_EXTENSION"),
             )
         )
 
         self.addParameter(
             QgsProcessingParameterNumber(
                 self.RESOLUTION,
-                self.tr('Export resolution (if not set, the layout resolution is used)'),
+                self.tr(
+                    "Export resolution (if not set, the layout resolution is used)"
+                ),
                 optional=True,
-                minValue=1
+                minValue=1,
             )
         )
 
         self.addParameter(
             QgsProcessingParameterFile(
                 self.OUTPUT,
-                self.tr('Output folder where to save maps'),
-                QgsProcessingParameterFile.Folder
+                self.tr("Output folder where to save maps"),
+                QgsProcessingParameterFile.Folder,
             )
         )
 
         self.addOutput(
             QgsProcessingOutputNumber(
-                self.EXPORTEDLAYOUTS,
-                self.tr('Number of layouts exported')
+                self.EXPORTEDLAYOUTS, self.tr("Number of layouts exported")
             )
         )
 
@@ -131,15 +139,23 @@ class ExportLayoutsFromProject(QgsProcessingAlgorithm):
         layoutIds = self.parameterAsEnums(parameters, self.LAYOUTS, context)
         # # Todo?: if no layout is checked, pick them all
         # if not layoutIds:
-            # layoutIds = self.layoutList.keys()
+        # layoutIds = self.layoutList.keys()
         exportedCount = 0
-        
+
         feedback = QgsProcessingMultiStepFeedback(len(layoutIds), feedback)
 
         if not os.path.isdir(outputFolder):
-            feedback.reportError(self.tr('\nERROR: No valid output folder given. We cannot continue...\n'))
+            feedback.reportError(
+                self.tr(
+                    "\nERROR: No valid output folder given. We cannot continue...\n"
+                )
+            )
         elif extensionId is None:
-            feedback.reportError(self.tr('\nERROR: No valid extension selected for output. We cannot continue...\n'))
+            feedback.reportError(
+                self.tr(
+                    "\nERROR: No valid extension selected for output. We cannot continue...\n"
+                )
+            )
         else:
             for current, layout in enumerate(layoutIds):
                 if feedback.isCanceled():
@@ -152,29 +168,29 @@ class ExportLayoutsFromProject(QgsProcessingAlgorithm):
                 # Retrieve the resolution to apply to the export
                 self.processor.getResolution(cView, resolution)
 
-                #feedback.pushInfo('cView= {}, Title= {}, extension= {},
-                                    # resolution= {}, outputFolder= {}'.format(
-                                        # cView, title, extension,
-                                        # self.processor.getResolution(cView, resolution),
-                                        # outputFolder)
-                                    # )
-                #feedback.pushInfo(self.tr("total layoutIds '{}'").format( len(layoutIds) ) )
-                feedback.pushInfo(self.tr("Exporting layout '{}'").format( title ) )
-                result = self.processor.exportCompo(cView, outputFolder, title, extension, feedback=feedback)
+                # feedback.pushInfo('cView= {}, Title= {}, extension= {},
+                # resolution= {}, outputFolder= {}'.format(
+                # cView, title, extension,
+                # self.processor.getResolution(cView, resolution),
+                # outputFolder)
+                # )
+                # feedback.pushInfo(self.tr("total layoutIds '{}'").format( len(layoutIds) ) )
+                feedback.pushInfo(self.tr("Exporting layout '{}'").format(title))
+                result = self.processor.exportCompo(
+                    cView, outputFolder, title, extension, feedback=feedback
+                )
                 if result:
-                    feedback.pushInfo(self.tr('      Layout exported!'))
+                    feedback.pushInfo(self.tr("      Layout exported!"))
                     exportedCount += 1
                 else:
-                    feedback.reportError(self.tr('      Layout could not be exported!'))
+                    feedback.reportError(self.tr("      Layout could not be exported!"))
 
                 feedback.setCurrentStep(current + 1)
 
-            feedback.pushInfo( self.tr('End of export!'))
+            feedback.pushInfo(self.tr("End of export!"))
 
         if exportedCount:
-            return {self.EXPORTEDLAYOUTS: exportedCount,
-                    self.OUTPUT: outputFolder
-                   }
+            return {self.EXPORTEDLAYOUTS: exportedCount, self.OUTPUT: outputFolder}
         else:
             return {self.OUTPUT: None}
 
@@ -186,34 +202,36 @@ class ExportLayoutsFromProject(QgsProcessingAlgorithm):
         lowercase alphanumeric characters only and no spaces or other
         formatting characters.
         """
-        return 'exportlayoutsfromproject'
+        return "exportlayoutsfromproject"
 
     def displayName(self):
         """
         Returns the translated algorithm name, which should be used for any
         user-visible display of the algorithm name.
         """
-        return self.tr('Export layouts from project')
+        return self.tr("Export layouts from project")
 
     def tr(self, string):
-        return QCoreApplication.translate('ExportLayoutsFromProject', string)
+        return QCoreApplication.translate("ExportLayoutsFromProject", string)
 
     def createInstance(self):
         return ExportLayoutsFromProject()
 
     def shortDescription(self):  # pylint: disable=missing-docstring
-        return self.tr("Exports print layouts of the current project file to pdf, svg or image file formats.")
+        return self.tr(
+            "Exports print layouts of the current project file to pdf, svg or image file formats."
+        )
 
     # def shortHelpString(self):
-        # return self.tr("Exports a set of print layouts in the project to pdf, svg or image file formats " \
-               # "to an indicated folder.")
+    # return self.tr("Exports a set of print layouts in the project to pdf, svg or image file formats " \
+    # "to an indicated folder.")
 
     # def helpUrl(self):
-        # return ...
+    # return ...
 
     def tag(self):
         return self.tr("print,layout,export,composer,image,pdf,svg,map")
 
     def flags(self):
-        """ Important: this algorithm should run in the main thread """
+        """Important: this algorithm should run in the main thread"""
         return super().flags() | QgsProcessingAlgorithm.FlagNoThreading
