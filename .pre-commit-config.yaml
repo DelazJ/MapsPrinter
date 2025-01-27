@@ -11,7 +11,6 @@ repos:
   - id: check-yaml
   - id: debug-statements
   - id: detect-private-key
-  - id: double-quote-string-fixer
   - id: end-of-file-fixer
   - id: fix-byte-order-marker
   - id: trailing-whitespace
