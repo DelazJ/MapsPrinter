@@ -1,17 +1,14 @@
-# This file contains metadata for your plugin. Since
-# version 2.0 of QGIS this is the proper way to supply
-# information about a plugin. The old method of
-# embedding metadata in __init__.py
-# is no longer supported since version 2.0.
+# This file contains metadata for your plugin.
 
-# This file should be included when you package your plugin.# Mandatory items:
+# This file should be included when you package your plugin.
+# Mandatory items:
 
 [general]
 name=Maps Printer
 qgisMinimumVersion=3.8
 description=Export several print layouts to pdf, svg or image file (jpg, tif, png...) format in one click, from the current project or from projects in a folder.
 description[fr]=Permet en un clic d'exporter au format pdf, svg ou image (jpg, tif, png...) plusieurs mises en page de cartes. Ces mises en page peuvent provenir du projet en cours ou d'un dossier de projets.
-version=0.9
+version=1.0
 about=Exporting a print layout requires to open it, launch the export, wait till it finishes. This procedure can become boring, repulsive and time consuming when you have to export a lot of print layouts. Maps Printer offers a quick way to export print layouts, without opening each one before: just check them in a list and launch their export to the file format you wish (pdf, svg, jpg, tif, png...). Furthermore, you can export print layouts from project files within a directory.
 about[fr]= Lorsque vous avez plusieurs mises en page de cartes à exporter, la tâche peut très vite devenir chronophage et rébarbative. Il faut en effet ouvrir chacune d'elles, en lancer l'export, attendre qu'il finisse avant de passer à la suivante. Avec Maps Printer, vous n'avez plus besoin de suivre ces étapes afin d'exporter dans le format de votre choix (pdf, svg, jpg, tif, png...) : faites votre sélection et générez l'export. En outre, il est possible d'exporter les mises en page des projets présents dans un dossier.
 author=Harrissou Sant-anna (Conseil d'Architecture, d'Urbanisme et de l'Environnement du Maine-et-Loire)
@@ -21,8 +18,10 @@ email=delazj@gmail.com
 
 # Optional items:
 
-# Uncomment the following line and add your changelog:
-changelog= v.0.9 (2021-12-10)
+changelog= v.1.0 (2025-02-13)
+        - Support of Qt6
+        - Fix text output mode in pdf export (Thanks MrChebur) - #54
+    v.0.9 (2021-12-10)
         - Fix atlas export to single PDF file (thanks to Nicolas Godet) - #45
         - Add multistep feedback when exporting atlases (thanks to Nicolas Godet) - #46
         - Fix export failing when layout name contains "illegal characters" - #50
@@ -54,7 +53,10 @@ changelog= v.0.9 (2021-12-10)
         - Add progress bar to follow or abort operations
     v.0.1 (2014-07-30)
         - Initial release
-changelog[fr]== v.0.9 (2021-12-10)
+changelog[fr]= v.1.0 (2025-02-15)
+        - Prise en charge de Qt6
+        - Correction du mode de rendu du texte lors d'un export pdf (merci à MrChebur) - #54
+    v.0.9 (2021-12-10)
         - Correction de l'export d'atlas en un unique fichier PDF (merci à Nicolas Godet) - #45
         - Ajout de rapports intermédiaires lors de l'export d'atlas (merci à Nicolas Godet) - #46
         - Correction du bug d'export lorsque le nom de la mise en page contient des "caractères illégaux" - #50
@@ -101,3 +103,6 @@ deprecated=False
 
 # determines if the plugin provides processing algorithms
 hasProcessingProvider=yes
+
+# determines if the plugin can be run on QGIS built with Qt6
+supportsQt6=yes

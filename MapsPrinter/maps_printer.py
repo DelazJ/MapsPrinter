@@ -30,11 +30,6 @@ from qgis.core import QgsApplication, Qgis
 
 from .processing_provider.maps_printer_provider import MapsPrinterProvider
 
-# Initialize Qt resources from file resources.py
-from . import resources_rc
-
-# Import code
-
 
 class MapsPrinter:
     """QGIS Plugin Implementation."""
