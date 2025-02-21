@@ -26,6 +26,7 @@ __revision__ = "$Format:%H$"
 
 import os.path
 from qgis.core import (
+    Qgis,
     QgsFeedback,
     QgsFileUtils,
     QgsLayoutExporter,
@@ -235,13 +236,22 @@ class Processor:
             if layout.customProperty("forceVector") == 1:
                 exportSettings.forceVectorOutput = True
 
-            if layout.customProperty("pdfTextFormat") == 1:
-                exportSettings.textRenderFormat = QgsRenderContext.TextFormatAlwaysText
-
-            if layout.customProperty("pdfTextFormat") == 0:
-                exportSettings.textRenderFormat = (
-                    QgsRenderContext.TextFormatAlwaysOutlines
-                )  # default
+            if Qgis.QGIS_VERSION_INT < 34000:
+                if layout.customProperty("pdfTextFormat") == 0:
+                    exportSettings.textRenderFormat = (
+                        QgsRenderContext.TextFormatAlwaysOutlines
+                    )  # default
+                if layout.customProperty("pdfTextFormat") == 1:
+                    exportSettings.textRenderFormat = QgsRenderContext.TextFormatAlwaysText
+            else:
+                if layout.customProperty("pdfTextFormat") == 0:
+                    exportSettings.textRenderFormat = (
+                        Qgis.TextRenderFormat.AlwaysOutlines
+                    )  # default
+                if layout.customProperty("pdfTextFormat") == 1:
+                    exportSettings.textRenderFormat = Qgis.TextRenderFormat.AlwaysText
+                if layout.customProperty("pdfTextFormat") == 2:
+                    exportSettings.textRenderFormat = Qgis.TextRenderFormat.PreferText
 
             if layout.customProperty("pdfOgcBestPracticeFormat") == 1:
                 exportSettings.useIso32000ExtensionFormatGeoreferencing = False
@@ -284,13 +294,23 @@ class Processor:
             if layout.customProperty("svgGroupLayers") in ["true", True]:
                 exportSettings.exportAsLayers = True
 
-            if layout.customProperty("svgTextFormat") == 1:
-                exportSettings.textRenderFormat = QgsRenderContext.TextFormatAlwaysText
+            if Qgis.QGIS_VERSION_INT < 34000:
+                if layout.customProperty("svgTextFormat") == 0:
+                    exportSettings.textRenderFormat = (
+                        QgsRenderContext.TextFormatAlwaysOutlines
+                    )  # default
+                if layout.customProperty("svgTextFormat") == 1:
+                    exportSettings.textRenderFormat = QgsRenderContext.TextFormatAlwaysText
+            else:
+                if layout.customProperty("svgTextFormat") == 0:
+                    exportSettings.textRenderFormat = (
+                        Qgis.TextRenderFormat.AlwaysOutlines
+                    )  # default
+                if layout.customProperty("svgTextFormat") == 1:
+                    exportSettings.textRenderFormat = Qgis.TextRenderFormat.AlwaysText
+                if layout.customProperty("svgTextFormat") == 2:
+                    exportSettings.textRenderFormat = Qgis.TextRenderFormat.PreferText
 
-            if layout.customProperty("svgTextFormat") == 0:
-                exportSettings.textRenderFormat = (
-                    QgsRenderContext.TextFormatAlwaysOutlines
-                )  # default
 
             if layout.customProperty("svgCropToContents") in ["true", True]:
                 exportSettings.cropToContents = True
