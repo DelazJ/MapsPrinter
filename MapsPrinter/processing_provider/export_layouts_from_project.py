@@ -83,6 +83,7 @@ class ExportLayoutsFromProject(QgsProcessingAlgorithm):
             ],
             key=str.lower,
         )
+
         self.addParameter(
             QgsProcessingParameterEnum(
                 self.LAYOUTS,
@@ -92,33 +93,33 @@ class ExportLayoutsFromProject(QgsProcessingAlgorithm):
             )
         )
 
-        self.addParameter(
-            QgsProcessingParameterEnum(
-                self.EXTENSION,
-                self.tr("Extension for exported maps"),
-                options=self.listFormats,
-                defaultValue=ProcessingConfig.getSetting("DEFAULT_EXPORT_EXTENSION"),
-            )
+        extension = QgsProcessingParameterEnum(
+            self.EXTENSION,
+            self.tr("Extension for exported maps"),
+            options=self.listFormats,
+            defaultValue=ProcessingConfig.getSetting("DEFAULT_EXPORT_EXTENSION"),
         )
+        extension.setHelp("The file format to apply to exported files.")
+        self.addParameter(extension)
 
-        self.addParameter(
-            QgsProcessingParameterNumber(
-                self.RESOLUTION,
-                self.tr(
-                    "Export resolution (if not set, the layout resolution is used)"
-                ),
-                optional=True,
-                minValue=1,
-            )
+        resolution = QgsProcessingParameterNumber(
+            self.RESOLUTION,
+            self.tr("Export resolution"),
+            optional=True,
+            minValue=1,
         )
+        resolution.setHelp(
+            "The image resolution to assign to exported files. If not set, the layout resolution is used."
+        )
+        self.addParameter(resolution)
 
-        self.addParameter(
-            QgsProcessingParameterFile(
-                self.OUTPUT,
-                self.tr("Output folder where to save maps"),
-                QgsProcessingParameterFile.Folder,
-            )
+        output_folder = QgsProcessingParameterFile(
+            self.OUTPUT,
+            self.tr("Output folder where to save maps"),
+            QgsProcessingParameterFile.Folder,
         )
+        output_folder.setHelp("The folder to export the layouts to.")
+        self.addParameter(output_folder)
 
         self.addOutput(
             QgsProcessingOutputNumber(
@@ -222,9 +223,11 @@ class ExportLayoutsFromProject(QgsProcessingAlgorithm):
             "Exports print layouts of the current project file to pdf, svg or image file formats."
         )
 
-    # def shortHelpString(self):
-    # return self.tr("Exports a set of print layouts in the project to pdf, svg or image file formats " \
-    # "to an indicated folder.")
+    def shortHelpString(self):
+        return self.tr(
+            "This algorithm exports a set of layouts from the current project file to a given folder "
+            "in svg, pdf and image formats."
+        )
 
     # def helpUrl(self):
     # return ...
