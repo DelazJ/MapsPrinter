@@ -59,56 +59,64 @@ class ExportLayoutsFromFolder(QgsProcessingAlgorithm):
         self.listFormats = self.processor.listFormat()
 
     def initAlgorithm(self, config=None):
-        self.addParameter(
-            QgsProcessingParameterFile(
-                self.PROJECTS_FOLDER,
-                self.tr("Projects folder"),
-                QgsProcessingParameterFile.Folder,
-            )
+        project_folder = QgsProcessingParameterFile(
+            self.PROJECTS_FOLDER,
+            self.tr("Projects folder"),
+            QgsProcessingParameterFile.Folder,
         )
-        self.addParameter(
-            QgsProcessingParameterBoolean(
-                self.RECURSIVE,
-                QCoreApplication.translate(
-                    "ExportLayoutsFromFolder", "Include sub-directories"
-                ),
-                defaultValue=False,
-            )
+        project_folder.setHelp(
+            "The folder containing the projects to export the layouts from."
         )
-        self.addParameter(
-            QgsProcessingParameterEnum(
-                self.EXTENSION,
-                self.tr("Extension for exported maps"),
-                self.listFormats,
-                defaultValue=ProcessingConfig.getSetting("DEFAULT_EXPORT_EXTENSION"),
-            )
+        self.addParameter(project_folder)
+
+        sub_directories = QgsProcessingParameterBoolean(
+            self.RECURSIVE,
+            self.tr("Include sub-directories"),
+            defaultValue=False,
         )
-        self.addParameter(
-            QgsProcessingParameterNumber(
-                self.RESOLUTION,
-                self.tr(
-                    "Export resolution (if not set, the layout resolution is used)"
-                ),
-                optional=True,
-                minValue=1,
-            )
+        sub_directories.setHelp(
+            "Whether layouts should also be taken from projects in sub-folders of the selected folder."
         )
-        self.addParameter(
-            QgsProcessingParameterBoolean(
-                self.PREFIX,
-                QCoreApplication.translate(
-                    "ExportLayoutsFromFolder", "Prefix with project file name"
-                ),
-                defaultValue=False,
-            )
+        self.addParameter(sub_directories)
+
+        extension = QgsProcessingParameterEnum(
+            self.EXTENSION,
+            self.tr("Extension for exported maps"),
+            self.listFormats,
+            defaultValue=ProcessingConfig.getSetting("DEFAULT_EXPORT_EXTENSION"),
         )
-        self.addParameter(
-            QgsProcessingParameterFile(
-                self.OUTPUT_FOLDER,
-                self.tr("Output folder where to save maps"),
-                QgsProcessingParameterFile.Folder,
-            )
+        extension.setHelp("The file format to apply to exported files.")
+        self.addParameter(extension)
+
+        resolution = QgsProcessingParameterNumber(
+            self.RESOLUTION,
+            self.tr("Export resolution"),
+            optional=True,
+            minValue=1,
         )
+        resolution.setHelp(
+            "The image resolution to assign to exported files. If not set, the resolution set in the layout properties is used."
+        )
+        self.addParameter(resolution)
+
+        prefix = QgsProcessingParameterBoolean(
+            self.PREFIX,
+            self.tr("Prefix with project file name"),
+            defaultValue=False,
+        )
+        prefix.setHelp(
+            "Whether the output file name should begin with its original project file name."
+        )
+        self.addParameter(prefix)
+
+        output_folder = QgsProcessingParameterFile(
+            self.OUTPUT_FOLDER,
+            self.tr("Output folder where to save maps"),
+            QgsProcessingParameterFile.Folder,
+        )
+        output_folder.setHelp("The folder to export the layouts to.")
+        self.addParameter(output_folder)
+
         self.addOutput(QgsProcessingOutputFolder(self.OUTPUT, self.tr("Output")))
 
     def name(self):
@@ -128,6 +136,12 @@ class ExportLayoutsFromFolder(QgsProcessingAlgorithm):
         return self.tr(
             "Exports print layouts of the project files in a folder "
             "to pdf, svg or image file formats."
+        )
+
+    def shortHelpString(self):  # pylint: disable=missing-docstring
+        return self.tr(
+            "This algorithm exports print layouts from the project files in a given folder "
+            "to pdf, svg or image file formats. Layouts from projects in sub-folders can also be included."
         )
 
     def processAlgorithm(self, parameters, context, feedback):
