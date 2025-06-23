@@ -6,6 +6,7 @@
 [general]
 name=Maps Printer
 qgisMinimumVersion=3.8
+qgisMaximumVersion=4.99
 description=Export several print layouts to pdf, svg or image file (jpg, tif, png...) format in one click, from the current project or from projects in a folder.
 description[fr]=Permet en un clic d'exporter au format pdf, svg ou image (jpg, tif, png...) plusieurs mises en page de cartes. Ces mises en page peuvent provenir du projet en cours ou d'un dossier de projets.
 version=1.0
