@@ -230,7 +230,7 @@ class Processor:
             exportSettings = QgsLayoutExporter.PdfExportSettings()
             exportSettings.flags = layout.renderContext().flags()
             exportSettings.dpi = layoutDpi
-            if layout.customProperty("rasterize") in ["true", True]:
+            if layout.customProperty("pdfDisableRasterTiles") in ["true", True]:
                 exportSettings.rasterizeWholeImage = True
 
             if layout.customProperty("forceVector") == 1:
