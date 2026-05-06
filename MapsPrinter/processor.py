@@ -242,7 +242,9 @@ class Processor:
                         QgsRenderContext.TextFormatAlwaysOutlines
                     )  # default
                 if layout.customProperty("pdfTextFormat") == 1:
-                    exportSettings.textRenderFormat = QgsRenderContext.TextFormatAlwaysText
+                    exportSettings.textRenderFormat = (
+                        QgsRenderContext.TextFormatAlwaysText
+                    )
             else:
                 if layout.customProperty("pdfTextFormat") == 0:
                     exportSettings.textRenderFormat = (
@@ -300,7 +302,9 @@ class Processor:
                         QgsRenderContext.TextFormatAlwaysOutlines
                     )  # default
                 if layout.customProperty("svgTextFormat") == 1:
-                    exportSettings.textRenderFormat = QgsRenderContext.TextFormatAlwaysText
+                    exportSettings.textRenderFormat = (
+                        QgsRenderContext.TextFormatAlwaysText
+                    )
             else:
                 if layout.customProperty("svgTextFormat") == 0:
                     exportSettings.textRenderFormat = (
@@ -310,7 +314,6 @@ class Processor:
                     exportSettings.textRenderFormat = Qgis.TextRenderFormat.AlwaysText
                 if layout.customProperty("svgTextFormat") == 2:
                     exportSettings.textRenderFormat = Qgis.TextRenderFormat.PreferText
-
 
             if layout.customProperty("svgCropToContents") in ["true", True]:
                 exportSettings.cropToContents = True

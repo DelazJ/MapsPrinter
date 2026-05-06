@@ -2,7 +2,7 @@
 fail_fast: false
 repos:
 - repo: https://github.com/pre-commit/pre-commit-hooks
-  rev: v5.0.0
+  rev: v6.0.0
   hooks:
   - id: check-case-conflict
   - id: check-docstring-first
@@ -17,12 +17,12 @@ repos:
     args: [--markdown-linebreak-ext=md]
 
 - repo: https://github.com/asottile/pyupgrade
-  rev: v3.19.1
+  rev: v3.21.2
   hooks:
     - id: pyupgrade
       args: [--py39-plus]
 
 - repo: https://github.com/python/black
-  rev: 24.10.0
+  rev: 26.3.1
   hooks:
   - id: black
